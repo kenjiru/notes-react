@@ -1,7 +1,11 @@
 {
   "name": "react-ts-boilerplate",
   "dependencies": {
+    "material-ui": "registry:npm/material-ui#0.15.1+20160817172421",
     "react": "registry:npm/react#15.0.1+20160601175240",
     "react-dom": "registry:npm/react-dom#15.0.1+20160705210405"
+  },
+  "globalDependencies": {
+    "react-tap-event-plugin": "registry:dt/react-tap-event-plugin#0.0.0+20160602142434"
   }
 }

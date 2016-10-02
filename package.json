@@ -2,8 +2,11 @@
   "name": "notes",
   "version": "1.0.0",
   "dependencies": {
+    "material-design-icons": "^3.0.1",
+    "material-ui": "^0.15.4",
     "react": "^15.3.2",
-    "react-dom": "^15.3.2"
+    "react-dom": "^15.3.2",
+    "react-tap-event-plugin": "^1.0.0"
   },
   "devDependencies": {
     "autoprefixer": "^6.5.0",

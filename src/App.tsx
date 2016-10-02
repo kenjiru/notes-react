@@ -1,15 +1,24 @@
-import * as React from 'react';
-import * as ReactDOM from 'react-dom';
+import * as React from "react";
+import * as ReactDOM from "react-dom";
+import * as injectTapEventPlugin from "react-tap-event-plugin";
 
-import './App.less';
+import MuiThemeProvider from "material-ui/styles/MuiThemeProvider";
+import RaisedButton from "material-ui/RaisedButton";
+
+import "material-design-icons/iconfont/material-icons.css";
+import "./App.less";
+
+injectTapEventPlugin();
 
 class App extends React.Component<any, any> {
     render() {
         return (
-            <div>
-                <h1>App title</h1>
-                <div>App content</div>
-            </div>
+            <MuiThemeProvider>
+                <div>
+                    <h1>App title</h1>
+                    <RaisedButton label="Default"/>
+                </div>
+            </MuiThemeProvider>
         );
     }
 }
