@@ -8,7 +8,7 @@ import MuiThemeProvider from "material-ui/styles/MuiThemeProvider";
 
 import store from "./model/store";
 
-import AppLayout from "./components/app-layout/AppLayout";
+import AppRoot from "./components/app-root/AppRoot";
 import NotFound from "./components/not-found/NotFound";
 import ListNotes from "./components/list-notes/ListNotes";
 
@@ -23,7 +23,7 @@ class App extends React.Component<any, any> {
             <MuiThemeProvider>
                 <Provider store={store}>
                     <Router history={browserHistory}>
-                        <Route path="/" component={AppLayout}>
+                        <Route path="/" component={AppRoot}>
                             <IndexRoute component={ListNotes}/>
                             <Route path="*" component={NotFound}/>
                         </Route>

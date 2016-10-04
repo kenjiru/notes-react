@@ -1,9 +1,10 @@
 import * as React from "react";
 import {AppBar, Drawer} from "material-ui";
+
 import FolderList from "../folder-list/FolderList";
 
-class AppLayout extends React.Component<IAppLayoutProps, IAppLayoutState> {
-    constructor(props: IAppLayoutProps) {
+class AppRoot extends React.Component<IAppRootProps, IAppRootState> {
+    constructor(props: IAppRootProps) {
         super(props);
 
         this.state = {
@@ -13,7 +14,7 @@ class AppLayout extends React.Component<IAppLayoutProps, IAppLayoutState> {
 
     public render(): React.ReactElement<any> {
         return (
-            <div className="app-layout">
+            <div className="app-root">
                 <AppBar title={this.state.selectedFolder} onLeftIconButtonTouchTap={this.handleToggleDrawer}/>
                 <Drawer docked={false} open={this.state.isDrawerVisible}
                         onRequestChange={(isDrawerVisible) => this.setState({isDrawerVisible})}>
@@ -41,12 +42,12 @@ class AppLayout extends React.Component<IAppLayoutProps, IAppLayoutState> {
     };
 }
 
-interface IAppLayoutProps {}
+interface IAppRootProps {}
 
-interface IAppLayoutState {
+interface IAppRootState {
     isDrawerVisible?: boolean;
     selectedFolder?: string;
 }
 
-export default AppLayout;
+export default AppRoot;
 
