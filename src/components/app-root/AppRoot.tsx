@@ -1,4 +1,5 @@
 import * as React from "react";
+import {IRouter, withRouter} from "react-router";
 import {AppBar, Drawer} from "material-ui";
 
 import FolderList from "../folder-list/FolderList";
@@ -10,6 +11,10 @@ class AppRoot extends React.Component<IAppRootProps, IAppRootState> {
         this.state = {
             isDrawerVisible: false,
         };
+    }
+
+    public componentDidMount(): void {
+        this.props.router.push("/list-notes");
     }
 
     public render(): React.ReactElement<any> {
@@ -42,12 +47,13 @@ class AppRoot extends React.Component<IAppRootProps, IAppRootState> {
     };
 }
 
-interface IAppRootProps {}
+interface IAppRootProps {
+    router: IRouter
+}
 
 interface IAppRootState {
     isDrawerVisible?: boolean;
     selectedFolder?: string;
 }
 
-export default AppRoot;
-
+export default withRouter(AppRoot);
