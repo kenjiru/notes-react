@@ -7,6 +7,7 @@
     "material-ui": "^0.15.4",
     "react": "^15.3.2",
     "react-dom": "^15.3.2",
+    "react-router": "^2.8.1",
     "react-tap-event-plugin": "^1.0.0"
   },
   "devDependencies": {
@@ -31,7 +32,7 @@
     "webpack-dev-server": "^2.1.0-beta.6"
   },
   "scripts": {
-    "debug": "webpack-dev-server --config webpack.config.js --hot -d",
+    "debug": "webpack-dev-server --config webpack.config.js --hot -d --history-api-fallback",
     "build": "rm -rf dist/** && webpack --config webpack.config.js --devtool source-map",
     "typings": "typings install"
   },
