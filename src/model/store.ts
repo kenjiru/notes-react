@@ -4,11 +4,11 @@ import thunk from "redux-thunk";
 import { mainReducer } from "./reducers";
 
 export interface IStore {
+    accessToken?: string;
     user?: IUser;
 }
 
 export interface IUser {
-    accessToken: string;
     displayName: string;
 }
 
