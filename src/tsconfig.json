@@ -11,7 +11,8 @@
 		"removeComments": false,
 		"preserveConstEnums": true,
 		"sourceMap": true,
-		"allowSyntheticDefaultImports": true
+		"allowSyntheticDefaultImports": true,
+		"lib": [ "dom", "es5", "es2015.promise" ]
 	},
 	"files": [
 		"../typings-custom/index.d.ts",
