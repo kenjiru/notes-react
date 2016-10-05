@@ -1,7 +1,8 @@
 import * as React from "react";
 import * as ReactDOM from "react-dom";
 import * as injectTapEventPlugin from "react-tap-event-plugin";
-import {Router, Route, browserHistory} from "react-router"
+import {Router, Route, IndexRoute, RouterState, RedirectFunction, browserHistory} from "react-router"
+
 import {Provider} from "react-redux";
 
 import MuiThemeProvider from "material-ui/styles/MuiThemeProvider";
@@ -25,14 +26,19 @@ class App extends React.Component<any, any> {
                 <Provider store={store}>
                     <Router history={browserHistory}>
                         <Route path="/" component={AppRoot}>
-                            <Route path="/login" component={Login}/>
-                            <Route path="/list-notes" component={ListNotes}/>
+                            <IndexRoute component={ListNotes} onEnter={this.requireAuth}/>
+                            <Route path="login" component={Login}/>
+                            <Route path="list-notes" component={ListNotes} onEnter={this.requireAuth}/>
                             <Route path="*" component={NotFound}/>
                         </Route>
                     </Router>
                 </Provider>
             </MuiThemeProvider>
         );
+    }
+
+    requireAuth = (nextState: RouterState, replace: RedirectFunction): void => {
+        replace("/login");
     }
 }
 
