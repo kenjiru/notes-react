@@ -35,7 +35,7 @@
     "webpack-dev-server": "^2.1.0-beta.6"
   },
   "scripts": {
-    "debug": "webpack-dev-server --config webpack.config.js --hot -d --history-api-fallback",
+    "debug": "webpack-dev-server --config webpack.config.js --hot --inline --history-api-fallback",
     "build": "rm -rf dist/** && webpack --config webpack.config.js --devtool source-map",
     "typings": "typings install"
   },

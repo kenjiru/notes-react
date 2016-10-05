@@ -7,13 +7,17 @@ var src_dir = path.join(__dirname, "/src");
 const nodeEnv = process.env.NODE_ENV || "development";
 
 var config = {
+    devtool: "cheap-module-eval-source-map",
+    cache : true,
     context: __dirname,
     entry: {
-        app: src_dir + "/App.tsx"
+        app: src_dir + "/App.tsx",
+        vendor: ["react", "react-dom", "react-router", "redux-thunk", "react-redux", "redux", "lodash", "material-ui",
+            "material-design-icons"]
     },
     output: {
         path: path.join(__dirname, "/dist"),
-        filename: "App.js?[hash]"
+        filename: "[name].js?[hash]"
     },
     resolve: {
         extensions: [".ts", ".tsx", ".js"],
@@ -27,10 +31,11 @@ var config = {
             {
                 test: /\.(tsx|ts)$/,
                 loader: "ts-loader",
-                include: src_dir
+                exclude: /node_modules/
             }, {
                 test: /\.less$/,
-                loaders: ["style-loader", "css-loader", "less-loader"]
+                loaders: ["style-loader", "css-loader", "less-loader"],
+                exclude: /node_modules/
             }, {
                 test: /\.css/,
                 loaders: ["style-loader", "css-loader"]
@@ -39,7 +44,7 @@ var config = {
                 exclude: /public/,
                 loader: "url-loader",
                 query: {
-                    limit: 500,
+                    limit: 5000,
                     name: "[path][name].[ext]",
                     hash: "[hash]"
                 }
@@ -51,6 +56,10 @@ var config = {
             title: "React TypeScript demo"
         }),
         new ExtractTextPlugin("[name].css?[hash]"),
+        new webpack.optimize.CommonsChunkPlugin({
+            name: "vendor",
+            filename: "vendor.bundle.js"
+        }),
         new webpack.LoaderOptionsPlugin({
             minimize: true,
             debug: false
@@ -62,7 +71,16 @@ var config = {
             output: {
                 comments: false
             },
-            sourceMap: false
+            sourceMap: false,
+            mangle: false
+        }),
+        new webpack.SourceMapDevToolPlugin({
+            test: /\.js/,
+            exclude: [
+                /vendor\.js/
+            ],
+            filename: '[file].map[hash]',
+            columns: false
         }),
         new webpack.DefinePlugin({
             "process.env": { NODE_ENV: JSON.stringify(nodeEnv) }
