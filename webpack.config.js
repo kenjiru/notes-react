@@ -12,6 +12,7 @@ var config = {
     context: __dirname,
     entry: {
         app: src_dir + "/App.tsx",
+        dropboxAuth: src_dir + "/DropboxAuthPage.tsx",
         vendor: ["react", "react-dom", "react-router", "redux-thunk", "react-redux", "redux", "lodash", "material-ui",
             "material-design-icons"]
     },
@@ -53,12 +54,18 @@ var config = {
     },
     plugins: [
         new HtmlWebpackPlugin({
-            title: "React TypeScript demo"
+            title: "Notes",
+            chunks: ["app", "vendor"]
+        }),
+        new HtmlWebpackPlugin({
+            title: "Dropbox Auth",
+            chunks: ["dropboxAuth", "vendor"],
+            filename: "dropbox-auth.html"
         }),
         new ExtractTextPlugin("[name].css?[hash]"),
         new webpack.optimize.CommonsChunkPlugin({
-            name: "vendor",
-            filename: "vendor.bundle.js"
+            name: ["vendor"],
+            filename: "[name].js[hash]"
         }),
         new webpack.LoaderOptionsPlugin({
             minimize: true,
