@@ -33,9 +33,10 @@ class AppRoot extends React.Component<IAppRootProps, IAppRootState> {
 
     private renderRightMenu(): React.ReactElement<any> {
         return (
-            <IconMenu iconButtonElement={ <IconButton><MoreVertIcon /></IconButton>}
+            <IconMenu iconButtonElement={<IconButton><MoreVertIcon /></IconButton>}
                       targetOrigin={{horizontal: "right", vertical: "top"}}
-                      anchorOrigin={{horizontal: "right", vertical: "top"}}>
+                      anchorOrigin={{horizontal: "right", vertical: "top"}}
+                      width={200}>
                 <DropboxAuth/>
                 <MenuItem primaryText="About"/>
             </IconMenu>

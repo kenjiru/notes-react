@@ -7,6 +7,13 @@ import WindowUtil from "../../utils/WindowUtil";
 class DropboxAuth extends React.Component<IDropboxAuthProps, IDropboxAuthState> {
     private CLIENT_ID: string = "17zzlf216nsykj9";
     private dropboxAuthWindow: Window;
+    private dropbox: any;
+
+    constructor(props: IDropboxAuthProps) {
+        super(props);
+
+        this.dropbox = new Dropbox({clientId: this.CLIENT_ID});
+    }
 
     public componentDidMount(): void {
         window.addEventListener("message", this.handleMessage);
@@ -14,17 +21,13 @@ class DropboxAuth extends React.Component<IDropboxAuthProps, IDropboxAuthState> 
 
     public render(): React.ReactElement<any> {
         return (
-            <MenuItem primaryText="Dropbox Login" onClick={this.handleDropboxLogin}/>
+            <MenuItem primaryText="Login"
+                      onClick={this.handleDropboxAction}/>
         );
     }
 
-    handleDropboxLogin = (): void => {
-        let dropbox: any = new Dropbox({clientId: this.CLIENT_ID});
-        let authUrl: string = dropbox.getAuthenticationUrl("http://localhost:8080/dropbox-auth.html");
-
-        let windowOptions: string = "width=800,height=600,scrollbars=yes,location=no";
-
-        this.dropboxAuthWindow = WindowUtil.openWindow(authUrl, windowOptions);
+    handleDropboxAction = (): void => {
+        this.login();
     };
 
     handleMessage = (event: MessageEvent): void => {
@@ -32,12 +35,27 @@ class DropboxAuth extends React.Component<IDropboxAuthProps, IDropboxAuthState> 
             this.dropboxAuthWindow.close();
         }
 
-        console.log("Dropbox accessToken", event.data.accessToken);
+        let accessToken: string = event.data.accessToken;
+        console.log("Dropbox accessToken", accessToken);
+
+        this.dropbox.setAccessToken(accessToken);
+        this.dropbox.usersGetCurrentAccount().then((result) => {
+            console.log("dropbox.usersGetAccount", result);
+        });
     };
+
+    private login(): void {
+        let authUrl: string = this.dropbox.getAuthenticationUrl("http://localhost:8080/dropbox-auth.html");
+        let windowOptions: string = "width=800,height=600,scrollbars=yes,location=no";
+
+        this.dropboxAuthWindow = WindowUtil.openWindow(authUrl, windowOptions);
+    }
 }
 
-interface IDropboxAuthProps {}
+interface IDropboxAuthProps {
+}
 
-interface IDropboxAuthState {}
+interface IDropboxAuthState {
+}
 
 export default DropboxAuth;
