@@ -1,7 +1,9 @@
 import * as React from "react";
-import {AppBar, Drawer} from "material-ui";
+import {AppBar, Drawer, IconButton, IconMenu, MenuItem} from "material-ui";
+import MoreVertIcon from "material-ui/svg-icons/navigation/more-vert";
 
 import FolderList from "../folder-list/FolderList";
+import DropboxAuth from "../dropbox-auth/DropboxAuth";
 
 class AppRoot extends React.Component<IAppRootProps, IAppRootState> {
     constructor(props: IAppRootProps) {
@@ -15,7 +17,8 @@ class AppRoot extends React.Component<IAppRootProps, IAppRootState> {
     public render(): React.ReactElement<any> {
         return (
             <div className="app-root">
-                <AppBar title={this.state.selectedFolder} onLeftIconButtonTouchTap={this.handleToggleDrawer}/>
+                <AppBar title={this.state.selectedFolder} onLeftIconButtonTouchTap={this.handleToggleDrawer}
+                        iconElementRight={this.renderRightMenu()}/>
                 <Drawer docked={false} open={this.state.isDrawerVisible}
                         onRequestChange={(isDrawerVisible) => this.setState({isDrawerVisible})}>
                     <FolderList onFolderSelected={this.handleFolderSelected}/>
@@ -25,6 +28,17 @@ class AppRoot extends React.Component<IAppRootProps, IAppRootState> {
                     {this.props.children}
                 </div>
             </div>
+        );
+    }
+
+    private renderRightMenu(): React.ReactElement<any> {
+        return (
+            <IconMenu iconButtonElement={ <IconButton><MoreVertIcon /></IconButton>}
+                      targetOrigin={{horizontal: "right", vertical: "top"}}
+                      anchorOrigin={{horizontal: "right", vertical: "top"}}>
+                <DropboxAuth/>
+                <MenuItem primaryText="About"/>
+            </IconMenu>
         );
     }
 
