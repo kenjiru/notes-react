@@ -4,7 +4,7 @@ import {ReactElement} from "react";
 import {Dialog, FlatButton} from "material-ui";
 import {Table, TableHeader, TableHeaderColumn, TableBody, TableRow, TableRowColumn} from "material-ui/Table"
 
-class ListNotes extends React.Component<IListNotesProps, IListNotesState> {
+class NoteList extends React.Component<IListNotesProps, IListNotesState> {
     private notes: INoteModel[] = [{
         name: "Network configuration",
         lastChanged: new Date()
@@ -31,7 +31,7 @@ class ListNotes extends React.Component<IListNotesProps, IListNotesState> {
 
     public render(): React.ReactElement<any> {
         return (
-            <div className="list-notes">
+            <div className="note-list">
                 <Table onCellClick={this.handleTableClick}>
                     <TableHeader>
                         <TableRow>
@@ -110,5 +110,4 @@ interface IListNotesState {
     clickedNote?: number;
 }
 
-export default ListNotes;
-
+export default NoteList;

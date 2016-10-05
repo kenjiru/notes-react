@@ -11,7 +11,7 @@ import store from "./model/store";
 
 import AppRoot from "./components/app-root/AppRoot";
 import Login from "./components/login/Login";
-import ListNotes from "./components/list-notes/ListNotes";
+import NoteList from "./components/note-list/NoteList";
 import NotFound from "./components/not-found/NotFound";
 
 import "material-design-icons/iconfont/material-icons.css";
@@ -26,9 +26,9 @@ class App extends React.Component<any, any> {
                 <Provider store={store}>
                     <Router history={browserHistory}>
                         <Route path="/" component={AppRoot}>
-                            <IndexRoute component={ListNotes}/>
+                            <IndexRoute component={NoteList}/>
                             <Route path="login" component={Login}/>
-                            <Route path="list-notes" component={ListNotes}/>
+                            <Route path="list-notes" component={NoteList}/>
                             <Route path="*" component={NotFound}/>
                         </Route>
                     </Router>
