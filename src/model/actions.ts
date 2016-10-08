@@ -8,6 +8,8 @@ export const CLIENT_ID: string = "17zzlf216nsykj9";
 
 export const DROPBOX_SET_ACCESS_TOKEN: string = "DROPBOX_SET_ACCESS_TOKEN_SET_USER_INFO";
 export function setAccessToken(accessToken: string): IAction {
+    console.log("setAccessToken", accessToken);
+
     return createAction(DROPBOX_SET_ACCESS_TOKEN, accessToken);
 }
 
@@ -20,7 +22,7 @@ export function getCurrentAccount(): IActionCallback {
         });
 
         return dropbox.usersGetCurrentAccount().then((result) => {
-            console.log("dropbox.usersGetAccount", result);
+            console.log("usersGetAccount", result);
 
             dispatch(createAction(DROPBOX_SET_CURRENT_ACCOUNT, {
                 displayName: result.name.display_name

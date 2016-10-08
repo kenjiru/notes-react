@@ -37,7 +37,6 @@ class DropboxAuth extends React.Component<IDropboxAuthProps, IDropboxAuthState> 
         }
 
         let accessToken: string = event.data.accessToken;
-        console.log("Dropbox accessToken", accessToken);
 
         this.props.dispatch(setAccessToken(accessToken));
         this.props.dispatch(getCurrentAccount());
