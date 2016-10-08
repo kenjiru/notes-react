@@ -1,7 +1,7 @@
 import {INote, IManifestNote} from "../model/store";
 
 class NoteUtil {
-    private static _nodeMap: Object = {
+    private static nodeMap: Object = {
         "note-content": "",
         bold: "b",
         italic: "i",
@@ -48,14 +48,12 @@ class NoteUtil {
         return "";
     }
 
-    public static convertToHtml(note: INote): string {
-        let xmlStr: string = note.content;
+    public static convertToHtml(noteContent: string): string {
+        noteContent = NoteUtil.replaceTitle(noteContent);
+        noteContent = NoteUtil.replaceNewLines(noteContent);
+        noteContent = NoteUtil.replaceAllTags(noteContent);
 
-        xmlStr = NoteUtil.replaceTitle(xmlStr);
-        xmlStr = NoteUtil.replaceNewLines(xmlStr);
-        xmlStr = NoteUtil.replaceAllTags(xmlStr);
-
-        return xmlStr;
+        return noteContent;
     }
 
     private static replaceTitle(text) {
@@ -68,8 +66,8 @@ class NoteUtil {
     }
 
     private static replaceAllTags(text) {
-        for (var key in NoteUtil._nodeMap) {
-            text = NoteUtil.replaceTag(text, key, NoteUtil._nodeMap[key]);
+        for (var key in NoteUtil.nodeMap) {
+            text = NoteUtil.replaceTag(text, key, NoteUtil.nodeMap[key]);
         }
 
         return text;
@@ -78,7 +76,7 @@ class NoteUtil {
     private static replaceTag(text, initialTag, finalTag) {
         var bothTags = `<(\/)?${initialTag}( [^>]*)*>`,
             startTag = `<${initialTag}( [^>]*)*>`,
-            endTag = `</${initialTag}>`,
+            endTag = `<\/${initialTag}>`,
             regExp;
 
         if (typeof finalTag === "string") {

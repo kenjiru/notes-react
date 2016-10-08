@@ -1,10 +1,13 @@
 import * as _ from "lodash";
 import * as React from "react";
 import {ReactElement} from "react";
+import {connect} from "react-redux";
 import {Dialog, FlatButton} from "material-ui";
 import {Table, TableHeader, TableHeaderColumn, TableBody, TableRow, TableRowColumn} from "material-ui/Table"
+
 import {INote, IStore} from "../../model/store";
-import {connect} from "react-redux";
+import NoteUtil from "../../utils/NoteUtil";
+import HtmlChunk from "../html-chunk/HtmlChunk";
 
 class NoteList extends React.Component<IListNotesProps, IListNotesState> {
     constructor(props: IListNotesProps) {
@@ -37,17 +40,23 @@ class NoteList extends React.Component<IListNotesProps, IListNotesState> {
     }
 
     private renderNoteDialog(): ReactElement<any> {
+        let selectedNote: INote = this.getSelectedNote();
+
+        if (_.isNil(selectedNote)) {
+            return;
+        }
+
+        let noteContent: string = NoteUtil.convertToHtml(selectedNote.content);
+
         let actions: ReactElement<any>[] = [
-            <FlatButton label="Cancel" primary={true} onTouchTap={this.handleNoteDialogClose}/>,
+            <FlatButton label="Close" primary={true} onTouchTap={this.handleNoteDialogClose}/>,
         ];
 
         return (
-            <Dialog title={this.getSelectedNote().title} actions={actions} modal={false}
+            <Dialog actions={actions} modal={false}
                     open={this.state.isNoteDialogVisible}
                     onRequestClose={this.handleNoteDialogClose}>
-                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed sit amet ligula in nunc
-                lectus. Sed eu mi maximus, finibus lectus ut, vulputate urna. Vivamus sollicitudin
-                lobortis dictum.</p>
+                <HtmlChunk className="dialog-content" html={noteContent}/>
             </Dialog>
         );
     }
