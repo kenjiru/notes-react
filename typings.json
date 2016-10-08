@@ -10,6 +10,7 @@
     "redux-thunk": "registry:npm/redux-thunk#2.0.0+20160525185520"
   },
   "globalDependencies": {
+    "classnames": "registry:dt/classnames#0.0.0+20160316155526",
     "react-tap-event-plugin": "registry:dt/react-tap-event-plugin#0.0.0+20160602142434",
     "text-encoding": "registry:dt/text-encoding#0.0.0+20160325124532"
   }
