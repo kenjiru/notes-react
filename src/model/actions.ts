@@ -1,5 +1,8 @@
 import * as Dropbox from "dropbox";
+
+import {IManifest} from "./store";
 import {IAction, IActionCallback, IDispatchFunction, IGetStateFunction, createAction} from "../utils/ActionUtil";
+import DropboxUtil from "../utils/DropboxUtil";
 
 export const CLIENT_ID: string = "17zzlf216nsykj9";
 
@@ -40,4 +43,15 @@ export function revokeAccess(): IActionCallback {
             dispatch(createAction(DROPBOX_SET_CURRENT_ACCOUNT, null))
         });
     };
+}
+
+export const DROPBOX_SET_MANIFEST: string = "DROPBOX_SET_MANIFEST";
+export function loadNotes(): IActionCallback {
+    return (dispatch: IDispatchFunction, getState: IGetStateFunction): Promise<any> => {
+        let dropboxUtil: DropboxUtil = new DropboxUtil(CLIENT_ID, getState().accessToken);
+
+        return dropboxUtil.readManifest().then((manifest: IManifest) => {
+            dispatch(createAction(DROPBOX_SET_MANIFEST, manifest))
+        });
+    }
 }

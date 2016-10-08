@@ -1,9 +1,14 @@
+import * as _ from "lodash";
 import * as React from "react";
+import {connect} from "react-redux";
 import {AppBar, Drawer, IconButton, IconMenu, MenuItem} from "material-ui";
 import MoreVertIcon from "material-ui/svg-icons/navigation/more-vert";
 
+import {IUser, IStore} from "../../model/store";
+
 import FolderList from "../folder-list/FolderList";
 import DropboxAuth from "../dropbox-auth/DropboxAuth";
+import {loadNotes} from "../../model/actions";
 
 class AppRoot extends React.Component<IAppRootProps, IAppRootState> {
     constructor(props: IAppRootProps) {
@@ -12,6 +17,12 @@ class AppRoot extends React.Component<IAppRootProps, IAppRootState> {
         this.state = {
             isDrawerVisible: false,
         };
+    }
+
+    public componentWillReceiveProps(nextProps: IAppRootProps): void {
+        if (this.props.user !== nextProps.user && _.isNil(nextProps.user) === false) {
+            this.props.dispatch(loadNotes());
+        }
     }
 
     public render(): React.ReactElement<any> {
@@ -58,6 +69,8 @@ class AppRoot extends React.Component<IAppRootProps, IAppRootState> {
 }
 
 interface IAppRootProps {
+    dispatch: Function;
+    user: IUser;
 }
 
 interface IAppRootState {
@@ -65,4 +78,6 @@ interface IAppRootState {
     selectedFolder?: string;
 }
 
-export default AppRoot;
+export default connect((store: IStore) => ({
+    user: store.user
+}))(AppRoot);
