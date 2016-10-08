@@ -3,22 +3,10 @@ import * as React from "react";
 import {ReactElement} from "react";
 import {Dialog, FlatButton} from "material-ui";
 import {Table, TableHeader, TableHeaderColumn, TableBody, TableRow, TableRowColumn} from "material-ui/Table"
+import {INote, IStore} from "../../model/store";
+import {connect} from "react-redux";
 
 class NoteList extends React.Component<IListNotesProps, IListNotesState> {
-    private notes: INoteModel[] = [{
-        name: "Network configuration",
-        lastChanged: new Date()
-    }, {
-        name: "Application passwords",
-        lastChanged: new Date()
-    }, {
-        name: "Deployment process",
-        lastChanged: new Date()
-    }, {
-        name: "Code guidelines",
-        lastChanged: new Date()
-    }];
-
     constructor(props: IListNotesProps) {
         super(props);
 
@@ -54,7 +42,7 @@ class NoteList extends React.Component<IListNotesProps, IListNotesState> {
         ];
 
         return (
-            <Dialog title={this.getSelectedNote()} actions={actions} modal={false}
+            <Dialog title={this.getSelectedNote().title} actions={actions} modal={false}
                     open={this.state.isNoteDialogVisible}
                     onRequestClose={this.handleNoteDialogClose}>
                 <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed sit amet ligula in nunc
@@ -65,9 +53,9 @@ class NoteList extends React.Component<IListNotesProps, IListNotesState> {
     }
 
     private renderNotesRows(): ReactElement<any>[] {
-        return _.map(this.notes, (note: INoteModel, i: number) =>
+        return _.map(this.props.notes, (note: INote, i: number) =>
             <TableRow key={i}>
-                <TableRowColumn>{note.name}</TableRowColumn>
+                <TableRowColumn>{note.title}</TableRowColumn>
                 <TableRowColumn>{note.lastChanged.toString()}</TableRowColumn>
             </TableRow>
         );
@@ -86,21 +74,18 @@ class NoteList extends React.Component<IListNotesProps, IListNotesState> {
         });
     };
 
-    private getSelectedNote(): string {
+    private getSelectedNote(): INote {
         if (_.isNil(this.state.selectedNote)) {
-            return "No note selected!";
+            return null;
         }
 
-        return this.notes[this.state.selectedNote].name;
+        return this.props.notes[this.state.selectedNote];
     }
 }
 
-interface INoteModel {
-    name: string;
-    lastChanged: Date;
+interface IListNotesProps {
+    notes: INote[];
 }
-
-interface IListNotesProps {}
 
 interface IListNotesState {
     isDrawerVisible?: boolean;
@@ -110,4 +95,6 @@ interface IListNotesState {
     clickedNote?: number;
 }
 
-export default NoteList;
+export default connect((state: IStore) => ({
+    notes: state.notes
+}))(NoteList);
