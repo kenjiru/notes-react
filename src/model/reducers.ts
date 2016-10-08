@@ -13,22 +13,22 @@ let defaultStore: IStore = {
 export function mainReducer(store: IStore = defaultStore, action: IAction): IStore {
     switch (action.type) {
         case DROPBOX_SET_ACCESS_TOKEN:
-            return _.merge({}, store, {
+            return _.assign({}, store, {
                 accessToken: action.payload
             });
 
         case DROPBOX_SET_CURRENT_ACCOUNT:
-            return _.merge({}, store, {
+            return _.assign({}, store, {
                 user: action.payload
             });
 
         case DROPBOX_SET_MANIFEST:
-            return _.merge(store, {
+            return _.assign({}, store, {
                 manifest: action.payload
             });
 
         case DROPBOX_SET_NOTES:
-            return _.merge(store, {
+            return _.assign({}, store, {
                 notes: action.payload
             });
     }
