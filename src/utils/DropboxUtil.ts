@@ -8,14 +8,14 @@ import FileUtil from "./FileUtil";
 import ManifestUtil from "./ManifestUtil";
 import NoteUtil from "./NoteUtil";
 
-export function getAuthUrl() {
-    let dropbox: any = new Dropbox({clientId: CLIENT_ID});
-
-    return dropbox.getAuthenticationUrl("http://localhost:8080/dropbox-auth.html");
-}
-
 class DropboxUtil {
     private dropbox: any;
+
+    public static getAuthUrl() {
+        let dropbox: any = new Dropbox({clientId: CLIENT_ID});
+
+        return dropbox.getAuthenticationUrl("http://localhost:8080/dropbox-auth.html");
+    }
 
     constructor(private clientId: string, private accessToken: string) {
         this.dropbox = new Dropbox({

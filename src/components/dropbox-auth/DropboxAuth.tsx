@@ -7,7 +7,7 @@ import {IStore, IUser} from "../../model/store";
 import {setAccessToken, getCurrentAccount, revokeAccess} from "../../model/actions";
 
 import WindowUtil from "../../utils/WindowUtil";
-import {getAuthUrl} from "../../utils/DropboxUtil";
+import DropboxUtil from "../../utils/DropboxUtil";
 
 class DropboxAuth extends React.Component<IDropboxAuthProps, IDropboxAuthState> {
     private dropboxAuthWindow: Window;
@@ -44,7 +44,7 @@ class DropboxAuth extends React.Component<IDropboxAuthProps, IDropboxAuthState> 
     };
 
     private login(): void {
-        let authUrl: string = getAuthUrl();
+        let authUrl: string = DropboxUtil.getAuthUrl();
         let windowOptions: string = "width=800,height=600,scrollbars=yes,location=no";
 
         this.dropboxAuthWindow = WindowUtil.openWindow(authUrl, windowOptions);
