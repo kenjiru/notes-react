@@ -79,5 +79,5 @@ interface IAppRootState {
 }
 
 export default connect((store: IStore) => ({
-    user: store.user
+    user: store.accessToken && store.user ? store.user : null
 }))(AppRoot);

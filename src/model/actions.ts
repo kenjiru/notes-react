@@ -1,6 +1,6 @@
 import * as Dropbox from "dropbox";
 
-import {IManifest} from "./store";
+import {IManifest, INote} from "./store";
 import {IAction, IActionCallback, IDispatchFunction, IGetStateFunction, createAction} from "../utils/ActionUtil";
 import DropboxUtil from "../utils/DropboxUtil";
 
@@ -37,7 +37,7 @@ export function revokeAccess(): IActionCallback {
         });
 
         return dropbox.authTokenRevoke().then((result) => {
-            console.log("dropbox.authTokenRevoke");
+            console.log("authTokenRevoke");
 
             dispatch(createAction(DROPBOX_SET_ACCESS_TOKEN, null));
             dispatch(createAction(DROPBOX_SET_CURRENT_ACCOUNT, null))
@@ -46,12 +46,20 @@ export function revokeAccess(): IActionCallback {
 }
 
 export const DROPBOX_SET_MANIFEST: string = "DROPBOX_SET_MANIFEST";
+export const DROPBOX_SET_NOTES: string = "DROPBOX_SET_NOTES";
 export function loadNotes(): IActionCallback {
     return (dispatch: IDispatchFunction, getState: IGetStateFunction): Promise<any> => {
         let dropboxUtil: DropboxUtil = new DropboxUtil(CLIENT_ID, getState().accessToken);
+        console.log("loadNotes", getState().accessToken);
 
         return dropboxUtil.readManifest().then((manifest: IManifest) => {
-            dispatch(createAction(DROPBOX_SET_MANIFEST, manifest))
+            console.log("readManifest", manifest);
+            dispatch(createAction(DROPBOX_SET_MANIFEST, manifest));
+
+            return dropboxUtil.readNotes(manifest).then((notes: INote[]) => {
+                console.log("readNotes", notes);
+                dispatch(createAction(DROPBOX_SET_NOTES, notes));
+            });
         });
     }
 }

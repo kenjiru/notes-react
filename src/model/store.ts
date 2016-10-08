@@ -6,10 +6,19 @@ export interface IStore {
     accessToken?: string;
     user?: IUser;
     manifest?: IManifest;
+    notes?: INote[];
 }
 
 export interface IUser {
     displayName: string;
+}
+
+export interface INote {
+    id: string;
+    rev: number;
+    title: string;
+    lastChanged: string;
+    content: string;
 }
 
 export interface IManifest {
