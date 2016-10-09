@@ -19,7 +19,8 @@ class DropboxAuth extends React.Component<IDropboxAuthProps, IDropboxAuthState> 
     public render(): React.ReactElement<any> {
         return (
             <MenuItem primaryText={this.getPrimaryText()} secondaryText={this.getSecondaryText()}
-                      onClick={this.handleDropboxAction}/>
+                      onClick={this.handleDropboxAction} focusState={this.props.focusState}
+                      onTouchTap={this.props.onTouchTap}/>
         );
     }
 
@@ -69,6 +70,11 @@ class DropboxAuth extends React.Component<IDropboxAuthProps, IDropboxAuthState> 
 interface IDropboxAuthProps {
     dispatch: Function;
     user: IUser;
+
+    // Props we need to pass to the MenuItem
+    desktop?: string;
+    focusState?: string;
+    onTouchTap?: Function;
 }
 
 interface IDropboxAuthState {
