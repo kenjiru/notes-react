@@ -1,6 +1,8 @@
+import * as _ from "lodash";
 import * as Dropbox from "dropbox";
+import * as storage from "store";
 
-import {IManifest, INote} from "./store";
+import {IStore, IManifest, INote} from "./store";
 import {IAction, IActionCallback, IDispatchFunction, IGetStateFunction, createAction} from "../utils/ActionUtil";
 import DropboxUtil from "../utils/DropboxUtil";
 
@@ -61,7 +63,26 @@ export function loadNotes(): IActionCallback {
             return dropboxUtil.readNotes(manifest).then((notes: INote[]) => {
                 console.log("readNotes", notes);
                 dispatch(createAction(DROPBOX_SET_NOTES, notes));
+                dispatch(persistState());
             });
         });
     }
+}
+
+export const RESTORE_STATE: string = "RESTORE_STATE";
+export function restoreState(): IAction {
+    let newState: IStore = storage.get("store") || {};
+
+    console.log("restoreState", newState);
+    return createAction(RESTORE_STATE, newState);
+}
+
+export const PERSIST_STATE: string = "PERSIST_STATE";
+export function persistState(): IActionCallback {
+    return (dispatch: IDispatchFunction, getState: IGetStateFunction): Promise<any> => {
+        storage.set("store", getState());
+
+        console.log("persistState");
+        return dispatch(createAction(PERSIST_STATE));
+    };
 }

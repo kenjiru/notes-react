@@ -3,6 +3,8 @@ import {AppBar, Drawer} from "material-ui";
 
 import AppMenu from "../app-menu/AppMenu";
 import FolderList from "../folder-list/FolderList";
+import store from "../../model/store";
+import {restoreState} from "../../model/actions";
 
 class AppRoot extends React.Component<IAppRootProps, IAppRootState> {
     constructor(props: IAppRootProps) {
@@ -11,6 +13,8 @@ class AppRoot extends React.Component<IAppRootProps, IAppRootState> {
         this.state = {
             isDrawerVisible: false,
         };
+
+        store.dispatch(restoreState());
     }
 
     public render(): React.ReactElement<any> {

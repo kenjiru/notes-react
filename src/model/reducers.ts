@@ -2,7 +2,7 @@ import * as _ from "lodash";
 import {IStore} from "./store";
 import {
     DROPBOX_SET_CURRENT_ACCOUNT, DROPBOX_SET_ACCESS_TOKEN, DROPBOX_SET_MANIFEST,
-    DROPBOX_SET_NOTES
+    DROPBOX_SET_NOTES, RESTORE_STATE
 } from "./actions";
 import {IAction} from "../utils/ActionUtil";
 
@@ -31,6 +31,9 @@ export function mainReducer(store: IStore = defaultStore, action: IAction): ISto
             return _.assign({}, store, {
                 notes: action.payload
             });
+
+        case RESTORE_STATE:
+            return action.payload;
     }
 
     return store;
