@@ -1,14 +1,8 @@
-import * as _ from "lodash";
 import * as React from "react";
-import {connect} from "react-redux";
-import {AppBar, Drawer, IconButton, IconMenu, MenuItem} from "material-ui";
-import MoreVertIcon from "material-ui/svg-icons/navigation/more-vert";
+import {AppBar, Drawer} from "material-ui";
 
-import {IUser, IStore} from "../../model/store";
-
+import AppMenu from "../app-menu/AppMenu";
 import FolderList from "../folder-list/FolderList";
-import DropboxAuth from "../dropbox-auth/DropboxAuth";
-import {loadNotes} from "../../model/actions";
 
 class AppRoot extends React.Component<IAppRootProps, IAppRootState> {
     constructor(props: IAppRootProps) {
@@ -19,17 +13,11 @@ class AppRoot extends React.Component<IAppRootProps, IAppRootState> {
         };
     }
 
-    public componentWillReceiveProps(nextProps: IAppRootProps): void {
-        if (this.props.user !== nextProps.user && _.isNil(nextProps.user) === false) {
-            this.props.dispatch(loadNotes());
-        }
-    }
-
     public render(): React.ReactElement<any> {
         return (
             <div className="app-root">
                 <AppBar title={this.state.selectedFolder} onLeftIconButtonTouchTap={this.handleToggleDrawer}
-                        iconElementRight={this.renderRightMenu()}/>
+                        iconElementRight={<AppMenu/>}/>
                 <Drawer docked={false} open={this.state.isDrawerVisible}
                         onRequestChange={(isDrawerVisible) => this.setState({isDrawerVisible})}>
                     <FolderList onFolderSelected={this.handleFolderSelected}/>
@@ -39,18 +27,6 @@ class AppRoot extends React.Component<IAppRootProps, IAppRootState> {
                     {this.props.children}
                 </div>
             </div>
-        );
-    }
-
-    private renderRightMenu(): React.ReactElement<any> {
-        return (
-            <IconMenu iconButtonElement={<IconButton><MoreVertIcon /></IconButton>}
-                      targetOrigin={{horizontal: "right", vertical: "top"}}
-                      anchorOrigin={{horizontal: "right", vertical: "top"}}
-                      width={200}>
-                <DropboxAuth/>
-                <MenuItem primaryText="About"/>
-            </IconMenu>
         );
     }
 
@@ -69,8 +45,6 @@ class AppRoot extends React.Component<IAppRootProps, IAppRootState> {
 }
 
 interface IAppRootProps {
-    dispatch: Function;
-    user: IUser;
 }
 
 interface IAppRootState {
@@ -78,6 +52,4 @@ interface IAppRootState {
     selectedFolder?: string;
 }
 
-export default connect((store: IStore) => ({
-    user: store.accessToken && store.user ? store.user : null
-}))(AppRoot);
+export default AppRoot;
