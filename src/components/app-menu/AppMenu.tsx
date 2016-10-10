@@ -22,9 +22,24 @@ class AppMenu extends React.Component<IAppMenuProps, IAppMenuState> {
                       anchorOrigin={{horizontal: "right", vertical: "top"}}
                       width={200}>
                 <DropboxAuth/>
+                {this.renderReloadNotes()}
                 <MenuItem primaryText="About"/>
             </IconMenu>
         );
+    }
+
+    private renderReloadNotes(): React.ReactElement<any> {
+        if (this.isLoggedIn()) {
+            return <MenuItem primaryText="Reload notes" onClick={this.handleReload}/>
+        }
+    }
+
+    handleReload = (): void => {
+        this.props.dispatch(loadNotes());
+    };
+
+    private isLoggedIn(): boolean {
+        return _.isNil(this.props.user) === false;
     }
 }
 
@@ -33,7 +48,8 @@ interface IAppMenuProps {
     user: IUser;
 }
 
-interface IAppMenuState {}
+interface IAppMenuState {
+}
 
 export default connect((store: IStore) => ({
     user: store.accessToken && store.user ? store.user : null
