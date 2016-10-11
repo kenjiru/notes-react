@@ -26,6 +26,12 @@ class NoteUtil {
         "list-item": "li"
     };
 
+    public static getText(note: INote): string {
+        let tagRe: RegExp = /(<([^>]+)>)/ig;
+
+        return note.content.replace(tagRe, "");
+    }
+
     public static convertToNote(note: IManifestNote, noteStr: string): INote {
         return {
             id: note.id,
