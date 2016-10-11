@@ -44,13 +44,13 @@ class AppMenu extends React.Component<IAppMenuProps, IAppMenuState> {
 }
 
 interface IAppMenuProps {
-    dispatch: Function;
-    user: IUser;
+    dispatch?: Function;
+    user?: IUser;
 }
 
 interface IAppMenuState {
 }
 
-export default connect((store: IStore) => ({
+export default connect((store: IStore): IAppMenuProps => ({
     user: store.accessToken && store.user ? store.user : null
 }))(AppMenu);

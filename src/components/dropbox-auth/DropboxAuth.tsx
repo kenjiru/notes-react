@@ -2,6 +2,7 @@ import * as _ from "lodash";
 import * as React from "react";
 import {connect} from "react-redux";
 import {MenuItem} from "material-ui";
+import {TouchTapEvent} from "material-ui/commons";
 
 import {IStore, IUser} from "../../model/store";
 import {setAccessToken, getCurrentAccount, revokeAccess} from "../../model/actions";
@@ -68,18 +69,18 @@ class DropboxAuth extends React.Component<IDropboxAuthProps, IDropboxAuthState> 
 }
 
 interface IDropboxAuthProps {
-    dispatch: Function;
-    user: IUser;
+    dispatch?: Function;
+    user?: IUser;
 
     // Props we need to pass to the MenuItem
     desktop?: string;
     focusState?: string;
-    onTouchTap?: Function;
+    onTouchTap?: (ev: TouchTapEvent) => void;
 }
 
 interface IDropboxAuthState {
 }
 
-export default connect((store: IStore) => ({
+export default connect((store: IStore): IDropboxAuthProps => ({
     user: store.user
 }))(DropboxAuth);

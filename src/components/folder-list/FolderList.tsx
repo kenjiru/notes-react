@@ -9,7 +9,7 @@ class FolderList extends React.Component<IFolderListProps, IFolderListState> {
 
     public render(): React.ReactElement<any> {
         return (
-            <List className="folder-list">
+            <List>
                 <Subheader>Folders</Subheader>
                 {this.renderFolders()}
             </List>

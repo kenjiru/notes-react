@@ -7,7 +7,6 @@ import HtmlChunk from "../html-chunk/HtmlChunk";
 import NoteUtil from "../../utils/NoteUtil";
 
 class ViewNote extends React.Component<IViewNoteProps, IViewNoteState> {
-
     public render(): React.ReactElement<any> {
         let noteContent: string = NoteUtil.convertToHtml(this.props.note.content);
 
@@ -26,6 +25,6 @@ interface IViewNoteProps {
 
 interface IViewNoteState {}
 
-export default connect((state: IStore, props: IViewNoteProps) => ({
+export default connect((state: IStore, props: IViewNoteProps) : IViewNoteProps=> ({
     note: _.find(state.notes, {id: props.params.noteId})
 }))(ViewNote);

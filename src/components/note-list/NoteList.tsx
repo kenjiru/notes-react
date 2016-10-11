@@ -64,7 +64,7 @@ class NoteList extends React.Component<IListNotesProps, IListNotesState> {
         return (
             <TableFooter>
                 <TableRow >
-                    <TableRowColumn colSpan="2" style={{textAlign: 'center'}}>
+                    <TableRowColumn colSpan={2} style={{textAlign: 'center'}}>
                         No items satisfy the filter criteria.
                     </TableRowColumn>
                 </TableRow>
