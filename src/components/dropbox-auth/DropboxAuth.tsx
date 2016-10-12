@@ -1,8 +1,7 @@
 import * as _ from "lodash";
 import * as React from "react";
 import {connect} from "react-redux";
-import {MenuItem} from "material-ui";
-import {TouchTapEvent} from "material-ui/commons";
+import {MenuItem, TouchTapEvent} from "material-ui";
 
 import {IStore, IUser} from "../../model/store";
 import {setAccessToken, getCurrentAccount, revokeAccess} from "../../model/actions";
