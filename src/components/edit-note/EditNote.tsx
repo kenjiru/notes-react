@@ -1,7 +1,7 @@
 import * as _ from "lodash";
 import * as React from "react";
 import {connect} from "react-redux";
-import {Editor, EditorState, ContentState} from "draft-js";
+import {Editor, EditorState, ContentState, RichUtils} from "draft-js";
 import {stateFromHTML} from "draft-js-import-html";
 
 import {IStore, INote} from "../../model/store";
@@ -37,10 +37,21 @@ class EditNote extends React.Component<IEditNoteProps, IEditNoteState> {
     public render(): React.ReactElement<any> {
         return (
             <div className="edit-note">
-                <Editor editorState={this.state.editorState} onChange={this.onChange}/>
+                <Editor editorState={this.state.editorState} onChange={this.onChange}
+                        handleKeyCommand={this.handleKeyCommand}/>
             </div>
         );
     }
+
+    private handleKeyCommand = (command: string): boolean => {
+        const newState: EditorState = RichUtils.handleKeyCommand(this.state.editorState, command);
+
+        this.setState({
+            editorState: newState
+        });
+
+        return false;
+    };
 
     private onChange = (editorState: EditorState): void => {
         this.setState({
