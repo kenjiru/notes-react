@@ -68,8 +68,18 @@ class NoteUtil {
         return text.replace(/^(.*)([\r\n]+.*)/, "<h1>$1</h1>$2");
     }
 
-    private static replaceNewLines(text) {
-        return text.replace(/[\r\n]+/g, "<br/>");
+    private static replaceNewLines(text: string): string {
+        let lines: string[] = text.split(/[\r\n]+/);
+
+        lines = _.map(lines, (line: string): string => {
+            if (line[0] !== "<") {
+                return line.replace(/^(.+?)$/g,"<p>$1</p>");
+            }
+
+            return line;
+        });
+
+        return lines.join("");
     }
 
     private static replaceAllTags(text) {
