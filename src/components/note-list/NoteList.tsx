@@ -87,7 +87,7 @@ class NoteList extends React.Component<IListNotesProps, IListNotesState> {
 
         let note: INote = this.props.notes[selectedNote];
 
-        browserHistory.push(`/note/${note.id}`);
+        browserHistory.push(`/edit-note/${note.id}`);
     };
 
     handleFilterChange: EventHandler<any> = (ev: any): void => {

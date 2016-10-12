@@ -12,6 +12,7 @@ import store from "./model/store";
 import AppRoot from "./components/app-root/AppRoot";
 import Login from "./components/login/Login";
 import NoteList from "./components/note-list/NoteList";
+import EditNote from "./components/edit-note/EditNote";
 import ViewNote from "./components/view-note/ViewNote";
 import NotFound from "./components/not-found/NotFound";
 
@@ -30,7 +31,8 @@ class App extends React.Component<any, any> {
                             <IndexRoute component={NoteList}/>
                             <Route path="login" component={Login}/>
                             <Route path="list-notes" component={NoteList}/>
-                            <Route path="note/:noteId" component={ViewNote}/>
+                            <Route path="edit-note/:noteId" component={EditNote}/>
+                            <Route path="view-note/:noteId" component={ViewNote}/>
                             <Route path="*" component={NotFound}/>
                         </Route>
                     </Router>
