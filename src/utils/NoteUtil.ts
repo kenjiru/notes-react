@@ -62,9 +62,10 @@ class NoteUtil {
         return noteContent;
     }
 
-    private static replaceTitle(text) {
+    private static replaceTitle(text: string): string {
         text = text.replace(/<(\/)?note-content[^>]*>/g, "");
-        return text.replace(/^(.*)[\r\n]+(.*)/, "<h1>$1</h1>$2");
+
+        return text.replace(/^(.*)([\r\n]+.*)/, "<h1>$1</h1>$2");
     }
 
     private static replaceNewLines(text) {
