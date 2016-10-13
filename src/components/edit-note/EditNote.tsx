@@ -65,7 +65,7 @@ class EditNote extends React.Component<IEditNoteProps, IEditNoteState> {
                                     tooltip="List outdent">format_indent_decrease</IconButton>
                     </ToolbarGroup>
                 </Toolbar>
-                <Editor editorState={this.state.editorState} onChange={this.handleChange}
+                <Editor editorState={this.state.editorState} onChange={this.handleChange} onTab={this.handleTab}
                         handleKeyCommand={this.handleKeyCommand}/>
             </div>
         );
@@ -94,6 +94,12 @@ class EditNote extends React.Component<IEditNoteProps, IEditNoteState> {
 
     private handleChange = (editorState: EditorState): void => {
         this.updateState(editorState);
+    };
+
+    private handleTab = (ev: React.KeyboardEvent<{}>): void => {
+        const newState: EditorState = RichUtils.onTab(ev, this.state.editorState, 2);
+
+        this.updateState(newState);
     };
 
     private updateState(editorState: EditorState): void {
