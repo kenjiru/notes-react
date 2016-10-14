@@ -11,6 +11,15 @@ import NoteUtil from "../../utils/NoteUtil";
 import "./EditNote.less";
 
 class EditNote extends React.Component<IEditNoteProps, IEditNoteState> {
+    private styleMap: Object = {
+        "STRIKETHROUGH": {
+            textDecoration: "line-through",
+        },
+        "HIGHLIGHT": {
+            backgroundColor: "yellow"
+        }
+    };
+
     constructor(props: IEditNoteProps) {
         super(props);
 
@@ -46,9 +55,10 @@ class EditNote extends React.Component<IEditNoteProps, IEditNoteState> {
                         <IconButton iconClassName="material-icons" tooltip="Italic"
                                     onClick={() => this.toggleInlineStyle("ITALIC")}>format_italic</IconButton>
                         <IconButton iconClassName="material-icons" tooltip="Strike through"
-                                    onClick={() => this.toggleInlineStyle("STRIKE")}>format_strikethrough</IconButton>
+                                    onClick={() => this.toggleInlineStyle("STRIKETHROUGH")}>
+                            format_strikethrough</IconButton>
                         <IconButton iconClassName="material-icons" tooltip="Highlight"
-                                    onClick={() => this.toggleInlineStyle("STRIKE")}>highlight</IconButton>
+                                    onClick={() => this.toggleInlineStyle("HIGHLIGHT")}>highlight</IconButton>
                         <IconButton iconClassName="material-icons" tooltip="Fixed width"
                                     onClick={() => this.toggleInlineStyle("CODE")}>title</IconButton>
 
@@ -65,8 +75,8 @@ class EditNote extends React.Component<IEditNoteProps, IEditNoteState> {
                                     tooltip="List outdent">format_indent_decrease</IconButton>
                     </ToolbarGroup>
                 </Toolbar>
-                <Editor editorState={this.state.editorState} onChange={this.handleChange} onTab={this.handleTab}
-                        handleKeyCommand={this.handleKeyCommand}/>
+                <Editor customStyleMap={this.styleMap} editorState={this.state.editorState}
+                        onChange={this.handleChange} onTab={this.handleTab} handleKeyCommand={this.handleKeyCommand}/>
             </div>
         );
     }
