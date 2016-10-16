@@ -17,6 +17,7 @@ var config = {
             "material-design-icons"]
     },
     output: {
+        publicPath: "/",
         path: path.join(__dirname, "/dist"),
         filename: "[name].js?[hash]"
     },
@@ -94,7 +95,7 @@ var config = {
         })
     ],
     devServer: {
-        contentBase: "./src",
+        contentBase: "./",
         hot: true
     }
 };
