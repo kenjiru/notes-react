@@ -1,14 +1,12 @@
 import * as _ from "lodash";
 import * as React from "react";
 import {connect} from "react-redux";
-import {Toolbar, ToolbarGroup, IconButton} from "material-ui";
 import {Editor, EditorState, ContentState, RichUtils} from "draft-js";
 import {stateFromHTML} from "draft-js-import-html";
 
 import {IStore, INote} from "../../model/store";
 import NoteUtil from "../../utils/NoteUtil";
-
-import "./EditNote.less";
+import EditToolbar from "./EditToolbar";
 
 class EditNote extends React.Component<IEditNoteProps, IEditNoteState> {
     private styleMap: Object = {
@@ -48,33 +46,7 @@ class EditNote extends React.Component<IEditNoteProps, IEditNoteState> {
     public render(): React.ReactElement<any> {
         return (
             <div className="edit-note">
-                <Toolbar>
-                    <ToolbarGroup className="edit-toolbar" firstChild={true}>
-                        <IconButton iconClassName="material-icons" tooltip="Bold"
-                                    onClick={() => this.toggleInlineStyle("BOLD")}>format_bold</IconButton>
-                        <IconButton iconClassName="material-icons" tooltip="Italic"
-                                    onClick={() => this.toggleInlineStyle("ITALIC")}>format_italic</IconButton>
-                        <IconButton iconClassName="material-icons" tooltip="Strike through"
-                                    onClick={() => this.toggleInlineStyle("STRIKETHROUGH")}>
-                            format_strikethrough</IconButton>
-                        <IconButton iconClassName="material-icons" tooltip="Highlight"
-                                    onClick={() => this.toggleInlineStyle("HIGHLIGHT")}>highlight</IconButton>
-                        <IconButton iconClassName="material-icons" tooltip="Fixed width"
-                                    onClick={() => this.toggleInlineStyle("CODE")}>title</IconButton>
-
-                        <IconButton iconClassName="material-icons" tooltip="Unordered list"
-                                    onClick={() => this.toggleBlockStyle("unordered-list-item")}>format_list_bulleted
-                        </IconButton>
-                        <IconButton iconClassName="material-icons" tooltip="Ordered list"
-                                    onClick={() => this.toggleBlockStyle("ordered-list-item")}>format_list_numbered
-                        </IconButton>
-
-                        <IconButton iconClassName="material-icons"
-                                    tooltip="List indent">format_indent_increase</IconButton>
-                        <IconButton iconClassName="material-icons"
-                                    tooltip="List outdent">format_indent_decrease</IconButton>
-                    </ToolbarGroup>
-                </Toolbar>
+                <EditToolbar toggleInlineStyle={this.toggleInlineStyle} toggleBlockStyle={this.toggleBlockStyle}/>
                 <Editor customStyleMap={this.styleMap} editorState={this.state.editorState}
                         onChange={this.handleChange} onTab={this.handleTab} handleKeyCommand={this.handleKeyCommand}/>
             </div>
