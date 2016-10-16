@@ -4,6 +4,7 @@
   "dependencies": {
     "blob-util": "^1.2.1",
     "classnames": "^2.2.5",
+    "draft-convert": "^1.2.3",
     "draft-js": "^0.9.1",
     "draft-js-import-html": "^0.2.2",
     "dropbox": "^2.3.0",
