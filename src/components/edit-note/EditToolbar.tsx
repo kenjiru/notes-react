@@ -34,6 +34,9 @@ class EditToolbar extends React.Component<IEditToolbarProps, IEditToolbarState> 
                                     tooltip="List indent">format_indent_increase</IconButton>
                         <IconButton iconClassName="material-icons"
                                     tooltip="List outdent">format_indent_decrease</IconButton>
+
+                        <IconButton iconClassName="material-icons" tooltip="Export to Note"
+                                    onClick={this.props.exportToHtml}>import_export</IconButton>
                     </ToolbarGroup>
                 </Toolbar>
             </div>
@@ -44,8 +47,10 @@ class EditToolbar extends React.Component<IEditToolbarProps, IEditToolbarState> 
 interface IEditToolbarProps {
     toggleInlineStyle: (command: string) => void;
     toggleBlockStyle: (command: string) => void;
+    exportToHtml: () => void;
 }
 
-interface IEditToolbarState {}
+interface IEditToolbarState {
+}
 
 export default EditToolbar;

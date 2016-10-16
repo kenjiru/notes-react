@@ -6,6 +6,7 @@ import {stateFromHTML} from "draft-js-import-html";
 
 import {IStore, INote} from "../../model/store";
 import NoteUtil from "../../utils/NoteUtil";
+import EditorUtil from "../../utils/EditorUtil";
 import EditToolbar from "./EditToolbar";
 
 class EditNote extends React.Component<IEditNoteProps, IEditNoteState> {
@@ -46,12 +47,19 @@ class EditNote extends React.Component<IEditNoteProps, IEditNoteState> {
     public render(): React.ReactElement<any> {
         return (
             <div className="edit-note">
-                <EditToolbar toggleInlineStyle={this.toggleInlineStyle} toggleBlockStyle={this.toggleBlockStyle}/>
+                <EditToolbar toggleInlineStyle={this.toggleInlineStyle} toggleBlockStyle={this.toggleBlockStyle}
+                             exportToHtml={this.exportToHtml}/>
                 <Editor customStyleMap={this.styleMap} editorState={this.state.editorState}
                         onChange={this.handleChange} onTab={this.handleTab} handleKeyCommand={this.handleKeyCommand}/>
             </div>
         );
     }
+
+    private exportToHtml = (): void => {
+        let html: string = EditorUtil.convertToHtml(this.state.editorState.getCurrentContent());
+
+        console.log(html);
+    };
 
     private toggleInlineStyle = (style: string): void => {
         const newState: EditorState = RichUtils.toggleInlineStyle(this.state.editorState, style);
