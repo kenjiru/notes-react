@@ -5,8 +5,12 @@ import {Editor, EditorState, ContentState, RichUtils} from "draft-js";
 import {stateFromHTML} from "draft-js-import-html";
 
 import {IStore, INote} from "../../model/store";
+import {updateNote} from "../../model/actions";
+
 import NoteUtil from "../../utils/NoteUtil";
 import EditorUtil from "../../utils/EditorUtil";
+import {IDispatchFunction} from "../../utils/ActionUtil";
+
 import EditToolbar from "./EditToolbar";
 
 class EditNote extends React.Component<IEditNoteProps, IEditNoteState> {
@@ -96,6 +100,25 @@ class EditNote extends React.Component<IEditNoteProps, IEditNoteState> {
         this.setState({
             editorState
         });
+
+        if (this.didContentChange(editorState)) {
+            this.updateNote(editorState.getCurrentContent());
+        }
+    }
+
+    private updateNote(contentState: ContentState): void {
+        let content: string = EditorUtil.convertToHtml(contentState);
+
+        let updatedNote: INote = _.merge({}, this.props.note, {
+            content,
+            title: NoteUtil.getTitle(content)
+        });
+
+        this.props.dispatch(updateNote(updatedNote));
+    }
+
+    private didContentChange(editorState: EditorState): boolean {
+        return this.state.editorState.getCurrentContent() !== editorState.getCurrentContent();
     }
 }
 
@@ -104,6 +127,7 @@ interface IEditNoteProps {
         noteId: string;
     };
     note?: INote;
+    dispatch?: IDispatchFunction;
 }
 
 interface IEditNoteState {

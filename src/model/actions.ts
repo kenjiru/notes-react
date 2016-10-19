@@ -86,3 +86,13 @@ export function persistState(): IActionCallback {
         return dispatch(createAction(PERSIST_STATE));
     };
 }
+
+export const UPDATE_NOTE: string = "UPDATE_NOTE";
+export function updateNote(note: INote): IActionCallback {
+    return (dispatch: IDispatchFunction): Promise<any> => {
+        console.log("updateNote");
+        dispatch(createAction(UPDATE_NOTE, note));
+
+        return dispatch(persistState());
+    };
+}

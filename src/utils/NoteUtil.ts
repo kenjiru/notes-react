@@ -26,6 +26,14 @@ class NoteUtil {
         "list-item": "li"
     };
 
+    public static getTitle(noteContent: string): string {
+        let matches: string[] = noteContent.match(/^(.*)[\r\n]/);
+
+        if (matches !== null) {
+            return matches[1];
+        }
+    }
+
     public static getText(note: INote): string {
         let tagRe: RegExp = /(<([^>]+)>)/ig;
 
