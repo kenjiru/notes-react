@@ -49,6 +49,10 @@ function local(store: ILocal = defaultLocal, action: IAction): ILocal {
             });
 
         case RESTORE_STATE:
+            if (_.isNil(action.payload)) {
+                return store;
+            }
+
             return action.payload;
     }
 

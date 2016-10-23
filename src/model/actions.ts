@@ -68,7 +68,7 @@ export function loadNotes(): IActionCallback {
 
 export const RESTORE_STATE: string = "RESTORE_STATE";
 export function restoreState(): IAction {
-    let newState: IStore = storage.get("store") || {};
+    let newState: IStore = storage.get("store");
 
     console.log("restoreState", newState);
     return createAction(RESTORE_STATE, newState);
