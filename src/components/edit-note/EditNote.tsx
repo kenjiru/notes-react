@@ -1,6 +1,7 @@
 import * as _ from "lodash";
 import * as React from "react";
 import {connect} from "react-redux";
+import * as moment from "moment";
 import {Editor, EditorState, ContentState, RichUtils} from "draft-js";
 import {stateFromHTML} from "draft-js-import-html";
 
@@ -111,7 +112,8 @@ class EditNote extends React.Component<IEditNoteProps, IEditNoteState> {
 
         let updatedNote: INote = _.merge({}, this.props.note, {
             content,
-            title: NoteUtil.getTitle(content)
+            title: NoteUtil.getTitle(content),
+            lastChanged: moment().format()
         });
 
         this.props.dispatch(updateNote(updatedNote));
