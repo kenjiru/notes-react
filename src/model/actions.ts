@@ -1,3 +1,4 @@
+import * as moment from "moment";
 import * as Dropbox from "dropbox";
 import * as storage from "store";
 
@@ -49,6 +50,7 @@ export function revokeAccess(): IActionCallback {
 }
 
 export const DROPBOX_SET_NOTES: string = "DROPBOX_SET_NOTES";
+export const DROPBOX_SET_LAST_SYNCED: string = "DROPBOX_SET_LAST_SYNCED";
 export function loadNotes(): IActionCallback {
     return (dispatch: IDispatchFunction, getState: IGetStateFunction): Promise<any> => {
         let dropboxUtil: DropboxUtil = new DropboxUtil(CLIENT_ID, getState().dropbox.accessToken);
@@ -59,6 +61,10 @@ export function loadNotes(): IActionCallback {
 
             return dropboxUtil.readNotes(manifest).then((notes: INote[]) => {
                 console.log("readNotes", notes);
+
+                let lastSynced: string = moment().format();
+
+                dispatch(createAction(DROPBOX_SET_LAST_SYNCED, lastSynced));
                 dispatch(createAction(DROPBOX_SET_NOTES, notes));
                 dispatch(persistState());
             });

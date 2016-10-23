@@ -12,6 +12,7 @@ export interface ILocal {
 }
 
 export interface IDropbox {
+    lastSynced?: string;
     accessToken?: string;
     user?: IUser;
     notes?: INote[];
