@@ -26,5 +26,5 @@ interface IViewNoteProps {
 interface IViewNoteState {}
 
 export default connect((state: IStore, props: IViewNoteProps) : IViewNoteProps=> ({
-    note: _.find(state.notes, {id: props.params.noteId})
+    note: _.find(state.local.notes, {id: props.params.noteId})
 }))(ViewNote);

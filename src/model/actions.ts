@@ -19,7 +19,7 @@ export function getCurrentAccount(): IActionCallback {
     return (dispatch: IDispatchFunction, getState: IGetStateFunction): Promise<any> => {
         let dropbox: any = new Dropbox({
             clientId: CLIENT_ID,
-            accessToken: getState().accessToken
+            accessToken: getState().dropbox.accessToken
         });
 
         return dropbox.usersGetCurrentAccount().then((result) => {
@@ -36,7 +36,7 @@ export function revokeAccess(): IActionCallback {
     return (dispatch: IDispatchFunction, getState: IGetStateFunction): Promise<any> => {
         let dropbox: any = new Dropbox({
             clientId: CLIENT_ID,
-            accessToken: getState().accessToken
+            accessToken: getState().dropbox.accessToken
         });
 
         return dropbox.authTokenRevoke().then((result) => {
@@ -51,8 +51,8 @@ export function revokeAccess(): IActionCallback {
 export const DROPBOX_SET_NOTES: string = "DROPBOX_SET_NOTES";
 export function loadNotes(): IActionCallback {
     return (dispatch: IDispatchFunction, getState: IGetStateFunction): Promise<any> => {
-        let dropboxUtil: DropboxUtil = new DropboxUtil(CLIENT_ID, getState().accessToken);
-        console.log("loadNotes", getState().accessToken);
+        let dropboxUtil: DropboxUtil = new DropboxUtil(CLIENT_ID, getState().dropbox.accessToken);
+        console.log("loadNotes", getState().dropbox.accessToken);
 
         return dropboxUtil.readManifest().then((manifest: IManifest) => {
             console.log("readManifest", manifest);
@@ -79,7 +79,7 @@ export function persistState(): IActionCallback {
     return (dispatch: IDispatchFunction, getState: IGetStateFunction): Promise<any> => {
         storage.set("store", getState());
 
-        console.log("persistState");
+        console.log("persistState", getState());
         return dispatch(createAction(PERSIST_STATE));
     };
 }

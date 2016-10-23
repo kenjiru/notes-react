@@ -137,5 +137,5 @@ interface IEditNoteState {
 }
 
 export default connect((state: IStore, props: IEditNoteProps): IEditNoteProps => ({
-    note: _.find(state.notes, {id: props.params.noteId})
+    note: _.find(state.local.notes, {id: props.params.noteId})
 }))(EditNote);

@@ -52,5 +52,5 @@ interface IAppMenuState {
 }
 
 export default connect((store: IStore): IAppMenuProps => ({
-    user: store.accessToken && store.user ? store.user : null
+    user: store.dropbox.accessToken && store.dropbox.user ? store.dropbox.user : null
 }))(AppMenu);

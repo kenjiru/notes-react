@@ -81,5 +81,5 @@ interface IDropboxAuthState {
 }
 
 export default connect((store: IStore): IDropboxAuthProps => ({
-    user: store.user
+    user: store.dropbox.user
 }))(DropboxAuth);

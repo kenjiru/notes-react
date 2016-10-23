@@ -1,8 +1,17 @@
 import { createStore, applyMiddleware } from "redux";
 import thunk from "redux-thunk";
-import { mainReducer } from "./reducers";
+import mainReducer from "./reducers";
 
 export interface IStore {
+    local: ILocal;
+    dropbox: IDropbox;
+}
+
+export interface ILocal {
+    notes?: INote[];
+}
+
+export interface IDropbox {
     accessToken?: string;
     user?: IUser;
     notes?: INote[];

@@ -106,5 +106,5 @@ interface IListNotesState {
 }
 
 export default connect((state: IStore) => ({
-    notes: state.notes
+    notes: state.local.notes || []
 }))(NoteList);

@@ -1,17 +1,17 @@
 import * as _ from "lodash";
-import {IStore, INote} from "./store";
+import {IStore, INote, ILocal, IDropbox} from "./store";
 import {
     DROPBOX_SET_CURRENT_ACCOUNT, DROPBOX_SET_ACCESS_TOKEN,
     DROPBOX_SET_NOTES, RESTORE_STATE, UPDATE_NOTE
 } from "./actions";
 import {IAction} from "../utils/ActionUtil";
+import {combineReducers} from "redux";
 
-let defaultStore: IStore = {
+let defaultDropbox: IDropbox = {
     notes: []
 };
 
-// FIXME Investigate what's the best approach for setting the state
-export function mainReducer(store: IStore = defaultStore, action: IAction): IStore {
+function dropbox(store: IDropbox = defaultDropbox, action: IAction): IDropbox {
     switch (action.type) {
         case DROPBOX_SET_ACCESS_TOKEN:
             return _.assign({}, store, {
@@ -27,7 +27,17 @@ export function mainReducer(store: IStore = defaultStore, action: IAction): ISto
             return _.assign({}, store, {
                 notes: action.payload
             });
+    }
 
+    return store;
+}
+
+let defaultLocal: IDropbox = {
+    notes: []
+};
+
+function local(store: ILocal = defaultLocal, action: IAction): ILocal {
+    switch (action.type) {
         case UPDATE_NOTE:
             let notes: INote[] = _.clone(store.notes);
             let updatedNoteIndex: number = _.findIndex(notes, {id: action.payload.id});
@@ -44,3 +54,5 @@ export function mainReducer(store: IStore = defaultStore, action: IAction): ISto
 
     return store;
 }
+
+export default combineReducers({local, dropbox});
