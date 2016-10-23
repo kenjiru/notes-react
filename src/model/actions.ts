@@ -1,4 +1,3 @@
-import * as _ from "lodash";
 import * as Dropbox from "dropbox";
 import * as storage from "store";
 
@@ -49,7 +48,6 @@ export function revokeAccess(): IActionCallback {
     };
 }
 
-export const DROPBOX_SET_MANIFEST: string = "DROPBOX_SET_MANIFEST";
 export const DROPBOX_SET_NOTES: string = "DROPBOX_SET_NOTES";
 export function loadNotes(): IActionCallback {
     return (dispatch: IDispatchFunction, getState: IGetStateFunction): Promise<any> => {
@@ -58,7 +56,6 @@ export function loadNotes(): IActionCallback {
 
         return dropboxUtil.readManifest().then((manifest: IManifest) => {
             console.log("readManifest", manifest);
-            dispatch(createAction(DROPBOX_SET_MANIFEST, manifest));
 
             return dropboxUtil.readNotes(manifest).then((notes: INote[]) => {
                 console.log("readNotes", notes);

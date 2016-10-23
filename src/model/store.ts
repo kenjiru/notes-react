@@ -5,7 +5,6 @@ import { mainReducer } from "./reducers";
 export interface IStore {
     accessToken?: string;
     user?: IUser;
-    manifest?: IManifest;
     notes?: INote[];
 }
 
