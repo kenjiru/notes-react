@@ -1,12 +1,13 @@
 import * as _ from "lodash";
 import * as Dropbox from "dropbox";
 
-import {IManifest, INote, IManifestNote} from "../model/store";
+import {IManifest, INote, IManifestNote, ILock} from "../model/store";
 import {CLIENT_ID} from "../model/actions";
 
 import FileUtil from "./FileUtil";
 import ManifestUtil from "./ManifestUtil";
 import NoteUtil from "./NoteUtil";
+import LockUtil from "./LockUtil";
 
 class DropboxUtil {
     private dropbox: any;
@@ -22,6 +23,15 @@ class DropboxUtil {
             clientId: this.clientId,
             accessToken: this.accessToken
         });
+    }
+
+    public readLock(): Promise<ILock> {
+        return this.dropbox.filesDownload({
+            path: "/lock"
+        })
+            .then(result => result.fileBlob)
+            .then(FileUtil.blobToObject)
+            .then(LockUtil.convertLock);
     }
 
     public readManifest(): Promise<IManifest> {

@@ -41,6 +41,14 @@ export interface IManifestNote {
     rev: number;
 }
 
+export interface ILock {
+    transactionId: string;
+    clientId: string;
+    renewCount: number;
+    lockExpirationDuration: string;
+    revision: number;
+}
+
 const store: any = applyMiddleware(thunk)(createStore)(mainReducer);
 
 export default store;

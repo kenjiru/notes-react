@@ -2,7 +2,7 @@ import * as moment from "moment";
 import * as Dropbox from "dropbox";
 import * as storage from "store";
 
-import {IStore, IManifest, INote} from "./store";
+import {IStore, IManifest, INote, ILock} from "./store";
 import {IAction, IActionCallback, IDispatchFunction, IGetStateFunction, createAction} from "../utils/ActionUtil";
 import DropboxUtil from "../utils/DropboxUtil";
 import SyncUtil from "../utils/SyncUtil";
@@ -49,6 +49,16 @@ export function revokeAccess(): IActionCallback {
             dispatch(createAction(DROPBOX_SET_CURRENT_ACCOUNT, null))
         });
     };
+}
+
+export function startSync(): IActionCallback {
+    return (dispatch: IDispatchFunction, getState: IGetStateFunction): Promise<any> => {
+        let dropboxUtil: DropboxUtil = new DropboxUtil(CLIENT_ID, getState().dropbox.accessToken);
+
+        return dropboxUtil.readLock().then((lock: ILock) => {
+            console.log("readLock", lock);
+        });
+    }
 }
 
 export const DROPBOX_SET_NOTES: string = "DROPBOX_SET_NOTES";

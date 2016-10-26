@@ -5,7 +5,7 @@ import {IconButton, IconMenu, MenuItem} from "material-ui";
 import MoreVertIcon from "material-ui/svg-icons/navigation/more-vert";
 
 import {IStore, IUser} from "../../model/store";
-import {loadNotes} from "../../model/actions";
+import {loadNotes, startSync} from "../../model/actions";
 import DropboxAuth from "../dropbox-auth/DropboxAuth";
 
 class AppMenu extends React.Component<IAppMenuProps, IAppMenuState> {
@@ -35,6 +35,7 @@ class AppMenu extends React.Component<IAppMenuProps, IAppMenuState> {
     }
 
     handleReload = (): void => {
+        this.props.dispatch(startSync());
         this.props.dispatch(loadNotes());
     };
 
