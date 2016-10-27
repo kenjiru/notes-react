@@ -51,19 +51,47 @@ export function revokeAccess(): IActionCallback {
     };
 }
 
+let numSyncRetries: number = 0;
+const NUM_RETRIES: number = 4;
+
 export function startSync(): IActionCallback {
     return (dispatch: IDispatchFunction, getState: IGetStateFunction): Promise<any> => {
         let dropboxUtil: DropboxUtil = new DropboxUtil(CLIENT_ID, getState().dropbox.accessToken);
 
-        return dropboxUtil.readLock().then((lock: ILock) => {
-            console.log("readLock", lock);
+        return dropboxUtil.hasLock().then((lockExists: boolean) => {
+            if (lockExists) {
+                if (numSyncRetries < NUM_RETRIES) {
+                    ++numSyncRetries;
+                    return new Promise((resolve) => {
+                        setTimeout(() => resolve(dispatch(startSync())), 2000);
+                    })
+                } else {
+                    console.log(`hasLock: I gave up after ${NUM_RETRIES} tries`);
+                    numSyncRetries = 0;
+                }
+            } else {
+                numSyncRetries = 0;
+                return dispatch(syncNotes());
+            }
         });
     }
 }
 
+function syncNotes(): IActionCallback {
+    return (dispatch: IDispatchFunction, getState: IGetStateFunction): Promise<any> => {
+        let dropboxUtil: DropboxUtil = new DropboxUtil(CLIENT_ID, getState().dropbox.accessToken);
+
+        return dropboxUtil.setLock().then(() => {
+            return dispatch(loadNotes()).then(() => {
+                return dropboxUtil.removeLock();
+            });
+        });
+    };
+}
+
 export const DROPBOX_SET_NOTES: string = "DROPBOX_SET_NOTES";
 export const DROPBOX_SET_LAST_SYNCED: string = "DROPBOX_SET_LAST_SYNCED";
-export function loadNotes(): IActionCallback {
+function loadNotes(): IActionCallback {
     return (dispatch: IDispatchFunction, getState: IGetStateFunction): Promise<any> => {
         let dropboxUtil: DropboxUtil = new DropboxUtil(CLIENT_ID, getState().dropbox.accessToken);
         console.log("loadNotes", getState().dropbox.accessToken);
@@ -74,15 +102,17 @@ export function loadNotes(): IActionCallback {
             return dropboxUtil.readNotes(manifest).then((notes: INote[]) => {
                 console.log("readNotes", notes);
 
-                dispatch(createAction(DROPBOX_SET_NOTES, notes));
-                dispatch(syncState());
+                return Promise.all([
+                    dispatch(createAction(DROPBOX_SET_NOTES, notes)),
+                    dispatch(syncState())
+                ]);
             });
         });
     }
 }
 
 export const SET_NOTES: string = "SET_NOTES";
-export function syncState(): IActionCallback {
+function syncState(): IActionCallback {
     return (dispatch: IDispatchFunction, getState: IGetStateFunction): Promise<any> => {
         let syncResult: ISyncResult = SyncUtil.syncNotes(getState());
         let localNotes: INote[] = _.unionBy(syncResult.newRemoteNotes, getState().local.notes, "id");

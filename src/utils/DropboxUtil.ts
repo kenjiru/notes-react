@@ -25,6 +25,12 @@ class DropboxUtil {
         });
     }
 
+    public hasLock(): Promise<boolean> {
+        return this.dropbox.filesGetMetadata({
+            path: "/lock"
+        }).then(result => true, error => false);
+    }
+
     public readLock(): Promise<ILock> {
         return this.dropbox.filesDownload({
             path: "/lock"
@@ -32,6 +38,19 @@ class DropboxUtil {
             .then(result => result.fileBlob)
             .then(FileUtil.blobToObject)
             .then(LockUtil.convertLock);
+    }
+
+    public setLock(): Promise<any> {
+        return this.dropbox.filesUpload({
+            path: "/lock",
+            contents: LockUtil.newLockContents("temp-lock-id", 3)
+        });
+    }
+
+    public removeLock(): Promise<any> {
+        return this.dropbox.filesDelete({
+            path: "/lock"
+        });
     }
 
     public readManifest(): Promise<IManifest> {
