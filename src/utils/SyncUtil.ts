@@ -4,19 +4,19 @@ import {INote, IStore} from "../model/store";
 
 class SyncUtil {
     public static syncNotes(state: IStore): ISyncResult {
-        let lastSynced: string = state.dropbox.lastSynced;
+        let lastSyncDate: string = state.dropbox.lastSyncDate;
         let newLocalNotes: INote[] = [];
         let newRemoteNotes: INote[] = [];
 
         _.each(state.local.notes, (localNote: INote): void => {
             let remoteNote: INote = SyncUtil.findNote(state.dropbox.notes, localNote.id);
 
-            if (SyncUtil.allNotesAreNewer([localNote, remoteNote], lastSynced)) {
+            if (SyncUtil.allNotesAreNewer([localNote, remoteNote], lastSyncDate)) {
                 // TODO Better way to decide which note to pick
                 newLocalNotes.push(localNote);
-            } else if (SyncUtil.noteIsNewer(localNote, lastSynced)) {
+            } else if (SyncUtil.noteIsNewer(localNote, lastSyncDate)) {
                 newLocalNotes.push(localNote);
-            } else if (SyncUtil.noteIsNewer(remoteNote, lastSynced)) {
+            } else if (SyncUtil.noteIsNewer(remoteNote, lastSyncDate)) {
                 newRemoteNotes.push(remoteNote);
             }
         });
@@ -39,12 +39,12 @@ class SyncUtil {
         return _.find(notes, (note: INote): boolean => note.id === noteId);
     }
 
-    private static allNotesAreNewer(notes: INote[], lastSynced: string): boolean {
-        return _.some(notes, (note: INote) => SyncUtil.noteIsNewer(note, lastSynced) === false) === false;
+    private static allNotesAreNewer(notes: INote[], lastSyncedDate: string): boolean {
+        return _.some(notes, (note: INote) => SyncUtil.noteIsNewer(note, lastSyncedDate) === false) === false;
     }
 
-    private static noteIsNewer(note: INote, lastSynced: string): boolean {
-        return _.isNil(note) === false && moment(note.lastChanged).isAfter(lastSynced);
+    private static noteIsNewer(note: INote, lastSyncedDate: string): boolean {
+        return _.isNil(note) === false && moment(note.lastChanged).isAfter(lastSyncedDate);
     }
 }
 

@@ -90,7 +90,7 @@ function syncNotes(): IActionCallback {
 }
 
 export const DROPBOX_SET_NOTES: string = "DROPBOX_SET_NOTES";
-export const DROPBOX_SET_LAST_SYNCED: string = "DROPBOX_SET_LAST_SYNCED";
+export const DROPBOX_SET_LAST_SYNC: string = "DROPBOX_SET_LAST_SYNC";
 function loadNotes(): IActionCallback {
     return (dispatch: IDispatchFunction, getState: IGetStateFunction): Promise<any> => {
         let dropboxUtil: DropboxUtil = new DropboxUtil(CLIENT_ID, getState().dropbox.accessToken);
@@ -103,6 +103,10 @@ function loadNotes(): IActionCallback {
                 console.log("readNotes", notes);
 
                 return Promise.all([
+                    dispatch(createAction(DROPBOX_SET_LAST_SYNC, {
+                        lastSyncDate: moment().format(),
+                        lastSyncRevision: manifest.revision
+                    })),
                     dispatch(createAction(DROPBOX_SET_NOTES, notes)),
                     dispatch(syncState())
                 ]);
@@ -116,12 +120,9 @@ function syncState(): IActionCallback {
     return (dispatch: IDispatchFunction, getState: IGetStateFunction): Promise<any> => {
         let syncResult: ISyncResult = SyncUtil.syncNotes(getState());
         let localNotes: INote[] = _.unionBy(syncResult.newRemoteNotes, getState().local.notes, "id");
-        let lastSynced: string = moment().format();
-
         console.log("syncState", syncResult);
 
         return Promise.all([
-            dispatch(createAction(DROPBOX_SET_LAST_SYNCED, lastSynced)),
             dispatch(createAction(SET_NOTES, localNotes)),
             dispatch(persistState())
         ]);

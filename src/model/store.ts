@@ -12,7 +12,8 @@ export interface ILocal {
 }
 
 export interface IDropbox {
-    lastSynced?: string;
+    lastSyncDate?: string;
+    lastSyncRevision?: number;
     accessToken?: string;
     user?: IUser;
     notes?: INote[];
@@ -31,7 +32,7 @@ export interface INote {
 }
 
 export interface IManifest {
-    revision: string;
+    revision: number;
     serverId: string;
     notes: IManifestNote[];
 }
