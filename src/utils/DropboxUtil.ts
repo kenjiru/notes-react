@@ -54,8 +54,18 @@ class DropboxUtil {
     }
 
     public readManifest(): Promise<IManifest> {
+        return this.readManifestFile("/manifest.xml");
+    }
+
+    public readManifestFor(revision: number): Promise<IManifest> {
+        let manifestPath: string = this.getManifestPath(revision);
+
+        return this.readManifestFile(manifestPath);
+    }
+
+    private readManifestFile(filePath: string): Promise<IManifest> {
         return this.dropbox.filesDownload({
-            path: "/manifest.xml"
+            path: filePath
         })
             .then(result => result.fileBlob)
             .then(FileUtil.blobToObject)
@@ -73,6 +83,12 @@ class DropboxUtil {
         );
 
         return Promise.all(promises);
+    }
+
+    private getManifestPath(revision: number): string {
+        let parentFolder: number = Math.floor(revision / 100);
+
+        return `/${parentFolder.toString()}/${revision.toString()}/manifest.xml`;
     }
 
     private getNotePath(note: IManifestNote): string {
