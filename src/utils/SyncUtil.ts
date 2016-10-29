@@ -1,56 +1,71 @@
 import * as _ from "lodash";
 import * as moment from "moment";
-import {INote, IStore} from "../model/store";
+import {INote, IManifestNote, IManifest} from "../model/store";
 
 class SyncUtil {
-    public static syncNotes(state: IStore): ISyncResult {
-        let lastSyncDate: string = state.dropbox.lastSyncDate;
-        let newLocalNotes: INote[] = [];
-        let newRemoteNotes: INote[] = [];
+    public static syncNotes(localNotes: INote[], remoteNotes: INote[], baseManifest: IManifest,
+                            lastSyncDate: string): INote[] {
+        let lastSyncRevision: number = baseManifest.revision;
+        let modifiedLocally: INote[] = [];
+        let modifiedRemotely: INote[] = [];
+        let deletedLocally: INote[] = [];
+        let deletedRemotely: INote[] = [];
 
-        _.each(state.local.notes, (localNote: INote): void => {
-            let remoteNote: INote = SyncUtil.findNote(state.dropbox.notes, localNote.id);
+        console.log("lastSyncDate", lastSyncDate);
 
-            if (SyncUtil.allNotesAreNewer([localNote, remoteNote], lastSyncDate)) {
+        _.each(localNotes, (localNote: INote): void => {
+            let remoteNote: INote = SyncUtil.findNote(remoteNotes, localNote.id);
+
+            if (_.isNil(remoteNote) && localNote.rev <= lastSyncRevision) {
+                deletedRemotely.push(localNote);
+            } else if (SyncUtil.areAllNotesNewer([localNote, remoteNote], lastSyncDate)) {
                 // TODO Better way to decide which note to pick
-                newLocalNotes.push(localNote);
-            } else if (SyncUtil.noteIsNewer(localNote, lastSyncDate)) {
-                newLocalNotes.push(localNote);
-            } else if (SyncUtil.noteIsNewer(remoteNote, lastSyncDate)) {
-                newRemoteNotes.push(remoteNote);
+                modifiedLocally.push(localNote);
+            } else if (SyncUtil.isNoteNewer(remoteNote, lastSyncDate)) {
+                modifiedRemotely.push(remoteNote);
+            }
+
+            if (SyncUtil.isNoteNewer(localNote, lastSyncDate)) {
+                modifiedLocally.push(localNote);
             }
         });
 
-        _.each(state.dropbox.notes, (remoteNote: INote): void => {
-            let localNote: INote = SyncUtil.findNote(state.local.notes, remoteNote.id);
+        _.each(remoteNotes, (remoteNote: INote): void => {
+            let localNote: INote = SyncUtil.findNote(localNotes, remoteNote.id);
+            let baseNote: IManifestNote = SyncUtil.findManifestNote(baseManifest, remoteNote.id);
 
             if (_.isNil(localNote)) {
-                newRemoteNotes.push(remoteNote);
+                if (_.isNil(baseNote) === false && remoteNote.rev > lastSyncRevision) {
+                    deletedLocally.push(remoteNote);
+                } else {
+                    modifiedRemotely.push(remoteNote);
+                }
             }
         });
 
-        return {
-            newLocalNotes,
-            newRemoteNotes
-        };
+        console.log({modifiedLocally, deletedLocally, modifiedRemotely, deletedRemotely});
+
+        let deletedRemotelyOnly: INote[] = _.differenceBy(deletedRemotely, modifiedLocally);
+        let result: INote[] = _.differenceBy(localNotes, deletedRemotelyOnly, "id");
+
+        return _.unionBy(modifiedLocally, modifiedRemotely, result, "id");
+    }
+
+    private static findManifestNote(manifest: IManifest, noteId): IManifestNote {
+        return _.find(manifest.notes, (manifestNote: IManifestNote): boolean => manifestNote.id === noteId);
     }
 
     private static findNote(notes: INote[], noteId): INote {
         return _.find(notes, (note: INote): boolean => note.id === noteId);
     }
 
-    private static allNotesAreNewer(notes: INote[], lastSyncedDate: string): boolean {
-        return _.some(notes, (note: INote) => SyncUtil.noteIsNewer(note, lastSyncedDate) === false) === false;
+    private static areAllNotesNewer(notes: INote[], lastSyncedDate: string): boolean {
+        return _.some(notes, (note: INote) => SyncUtil.isNoteNewer(note, lastSyncedDate) === false) === false;
     }
 
-    private static noteIsNewer(note: INote, lastSyncedDate: string): boolean {
+    private static isNoteNewer(note: INote, lastSyncedDate: string): boolean {
         return _.isNil(note) === false && moment(note.lastChanged).isAfter(lastSyncedDate);
     }
-}
-
-export interface ISyncResult {
-    newLocalNotes: INote[];
-    newRemoteNotes: INote[];
 }
 
 export default SyncUtil;

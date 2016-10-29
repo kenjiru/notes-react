@@ -6,7 +6,6 @@ import {IStore, IManifest, INote, ILock} from "./store";
 import {IAction, IActionCallback, IDispatchFunction, IGetStateFunction, createAction} from "../utils/ActionUtil";
 import DropboxUtil from "../utils/DropboxUtil";
 import SyncUtil from "../utils/SyncUtil";
-import {ISyncResult} from "../utils/SyncUtil";
 
 export const CLIENT_ID: string = "17zzlf216nsykj9";
 
@@ -91,41 +90,35 @@ function syncNotes(): IActionCallback {
 
 export const DROPBOX_SET_NOTES: string = "DROPBOX_SET_NOTES";
 export const DROPBOX_SET_LAST_SYNC: string = "DROPBOX_SET_LAST_SYNC";
+export const SET_NOTES: string = "SET_NOTES";
 function loadNotes(): IActionCallback {
     return (dispatch: IDispatchFunction, getState: IGetStateFunction): Promise<any> => {
         let dropboxUtil: DropboxUtil = new DropboxUtil(CLIENT_ID, getState().dropbox.accessToken);
         console.log("loadNotes", getState().dropbox.accessToken);
 
-        return dropboxUtil.readManifest().then((manifest: IManifest) => {
+        return Promise.all([
+            dropboxUtil.readManifest(),
+            dropboxUtil.readManifestFor(getState().dropbox.lastSyncRevision || 0)
+        ]).then(([manifest, baseManifest]: IManifest[]) => {
             console.log("readManifest", manifest);
 
             return dropboxUtil.readNotes(manifest).then((notes: INote[]) => {
                 console.log("readNotes", notes);
+
+                let syncResult: INote[] = SyncUtil.syncNotes(getState().local.notes, notes, baseManifest,
+                    getState().dropbox.lastSyncDate);
+                console.log("syncState", syncResult);
 
                 return Promise.all([
                     dispatch(createAction(DROPBOX_SET_LAST_SYNC, {
                         lastSyncDate: moment().format(),
                         lastSyncRevision: manifest.revision
                     })),
-                    dispatch(createAction(DROPBOX_SET_NOTES, notes)),
-                    dispatch(syncState())
+                    dispatch(createAction(SET_NOTES, syncResult)),
+                    dispatch(persistState())
                 ]);
             });
         });
-    }
-}
-
-export const SET_NOTES: string = "SET_NOTES";
-function syncState(): IActionCallback {
-    return (dispatch: IDispatchFunction, getState: IGetStateFunction): Promise<any> => {
-        let syncResult: ISyncResult = SyncUtil.syncNotes(getState());
-        let localNotes: INote[] = _.unionBy(syncResult.newRemoteNotes, getState().local.notes, "id");
-        console.log("syncState", syncResult);
-
-        return Promise.all([
-            dispatch(createAction(SET_NOTES, localNotes)),
-            dispatch(persistState())
-        ]);
     }
 }
 
