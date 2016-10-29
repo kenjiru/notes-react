@@ -2,7 +2,7 @@ import * as moment from "moment";
 import * as Dropbox from "dropbox";
 import * as storage from "store";
 
-import {IStore, IManifest, INote, ILock} from "./store";
+import {IStore, IManifest, INote} from "./store";
 import {IAction, IActionCallback, IDispatchFunction, IGetStateFunction, createAction} from "../utils/ActionUtil";
 import DropboxUtil from "../utils/DropboxUtil";
 import SyncUtil from "../utils/SyncUtil";
@@ -76,7 +76,6 @@ export function startSync(): IActionCallback {
     }
 }
 
-export const DROPBOX_SET_NOTES: string = "DROPBOX_SET_NOTES";
 export const DROPBOX_SET_LAST_SYNC: string = "DROPBOX_SET_LAST_SYNC";
 export const SET_NOTES: string = "SET_NOTES";
 function syncNotes(): IActionCallback {

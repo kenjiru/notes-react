@@ -16,7 +16,6 @@ export interface IDropbox {
     lastSyncRevision?: number;
     accessToken?: string;
     user?: IUser;
-    notes?: INote[];
 }
 
 export interface IUser {

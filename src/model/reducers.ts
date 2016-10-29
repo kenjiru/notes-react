@@ -2,16 +2,12 @@ import * as _ from "lodash";
 import {INote, ILocal, IDropbox} from "./store";
 import {
     DROPBOX_SET_CURRENT_ACCOUNT, DROPBOX_SET_ACCESS_TOKEN,
-    DROPBOX_SET_NOTES, RESTORE_STATE, UPDATE_NOTE, DROPBOX_SET_LAST_SYNC, SET_NOTES
+    RESTORE_STATE, UPDATE_NOTE, DROPBOX_SET_LAST_SYNC, SET_NOTES
 } from "./actions";
 import {IAction} from "../utils/ActionUtil";
 import {combineReducers} from "redux";
 
-let defaultDropbox: IDropbox = {
-    notes: []
-};
-
-function dropbox(store: IDropbox = defaultDropbox, action: IAction): IDropbox {
+function dropbox(store: IDropbox = {}, action: IAction): IDropbox {
     switch (action.type) {
         case DROPBOX_SET_ACCESS_TOKEN:
             return _.assign({}, store, {
@@ -21,11 +17,6 @@ function dropbox(store: IDropbox = defaultDropbox, action: IAction): IDropbox {
         case DROPBOX_SET_CURRENT_ACCOUNT:
             return _.assign({}, store, {
                 user: action.payload
-            });
-
-        case DROPBOX_SET_NOTES:
-            return _.assign({}, store, {
-                notes: action.payload
             });
 
         case DROPBOX_SET_LAST_SYNC:
@@ -45,7 +36,7 @@ function dropbox(store: IDropbox = defaultDropbox, action: IAction): IDropbox {
     return store;
 }
 
-let defaultLocal: IDropbox = {
+let defaultLocal: ILocal = {
     notes: []
 };
 
