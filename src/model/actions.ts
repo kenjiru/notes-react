@@ -76,50 +76,50 @@ export function startSync(): IActionCallback {
     }
 }
 
+export const DROPBOX_SET_NOTES: string = "DROPBOX_SET_NOTES";
+export const DROPBOX_SET_LAST_SYNC: string = "DROPBOX_SET_LAST_SYNC";
+export const SET_NOTES: string = "SET_NOTES";
 function syncNotes(): IActionCallback {
     return (dispatch: IDispatchFunction, getState: IGetStateFunction): Promise<any> => {
-        let dropboxUtil: DropboxUtil = new DropboxUtil(CLIENT_ID, getState().dropbox.accessToken);
+        let state: IStore = getState();
+        let dropboxUtil: DropboxUtil = new DropboxUtil(CLIENT_ID, state.dropbox.accessToken);
 
         return dropboxUtil.setLock().then(() => {
-            return dispatch(loadNotes()).then(() => {
-                return dropboxUtil.removeLock();
-            });
+            return Promise.all([
+                dropboxUtil.readManifest(),
+                dropboxUtil.readManifestFor(state.dropbox.lastSyncRevision || 0)
+            ]).then(([manifest, baseManifest]: IManifest[]) => {
+                console.log("readManifest", manifest);
+
+                return dropboxUtil.readNotes(manifest).then((notes: INote[]) => {
+                    console.log("readNotes", notes);
+
+                    let syncResult: INote[] = SyncUtil.syncNotes(state.local.notes, notes, baseManifest,
+                        state.dropbox.lastSyncDate);
+                    console.log("syncState", syncResult);
+
+                    return Promise.all([
+                        dispatch(createAction(DROPBOX_SET_LAST_SYNC, {
+                            lastSyncDate: moment().format(),
+                            lastSyncRevision: manifest.revision
+                        })),
+                        dispatch(createAction(SET_NOTES, syncResult)),
+                        dispatch(persistState())
+                    ]);
+                });
+            }).then(() => dropboxUtil.removeLock(), () => dropboxUtil.removeLock());
         });
     };
 }
 
-export const DROPBOX_SET_NOTES: string = "DROPBOX_SET_NOTES";
-export const DROPBOX_SET_LAST_SYNC: string = "DROPBOX_SET_LAST_SYNC";
-export const SET_NOTES: string = "SET_NOTES";
-function loadNotes(): IActionCallback {
-    return (dispatch: IDispatchFunction, getState: IGetStateFunction): Promise<any> => {
-        let dropboxUtil: DropboxUtil = new DropboxUtil(CLIENT_ID, getState().dropbox.accessToken);
-        console.log("loadNotes", getState().dropbox.accessToken);
+export const UPDATE_NOTE: string = "UPDATE_NOTE";
+export function updateNote(note: INote): IActionCallback {
+    return (dispatch: IDispatchFunction): Promise<any> => {
+        console.log("updateNote", note);
+        dispatch(createAction(UPDATE_NOTE, note));
 
-        return Promise.all([
-            dropboxUtil.readManifest(),
-            dropboxUtil.readManifestFor(getState().dropbox.lastSyncRevision || 0)
-        ]).then(([manifest, baseManifest]: IManifest[]) => {
-            console.log("readManifest", manifest);
-
-            return dropboxUtil.readNotes(manifest).then((notes: INote[]) => {
-                console.log("readNotes", notes);
-
-                let syncResult: INote[] = SyncUtil.syncNotes(getState().local.notes, notes, baseManifest,
-                    getState().dropbox.lastSyncDate);
-                console.log("syncState", syncResult);
-
-                return Promise.all([
-                    dispatch(createAction(DROPBOX_SET_LAST_SYNC, {
-                        lastSyncDate: moment().format(),
-                        lastSyncRevision: manifest.revision
-                    })),
-                    dispatch(createAction(SET_NOTES, syncResult)),
-                    dispatch(persistState())
-                ]);
-            });
-        });
-    }
+        return dispatch(persistState());
+    };
 }
 
 export const RESTORE_STATE: string = "RESTORE_STATE";
@@ -137,15 +137,5 @@ export function persistState(): IActionCallback {
 
         console.log("persistState", getState());
         return dispatch(createAction(PERSIST_STATE));
-    };
-}
-
-export const UPDATE_NOTE: string = "UPDATE_NOTE";
-export function updateNote(note: INote): IActionCallback {
-    return (dispatch: IDispatchFunction): Promise<any> => {
-        console.log("updateNote");
-        dispatch(createAction(UPDATE_NOTE, note));
-
-        return dispatch(persistState());
     };
 }
