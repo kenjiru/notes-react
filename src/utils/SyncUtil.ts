@@ -4,7 +4,7 @@ import {INote, IManifestNote, IManifest} from "../model/store";
 
 class SyncUtil {
     public static syncNotes(localNotes: INote[], remoteNotes: INote[], baseManifest: IManifest,
-                            lastSyncDate: string): INote[] {
+                            lastSyncDate: string): ISyncResult {
         let lastSyncRevision: number = baseManifest.revision;
         let modifiedLocally: INote[] = [];
         let modifiedRemotely: INote[] = [];
@@ -46,9 +46,17 @@ class SyncUtil {
         console.log({modifiedLocally, deletedLocally, modifiedRemotely, deletedRemotely});
 
         let deletedRemotelyOnly: INote[] = _.differenceBy(deletedRemotely, modifiedLocally);
-        let result: INote[] = _.differenceBy(localNotes, deletedRemotelyOnly, "id");
+        let resultNotes: INote[] = _.differenceBy(localNotes, deletedRemotelyOnly, "id");
 
-        return _.unionBy(modifiedLocally, modifiedRemotely, result, "id");
+        resultNotes = _.unionBy(modifiedLocally, modifiedRemotely, resultNotes, "id");
+
+        let deletedLocallyOnly: INote[] = _.differenceBy(modifiedLocally, deletedRemotely);
+
+        return {
+            notes: resultNotes,
+            isModifiedLocally: deletedLocallyOnly.length > 0 || modifiedLocally.length > 0,
+            idModifiedRemotely: deletedRemotelyOnly.length > 0 || modifiedRemotely.length > 0
+        }
     }
 
     private static findManifestNote(manifest: IManifest, noteId): IManifestNote {
@@ -66,6 +74,12 @@ class SyncUtil {
     private static isNoteNewer(note: INote, lastSyncedDate: string): boolean {
         return _.isNil(note) === false && moment(note.lastChanged).isAfter(lastSyncedDate);
     }
+}
+
+export interface ISyncResult {
+    notes: INote[];
+    isModifiedLocally: boolean;
+    idModifiedRemotely: boolean;
 }
 
 export default SyncUtil;

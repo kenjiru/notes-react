@@ -6,6 +6,7 @@ import {IStore, IManifest, INote} from "./store";
 import {IAction, IActionCallback, IDispatchFunction, IGetStateFunction, createAction} from "../utils/ActionUtil";
 import DropboxUtil from "../utils/DropboxUtil";
 import SyncUtil from "../utils/SyncUtil";
+import {ISyncResult} from "../utils/SyncUtil";
 
 export const CLIENT_ID: string = "17zzlf216nsykj9";
 
@@ -93,19 +94,42 @@ function syncNotes(): IActionCallback {
                 return dropboxUtil.readNotes(manifest).then((notes: INote[]) => {
                     console.log("readNotes", notes);
 
-                    let syncedNotes: INote[] = SyncUtil.syncNotes(state.local.notes, notes, baseManifest,
+                    let syncResult: ISyncResult = SyncUtil.syncNotes(state.local.notes, notes, baseManifest,
                         state.dropbox.lastSyncDate);
-                    console.log("syncedNotes", syncedNotes);
+                    console.log("syncResult", syncResult);
 
-                    return Promise.all([
-                        dropboxUtil.saveNewRevision(syncedNotes, manifest.revision + 1, manifest.serverId),
-                        dispatch(createAction(DROPBOX_SET_LAST_SYNC, {
-                            lastSyncDate: moment().format(),
-                            lastSyncRevision: manifest.revision
-                        })),
-                        // dispatch(createAction(SET_NOTES, syncedNotes)),
-                        dispatch(persistState())
-                    ]);
+                    let latestRevision: number = manifest.revision;
+
+                    if (syncResult.isModifiedLocally) {
+                        latestRevision += 1;
+                    }
+
+                    let promises: Promise<any>[] = [];
+
+                    if (syncResult.idModifiedRemotely) {
+                        promises.push.apply(promises, [
+                            dispatch(createAction(SET_NOTES, syncResult.notes))
+                        ]);
+                    }
+
+                    if (syncResult.isModifiedLocally || syncResult.idModifiedRemotely) {
+                        promises.push(
+                            dispatch(createAction(DROPBOX_SET_LAST_SYNC, {
+                                lastSyncDate: moment().format(),
+                                lastSyncRevision: latestRevision
+                            })),
+                            dispatch(persistState())
+                        );
+                    }
+
+                    if (syncResult.isModifiedLocally) {
+                        return dropboxUtil.saveNewRevision(syncResult.notes, latestRevision, manifest.serverId)
+                            .then(() => {
+                                Promise.all(promises)
+                            });
+                    }
+
+                    return Promise.all(promises);
                 });
             }).then(() => dropboxUtil.removeLock(), () => dropboxUtil.removeLock());
         });
@@ -133,7 +157,7 @@ export function restoreState(): IAction {
 export const PERSIST_STATE: string = "PERSIST_STATE";
 export function persistState(): IActionCallback {
     return (dispatch: IDispatchFunction, getState: IGetStateFunction): Promise<any> => {
-        // storage.set("store", getState());
+        storage.set("store", getState());
 
         console.log("persistState", getState());
         return dispatch(createAction(PERSIST_STATE));
