@@ -35,7 +35,7 @@ class NoteUtil {
   <text xml:space="preserve"><note-content version="0.1">${note.content}</note-content></text>
   <last-change-date>${note.lastChanged}</last-change-date>
   <last-metadata-change-date>2016-10-29T20:31:17.3561690+02:00</last-metadata-change-date>
-  <create-date>2016-10-29T20:30:55.5365230+02:00</create-date>
+  <create-date>${note.createDate}</create-date>
   <cursor-position>0</cursor-position>
   <selection-bound-position>33</selection-bound-position>
   <width>450</width>
@@ -61,11 +61,12 @@ class NoteUtil {
         return note.content.replace(tagRe, "");
     }
 
-    public static convertToNote(note: IManifestNote, noteStr: string): INote {
+    public static convertToNote(manifestNote: IManifestNote, noteStr: string): INote {
         return {
-            id: note.id,
-            rev: note.rev,
+            id: manifestNote.id,
+            rev: manifestNote.rev,
             title: NoteUtil.getNodeValue(noteStr, "title"),
+            createDate: NoteUtil.getNodeValue(noteStr, "create-date"),
             lastChanged: NoteUtil.getNodeValue(noteStr, "last-change-date"),
             content: NoteUtil.getNodeValue(noteStr, "note-content")
         };

@@ -26,6 +26,7 @@ export interface INote {
     id: string;
     rev: number;
     title: string;
+    createDate: string;
     lastChanged: string;
     content: string;
 }
