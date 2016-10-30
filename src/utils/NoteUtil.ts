@@ -1,6 +1,8 @@
 import {INote, IManifestNote} from "../model/store";
 
 class NoteUtil {
+    public static CHANGED_LOCALLY_REVISION: number = Number.MAX_VALUE;
+
     private static nodeMap: Object = {
         "note-content": "",
         bold: "b",
@@ -25,6 +27,25 @@ class NoteUtil {
         "list": "ul",
         "list-item": "li"
     };
+
+    public static createNoteFile(note: INote): string {
+        return `<?xml version="1.0" encoding="utf-8"?>
+<note version="0.3" xmlns:link="http://beatniksoftware.com/tomboy/link" xmlns:size="http://beatniksoftware.com/tomboy/size" xmlns="http://beatniksoftware.com/tomboy">
+  <title>${note.title}</title>
+  <text xml:space="preserve"><note-content version="0.1">${note.content}</note-content></text>
+  <last-change-date>${note.lastChanged}</last-change-date>
+  <last-metadata-change-date>2016-10-29T20:31:17.3561690+02:00</last-metadata-change-date>
+  <create-date>2016-10-29T20:30:55.5365230+02:00</create-date>
+  <cursor-position>0</cursor-position>
+  <selection-bound-position>33</selection-bound-position>
+  <width>450</width>
+  <height>360</height>
+  <x>0</x>
+  <y>0</y>
+  <open-on-startup>False</open-on-startup>
+</note>
+`;
+    }
 
     public static getTitle(noteContent: string): string {
         let matches: string[] = noteContent.match(/^(.*)[\r\n]/);

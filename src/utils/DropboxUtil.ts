@@ -25,6 +25,62 @@ class DropboxUtil {
         });
     }
 
+    public saveNewRevision(notes: INote[], revision: number, serverId: string): Promise<any> {
+        let manifest: IManifest = ManifestUtil.createManifest(notes, revision, serverId);
+
+        return Promise.all([
+            this.saveManifestFile(manifest),
+            this.saveAllNoteFiles(notes, manifest.revision)
+        ]);
+    }
+
+    private saveManifestFile(manifest: IManifest): Promise<any> {
+        let manifestPath: string = this.getManifestPath(manifest.revision);
+        let manifestContents: string = ManifestUtil.createManifestFile(manifest);
+
+        console.log("saveManifestFile", manifestContents);
+
+        return Promise.all([
+            this.saveManifestFileAt("/manifest.xml", manifestContents),
+            this.saveManifestFileAt(manifestPath, manifestContents)
+        ]);
+    }
+
+    private saveManifestFileAt(path: string, contents: string): Promise<any> {
+        return this.dropbox.filesUpload({
+            path: path,
+            contents: new Blob([contents]),
+            mode: {
+                ".tag": "overwrite"
+            }
+        });
+    }
+
+    private saveAllNoteFiles(notes: INote[], revision: number): Promise<any> {
+        let modifiedNotes: INote[] = _.filter(notes, (note: INote): boolean =>
+        note.rev === NoteUtil.CHANGED_LOCALLY_REVISION);
+
+        _.each(modifiedNotes, (note: INote): void => {
+            note.rev = revision
+        });
+
+        return Promise.all([
+            _.map(modifiedNotes, (note: INote) => this.saveNote(note))
+        ]);
+    }
+
+    private saveNote(note: INote): Promise<any> {
+        let noteContents: string = NoteUtil.createNoteFile(note);
+        let notePath: string = this.getNotePath(note);
+
+        console.log("saveNote", notePath);
+
+        return this.dropbox.filesUpload({
+            path: notePath,
+            contents: noteContents
+        });
+    }
+
     public hasLock(): Promise<boolean> {
         return this.dropbox.filesGetMetadata({
             path: "/lock"
@@ -91,7 +147,7 @@ class DropboxUtil {
         return `/${parentFolder.toString()}/${revision.toString()}/manifest.xml`;
     }
 
-    private getNotePath(note: IManifestNote): string {
+    private getNotePath(note: INote|IManifestNote): string {
         let parentFolder: number = Math.floor(note.rev / 100);
 
         return `/${parentFolder.toString()}/${note.rev.toString()}/${note.id}.note`;

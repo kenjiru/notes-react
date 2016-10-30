@@ -93,16 +93,17 @@ function syncNotes(): IActionCallback {
                 return dropboxUtil.readNotes(manifest).then((notes: INote[]) => {
                     console.log("readNotes", notes);
 
-                    let syncResult: INote[] = SyncUtil.syncNotes(state.local.notes, notes, baseManifest,
+                    let syncedNotes: INote[] = SyncUtil.syncNotes(state.local.notes, notes, baseManifest,
                         state.dropbox.lastSyncDate);
-                    console.log("syncState", syncResult);
+                    console.log("syncedNotes", syncedNotes);
 
                     return Promise.all([
+                        dropboxUtil.saveNewRevision(syncedNotes, manifest.revision + 1, manifest.serverId),
                         dispatch(createAction(DROPBOX_SET_LAST_SYNC, {
                             lastSyncDate: moment().format(),
                             lastSyncRevision: manifest.revision
                         })),
-                        dispatch(createAction(SET_NOTES, syncResult)),
+                        // dispatch(createAction(SET_NOTES, syncedNotes)),
                         dispatch(persistState())
                     ]);
                 });
@@ -132,7 +133,7 @@ export function restoreState(): IAction {
 export const PERSIST_STATE: string = "PERSIST_STATE";
 export function persistState(): IActionCallback {
     return (dispatch: IDispatchFunction, getState: IGetStateFunction): Promise<any> => {
-        storage.set("store", getState());
+        // storage.set("store", getState());
 
         console.log("persistState", getState());
         return dispatch(createAction(PERSIST_STATE));

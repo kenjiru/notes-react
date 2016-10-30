@@ -113,7 +113,8 @@ class EditNote extends React.Component<IEditNoteProps, IEditNoteState> {
         let updatedNote: INote = _.merge({}, this.props.note, {
             content,
             title: NoteUtil.getTitle(content),
-            lastChanged: moment().format()
+            lastChanged: moment().format(),
+            rev: NoteUtil.CHANGED_LOCALLY_REVISION
         });
 
         this.props.dispatch(updateNote(updatedNote));
