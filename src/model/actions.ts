@@ -2,11 +2,11 @@ import * as moment from "moment";
 import * as Dropbox from "dropbox";
 import * as storage from "store";
 
-import {IStore, IManifest, INote} from "./store";
+import {IStore, INote} from "./store";
 import {IAction, IActionCallback, IDispatchFunction, IGetStateFunction, createAction} from "../utils/ActionUtil";
 import DropboxUtil from "../utils/DropboxUtil";
 import SyncUtil from "../utils/SyncUtil";
-import {ISyncResult} from "../utils/SyncUtil";
+import {ISyncData} from "../utils/DropboxUtil";
 
 export const CLIENT_ID: string = "17zzlf216nsykj9";
 
@@ -84,54 +84,44 @@ function syncNotes(): IActionCallback {
         let state: IStore = getState();
         let dropboxUtil: DropboxUtil = new DropboxUtil(CLIENT_ID, state.dropbox.accessToken);
 
-        return dropboxUtil.setLock().then(() => {
-            return Promise.all([
-                dropboxUtil.readManifest(),
-                dropboxUtil.readManifestFor(state.dropbox.lastSyncRevision || 0)
-            ]).then(([manifest, baseManifest]: IManifest[]) => {
-                console.log("readManifest", manifest);
+        return dropboxUtil.getSyncData(state.dropbox.lastSyncRevision).then((syncData: ISyncData) => {
+            let syncResult = SyncUtil.syncNotes(state.local.notes, syncData.remoteNotes, syncData.baseManifest,
+                state.dropbox.lastSyncDate);
 
-                return dropboxUtil.readNotes(manifest).then((notes: INote[]) => {
-                    console.log("readNotes", notes);
+            console.log("syncResult", syncResult);
 
-                    let syncResult: ISyncResult = SyncUtil.syncNotes(state.local.notes, notes, baseManifest,
-                        state.dropbox.lastSyncDate);
-                    console.log("syncResult", syncResult);
+            let latestRevision: number = syncData.remoteRevision;
 
-                    let latestRevision: number = manifest.revision;
+            if (syncResult.isModifiedLocally) {
+                latestRevision += 1;
+            }
 
-                    if (syncResult.isModifiedLocally) {
-                        latestRevision += 1;
-                    }
+            let promises: Promise<any>[] = [];
 
-                    let promises: Promise<any>[] = [];
+            if (syncResult.idModifiedRemotely) {
+                promises.push.apply(promises, [
+                    dispatch(createAction(SET_NOTES, syncResult.notes))
+                ]);
+            }
 
-                    if (syncResult.idModifiedRemotely) {
-                        promises.push.apply(promises, [
-                            dispatch(createAction(SET_NOTES, syncResult.notes))
-                        ]);
-                    }
+            if (syncResult.isModifiedLocally || syncResult.idModifiedRemotely) {
+                promises.push(
+                    dispatch(createAction(DROPBOX_SET_LAST_SYNC, {
+                        lastSyncDate: moment().format(),
+                        lastSyncRevision: latestRevision
+                    })),
+                    dispatch(persistState())
+                );
+            }
 
-                    if (syncResult.isModifiedLocally || syncResult.idModifiedRemotely) {
-                        promises.push(
-                            dispatch(createAction(DROPBOX_SET_LAST_SYNC, {
-                                lastSyncDate: moment().format(),
-                                lastSyncRevision: latestRevision
-                            })),
-                            dispatch(persistState())
-                        );
-                    }
+            if (syncResult.isModifiedLocally) {
+                return dropboxUtil.saveNewRevision(syncResult.notes, latestRevision, syncData.baseManifest.serverId)
+                    .then(() => {
+                        Promise.all(promises)
+                    });
+            }
 
-                    if (syncResult.isModifiedLocally) {
-                        return dropboxUtil.saveNewRevision(syncResult.notes, latestRevision, manifest.serverId)
-                            .then(() => {
-                                Promise.all(promises)
-                            });
-                    }
-
-                    return Promise.all(promises);
-                });
-            }).then(() => dropboxUtil.removeLock(), () => dropboxUtil.removeLock());
+            return Promise.all(promises);
         });
     };
 }

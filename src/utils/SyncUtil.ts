@@ -46,17 +46,19 @@ class SyncUtil {
         console.log({modifiedLocally, deletedLocally, modifiedRemotely, deletedRemotely});
 
         let deletedRemotelyOnly: INote[] = _.differenceBy(deletedRemotely, modifiedLocally);
-        let resultNotes: INote[] = _.differenceBy(localNotes, deletedRemotelyOnly, "id");
+        let deletedLocallyOnly: INote[] = _.differenceBy(modifiedLocally, deletedRemotely);
 
+        let resultNotes: INote[] = _.differenceBy(localNotes, deletedRemotelyOnly, "id");
         resultNotes = _.unionBy(modifiedLocally, modifiedRemotely, resultNotes, "id");
 
-        let deletedLocallyOnly: INote[] = _.differenceBy(modifiedLocally, deletedRemotely);
+        let isModifiedLocally: boolean = deletedLocallyOnly.length > 0 || modifiedLocally.length > 0;
+        let idModifiedRemotely: boolean = deletedRemotelyOnly.length > 0 || modifiedRemotely.length > 0;
 
         return {
             notes: resultNotes,
-            isModifiedLocally: deletedLocallyOnly.length > 0 || modifiedLocally.length > 0,
-            idModifiedRemotely: deletedRemotelyOnly.length > 0 || modifiedRemotely.length > 0
-        }
+            isModifiedLocally,
+            idModifiedRemotely
+        };
     }
 
     private static findManifestNote(manifest: IManifest, noteId): IManifestNote {

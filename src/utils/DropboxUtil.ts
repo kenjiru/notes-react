@@ -25,6 +25,35 @@ class DropboxUtil {
         });
     }
 
+    public getSyncData(lastSyncRevision: number): Promise<ISyncData> {
+        return this.setLock().then(() => {
+            return Promise.all([
+                this.readManifest(),
+                this.readManifestFor(lastSyncRevision || 0)
+            ]).then(([manifest, baseManifest]: IManifest[]): Promise<ISyncData> => {
+                console.log("readManifest", manifest);
+
+                return this.readNotes(manifest).then((remoteNotes: INote[]): ISyncData => {
+                    console.log("readNotes", remoteNotes);
+
+                    return {
+                        remoteNotes,
+                        remoteRevision: manifest.revision,
+                        baseManifest
+                    };
+                });
+            });
+        }).then((dropboxSyncResult: ISyncData) => {
+            this.removeLock();
+
+            return dropboxSyncResult;
+        }, (error: any) => {
+            this.removeLock();
+
+            return error;
+        });
+    }
+
     public saveNewRevision(notes: INote[], revision: number, serverId: string): Promise<any> {
         let manifest: IManifest = ManifestUtil.createManifest(notes, revision, serverId);
 
@@ -152,6 +181,12 @@ class DropboxUtil {
 
         return `/${parentFolder.toString()}/${note.rev.toString()}/${note.id}.note`;
     }
+}
+
+export interface ISyncData {
+    remoteNotes: INote[];
+    remoteRevision: number,
+    baseManifest: IManifest;
 }
 
 export default DropboxUtil;
