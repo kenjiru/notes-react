@@ -10,6 +10,7 @@ import {
 
 import {INote, IStore} from "../../model/store";
 import NoteUtil from "../../utils/NoteUtil";
+import ActionButton from "../action-button/ActionButton";
 
 import "./NoteList.less";
 
@@ -38,11 +39,14 @@ class NoteList extends React.Component<IListNotesProps, IListNotesState> {
                             <TableHeaderColumn>Last Changed</TableHeaderColumn>
                         </TableRow>
                     </TableHeader>
-                    <TableBody>
+                    <TableBody deselectOnClickaway={false}>
                         {this.renderNotesRows()}
                     </TableBody>
                     {this.renderNoItems()}
                 </Table>
+
+                <ActionButton isDelete={this.hasSelectedItem()} onDelete={this.handleDeleteNotes}
+                              onAdd={this.handleAddNote}/>
             </div>
         );
     }
@@ -98,6 +102,14 @@ class NoteList extends React.Component<IListNotesProps, IListNotesState> {
         });
     };
 
+    private handleDeleteNotes = () => {
+        console.log("handleDeleteNotes");
+    };
+
+    private handleAddNote = () => {
+        console.log("handleAddNote");
+    };
+
     private handleRowSelection = (selectedRows: string|number[]): void => {
         this.setState({
             selectedRows
@@ -116,6 +128,10 @@ class NoteList extends React.Component<IListNotesProps, IListNotesState> {
         }
 
         return selectedRows.indexOf(rowIndex) !== -1;
+    }
+
+    private hasSelectedItem(): boolean {
+        return this.state.selectedRows.length > 0;
     }
 }
 
