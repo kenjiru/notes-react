@@ -126,6 +126,16 @@ function syncNotes(): IActionCallback {
     };
 }
 
+export const DELETE_NOTES: string = "DELETE_NOTES";
+export function deleteNotes(notes: INote[]): IActionCallback {
+    return (dispatch: IDispatchFunction): Promise<any> => {
+        console.log("deleteNotes");
+        dispatch(createAction(DELETE_NOTES, notes));
+
+        return dispatch(persistState());
+    };
+}
+
 export const UPDATE_NOTE: string = "UPDATE_NOTE";
 export function updateNote(note: INote): IActionCallback {
     return (dispatch: IDispatchFunction): Promise<any> => {

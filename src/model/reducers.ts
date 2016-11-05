@@ -2,7 +2,7 @@ import * as _ from "lodash";
 import {INote, ILocal, IDropbox} from "./store";
 import {
     DROPBOX_SET_CURRENT_ACCOUNT, DROPBOX_SET_ACCESS_TOKEN,
-    RESTORE_STATE, UPDATE_NOTE, DROPBOX_SET_LAST_SYNC, SET_NOTES
+    RESTORE_STATE, UPDATE_NOTE, DROPBOX_SET_LAST_SYNC, SET_NOTES, DELETE_NOTES
 } from "./actions";
 import {IAction} from "../utils/ActionUtil";
 import {combineReducers} from "redux";
@@ -41,14 +41,28 @@ let defaultLocal: ILocal = {
 };
 
 function local(store: ILocal = defaultLocal, action: IAction): ILocal {
+    let notes: INote[];
+
     switch (action.type) {
         case SET_NOTES:
             return _.assign({}, store, {
                 notes: action.payload
             });
 
+        case DELETE_NOTES:
+            let notesToDelete: INote[] = action.payload as INote[];
+
+            notes = _.clone(store.notes);
+            notes = _.filter(notes, (note: INote): boolean =>
+                _.findIndex(notesToDelete, note) === -1
+            );
+
+            return _.assign({}, store, {
+                notes
+            });
+
         case UPDATE_NOTE:
-            let notes: INote[] = _.clone(store.notes);
+            notes = _.clone(store.notes);
             let updatedNoteIndex: number = _.findIndex(notes, {id: action.payload.id});
 
             notes[updatedNoteIndex] = _.assign(notes[updatedNoteIndex], action.payload);

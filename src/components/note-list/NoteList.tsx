@@ -9,7 +9,9 @@ import {
 } from "material-ui/Table";
 
 import {INote, IStore} from "../../model/store";
+import {deleteNotes} from "../../model/actions";
 import NoteUtil from "../../utils/NoteUtil";
+import {IDispatchFunction} from "../../utils/ActionUtil";
 import ActionButton from "../action-button/ActionButton";
 
 import "./NoteList.less";
@@ -103,7 +105,20 @@ class NoteList extends React.Component<IListNotesProps, IListNotesState> {
     };
 
     private handleDeleteNotes = () => {
-        console.log("handleDeleteNotes");
+        let selectedRows: string|number[] = this.state.selectedRows;
+        let visibleNotes: INote[] = this.getFilteredNotes();
+
+        if (typeof selectedRows !== "string") {
+            let notesToDelete: INote[] = _.map(selectedRows, (rowIndex: number): INote => visibleNotes[rowIndex]);
+
+            _.each(notesToDelete, (note: INote) => console.log(note.title));
+
+            this.props.dispatch(deleteNotes(notesToDelete));
+
+            this.setState({
+                selectedRows: []
+            });
+        }
     };
 
     private handleAddNote = () => {
@@ -137,6 +152,7 @@ class NoteList extends React.Component<IListNotesProps, IListNotesState> {
 
 interface IListNotesProps {
     notes: INote[];
+    dispatch: IDispatchFunction;
 }
 
 interface IListNotesState {
