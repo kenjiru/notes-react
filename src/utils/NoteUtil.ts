@@ -1,3 +1,6 @@
+import * as moment from "moment";
+
+import IdUtil from "./IdUtil";
 import {INote, IManifestNote} from "../model/store";
 
 class NoteUtil {
@@ -27,6 +30,19 @@ class NoteUtil {
         "list": "ul",
         "list-item": "li"
     };
+
+    public static createNewNote(noteId: string): INote {
+        let noteTitle: string = "New Note";
+
+        return {
+            id: noteId,
+            rev: -1,
+            title: noteTitle,
+            createDate: moment().format(),
+            lastChanged: moment().format(),
+            content: noteTitle + "\nNew note content"
+        };
+    }
 
     public static createNoteFile(note: INote): string {
         return `<?xml version="1.0" encoding="utf-8"?>
@@ -103,7 +119,7 @@ class NoteUtil {
 
         lines = _.map(lines, (line: string): string => {
             if (line[0] !== "<") {
-                return line.replace(/^(.+?)$/g,"<p>$1</p>");
+                return line.replace(/^(.+?)$/g, "<p>$1</p>");
             }
 
             return line;

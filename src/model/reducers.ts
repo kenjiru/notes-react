@@ -1,8 +1,8 @@
 import * as _ from "lodash";
 import {INote, ILocal, IDropbox} from "./store";
 import {
-    DROPBOX_SET_CURRENT_ACCOUNT, DROPBOX_SET_ACCESS_TOKEN,
-    RESTORE_STATE, UPDATE_NOTE, DROPBOX_SET_LAST_SYNC, SET_NOTES, DELETE_NOTES
+    DROPBOX_SET_CURRENT_ACCOUNT, DROPBOX_SET_ACCESS_TOKEN, DROPBOX_SET_LAST_SYNC,
+    RESTORE_STATE, CREATE_NEW_NOTE, UPDATE_NOTE, SET_NOTES, DELETE_NOTES
 } from "./actions";
 import {IAction} from "../utils/ActionUtil";
 import {combineReducers} from "redux";
@@ -47,6 +47,16 @@ function local(store: ILocal = defaultLocal, action: IAction): ILocal {
         case SET_NOTES:
             return _.assign({}, store, {
                 notes: action.payload
+            });
+
+        case CREATE_NEW_NOTE:
+            let newNote: INote = action.payload as INote;
+
+            notes = _.clone(store.notes);
+            notes.push(newNote);
+
+            return _.assign({}, store, {
+                notes
             });
 
         case DELETE_NOTES:

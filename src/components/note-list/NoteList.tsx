@@ -9,14 +9,17 @@ import {
 } from "material-ui/Table";
 
 import {INote, IStore} from "../../model/store";
-import {deleteNotes} from "../../model/actions";
+import {deleteNotes, createNewNote} from "../../model/actions";
 import NoteUtil from "../../utils/NoteUtil";
 import {IDispatchFunction} from "../../utils/ActionUtil";
+import IdUtil from "../../utils/IdUtil";
 import ActionButton from "../action-button/ActionButton";
 
 import "./NoteList.less";
 
 class NoteList extends React.Component<IListNotesProps, IListNotesState> {
+    private SNACKBAR_TIMEOUT: number = 2000;
+
     constructor(props: IListNotesProps) {
         super(props);
 
@@ -50,7 +53,7 @@ class NoteList extends React.Component<IListNotesProps, IListNotesState> {
                 </Table>
 
                 <Snackbar open={this.state.isSnackbarOpen} message={this.state.snackbarMessage}
-                          autoHideDuration={4000} onRequestClose={this.handleSnackbarClose}/>
+                          autoHideDuration={this.SNACKBAR_TIMEOUT} onRequestClose={this.handleSnackbarClose}/>
 
                 <ActionButton isDelete={this.hasSelectedItem()} onDelete={this.handleDeleteNotes}
                               onAdd={this.handleAddNote}/>
@@ -99,8 +102,7 @@ class NoteList extends React.Component<IListNotesProps, IListNotesState> {
         }
 
         let note: INote = this.props.notes[selectedNote];
-
-        browserHistory.push(`/edit-note/${note.id}`);
+        this.editNote(note.id);
     };
 
     private handleFilterChange: EventHandler<any> = (ev: any): void => {
@@ -141,7 +143,12 @@ class NoteList extends React.Component<IListNotesProps, IListNotesState> {
     }
 
     private handleAddNote = () => {
-        console.log("handleAddNote");
+        let newNoteId: string = IdUtil.newId();
+
+        this.props.dispatch(createNewNote(newNoteId));
+
+        this.showSnackbarMessage(`New note created!`);
+        setTimeout(() => this.editNote(newNoteId), this.SNACKBAR_TIMEOUT);
     };
 
     private handleRowSelection = (selectedRows: string|number[]): void => {
@@ -170,6 +177,10 @@ class NoteList extends React.Component<IListNotesProps, IListNotesState> {
 
     private hasSelectedItem(): boolean {
         return this.state.selectedRows.length > 0;
+    }
+
+    private editNote(noteId: string): void {
+        browserHistory.push(`/edit-note/${noteId}`);
     }
 
     private showSnackbarMessage(snackbarMessage: string): void {

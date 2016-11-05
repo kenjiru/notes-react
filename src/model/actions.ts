@@ -7,6 +7,7 @@ import {IAction, IActionCallback, IDispatchFunction, IGetStateFunction, createAc
 import DropboxUtil from "../utils/DropboxUtil";
 import SyncUtil from "../utils/SyncUtil";
 import {ISyncData} from "../utils/DropboxUtil";
+import NoteUtil from "../utils/NoteUtil";
 
 export const CLIENT_ID: string = "17zzlf216nsykj9";
 
@@ -123,6 +124,17 @@ function syncNotes(): IActionCallback {
 
             return Promise.all(promises);
         });
+    };
+}
+
+export const CREATE_NEW_NOTE: string = "CREATE_NEW_NOTE";
+export function createNewNote(noteId: string): IActionCallback {
+    return (dispatch: IDispatchFunction): Promise<any> => {
+        let newNote: INote = NoteUtil.createNewNote(noteId);
+
+        dispatch(createAction(CREATE_NEW_NOTE, newNote));
+
+        return dispatch(persistState());
     };
 }
 
