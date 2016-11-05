@@ -5,6 +5,15 @@ import mainReducer from "./reducers";
 export interface IStore {
     local: ILocal;
     dropbox: IDropbox;
+    ui: IUi;
+}
+
+export interface IUi {
+    snackbar?: ISnackbar;
+}
+
+export interface ISnackbar {
+    message: string;
 }
 
 export interface ILocal {

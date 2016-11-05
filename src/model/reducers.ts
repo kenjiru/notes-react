@@ -1,8 +1,8 @@
 import * as _ from "lodash";
-import {INote, ILocal, IDropbox} from "./store";
+import {INote, ILocal, IDropbox, IUi} from "./store";
 import {
     DROPBOX_SET_CURRENT_ACCOUNT, DROPBOX_SET_ACCESS_TOKEN, DROPBOX_SET_LAST_SYNC,
-    RESTORE_STATE, CREATE_NEW_NOTE, UPDATE_NOTE, SET_NOTES, DELETE_NOTES
+    RESTORE_STATE, CREATE_NEW_NOTE, UPDATE_NOTE, SET_NOTES, DELETE_NOTES, SHOW_SNACKBAR_MESSAGE
 } from "./actions";
 import {IAction} from "../utils/ActionUtil";
 import {combineReducers} from "redux";
@@ -92,4 +92,23 @@ function local(store: ILocal = defaultLocal, action: IAction): ILocal {
     return store;
 }
 
-export default combineReducers({local, dropbox});
+let defaultUi: IUi = {
+    snackbar: {
+        message: ""
+    }
+};
+
+function ui(store: IUi = defaultUi, action: IAction): IUi {
+    switch (action.type) {
+        case SHOW_SNACKBAR_MESSAGE:
+            return _.assign({}, store, {
+                snackbar: {
+                    message: action.payload
+                }
+            });
+    }
+
+    return store;
+}
+
+export default combineReducers({local, dropbox, ui});

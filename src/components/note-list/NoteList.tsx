@@ -3,13 +3,14 @@ import * as React from "react";
 import {ReactElement, EventHandler} from "react";
 import {connect} from "react-redux";
 import {browserHistory} from "react-router";
-import {Toolbar, TextField, Snackbar} from "material-ui";
+import {Toolbar, TextField} from "material-ui";
 import {
     Table, TableHeader, TableHeaderColumn, TableBody, TableRow, TableRowColumn, TableFooter
 } from "material-ui/Table";
 
 import {INote, IStore} from "../../model/store";
-import {deleteNotes, createNewNote} from "../../model/actions";
+import {deleteNotes, createNewNote, showSnackbarMessage} from "../../model/actions";
+
 import NoteUtil from "../../utils/NoteUtil";
 import {IDispatchFunction} from "../../utils/ActionUtil";
 import IdUtil from "../../utils/IdUtil";
@@ -18,16 +19,12 @@ import ActionButton from "../action-button/ActionButton";
 import "./NoteList.less";
 
 class NoteList extends React.Component<IListNotesProps, IListNotesState> {
-    private SNACKBAR_TIMEOUT: number = 2000;
-
     constructor(props: IListNotesProps) {
         super(props);
 
         this.state = {
             filter: "",
-            selectedRows: [],
-            isSnackbarOpen: false,
-            snackbarMessage: ""
+            selectedRows: []
         };
     }
 
@@ -51,9 +48,6 @@ class NoteList extends React.Component<IListNotesProps, IListNotesState> {
                     </TableBody>
                     {this.renderNoItems()}
                 </Table>
-
-                <Snackbar open={this.state.isSnackbarOpen} message={this.state.snackbarMessage}
-                          autoHideDuration={this.SNACKBAR_TIMEOUT} onRequestClose={this.handleSnackbarClose}/>
 
                 <ActionButton isDelete={this.hasSelectedItem()} onDelete={this.handleDeleteNotes}
                               onAdd={this.handleAddNote}/>
@@ -139,26 +133,22 @@ class NoteList extends React.Component<IListNotesProps, IListNotesState> {
             message = `Deleted '${notesToDelete[0].title}'`;
         }
 
-        this.showSnackbarMessage(message);
+        this.props.dispatch(showSnackbarMessage(message));
     }
 
     private handleAddNote = () => {
         let newNoteId: string = IdUtil.newId();
 
         this.props.dispatch(createNewNote(newNoteId));
+        this.props.dispatch(showSnackbarMessage("New note created!"));
 
-        this.showSnackbarMessage(`New note created!`);
-        setTimeout(() => this.editNote(newNoteId), this.SNACKBAR_TIMEOUT);
+        this.editNote(newNoteId);
     };
 
     private handleRowSelection = (selectedRows: string|number[]): void => {
         this.setState({
             selectedRows
         });
-    };
-
-    private handleSnackbarClose = () => {
-        this.hideSnackbar();
     };
 
     private isRowSelected(rowIndex: number): boolean {
@@ -182,19 +172,6 @@ class NoteList extends React.Component<IListNotesProps, IListNotesState> {
     private editNote(noteId: string): void {
         browserHistory.push(`/edit-note/${noteId}`);
     }
-
-    private showSnackbarMessage(snackbarMessage: string): void {
-        this.setState({
-            isSnackbarOpen: true,
-            snackbarMessage
-        });
-    }
-
-    private hideSnackbar(): void {
-        this.setState({
-            isSnackbarOpen: false
-        });
-    }
 }
 
 interface IListNotesProps {
@@ -205,8 +182,6 @@ interface IListNotesProps {
 interface IListNotesState {
     filter?: string;
     selectedRows?: string|number[];
-    isSnackbarOpen?: boolean;
-    snackbarMessage?: string;
 }
 
 export default connect((state: IStore) => ({

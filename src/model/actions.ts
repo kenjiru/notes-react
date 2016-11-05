@@ -175,3 +175,8 @@ export function persistState(): IActionCallback {
         return dispatch(createAction(PERSIST_STATE));
     };
 }
+
+export const SHOW_SNACKBAR_MESSAGE: string = "SHOW_SNACKBAR_MESSAGE";
+export function showSnackbarMessage(message: string): IAction {
+    return createAction(SHOW_SNACKBAR_MESSAGE, message);
+}
