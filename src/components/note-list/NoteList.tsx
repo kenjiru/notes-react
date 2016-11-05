@@ -18,7 +18,8 @@ class NoteList extends React.Component<IListNotesProps, IListNotesState> {
         super(props);
 
         this.state = {
-            filter: ""
+            filter: "",
+            selectedRows: []
         };
     }
 
@@ -29,8 +30,9 @@ class NoteList extends React.Component<IListNotesProps, IListNotesState> {
                     <TextField style={{width: "100%"}} hintText="Filter" onChange={this.handleFilterChange}/>
                 </Toolbar>
 
-                <Table onCellClick={this.handleTableClick}>
-                    <TableHeader>
+                <Table multiSelectable={true} onCellClick={this.handleTableClick}
+                       onRowSelection={this.handleRowSelection}>
+                    <TableHeader enableSelectAll={false}>
                         <TableRow>
                             <TableHeaderColumn>Name</TableHeaderColumn>
                             <TableHeaderColumn>Last Changed</TableHeaderColumn>
@@ -49,7 +51,7 @@ class NoteList extends React.Component<IListNotesProps, IListNotesState> {
         let filteredNotes: INote[] = this.getFilteredNotes();
 
         return _.map(filteredNotes, (note: INote, i: number) =>
-            <TableRow key={i}>
+            <TableRow key={i} selected={this.isRowSelected(i)}>
                 <TableRowColumn style={{cursor: "pointer"}}>{note.title}</TableRowColumn>
                 <TableRowColumn>{note.lastChanged.toString()}</TableRowColumn>
             </TableRow>
@@ -80,7 +82,7 @@ class NoteList extends React.Component<IListNotesProps, IListNotesState> {
         });
     }
 
-    handleTableClick = (selectedNote: number, columnId: number) => {
+    private handleTableClick = (selectedNote: number, columnId: number) => {
         if (columnId !== 0) {
             return;
         }
@@ -90,11 +92,31 @@ class NoteList extends React.Component<IListNotesProps, IListNotesState> {
         browserHistory.push(`/edit-note/${note.id}`);
     };
 
-    handleFilterChange: EventHandler<any> = (ev: any): void => {
+    private handleFilterChange: EventHandler<any> = (ev: any): void => {
         this.setState({
             filter: ev.target.value
         });
     };
+
+    private handleRowSelection = (selectedRows: string|number[]): void => {
+        this.setState({
+            selectedRows
+        });
+    };
+
+    private isRowSelected(rowIndex: number): boolean {
+        let selectedRows: string|number[] = this.state.selectedRows;
+
+        if (_.isNil(selectedRows)) {
+            return false;
+        }
+
+        if (typeof selectedRows === "string") {
+            return selectedRows === "all";
+        }
+
+        return selectedRows.indexOf(rowIndex) !== -1;
+    }
 }
 
 interface IListNotesProps {
@@ -102,7 +124,8 @@ interface IListNotesProps {
 }
 
 interface IListNotesState {
-    filter: string;
+    filter?: string;
+    selectedRows?: string|number[];
 }
 
 export default connect((state: IStore) => ({
