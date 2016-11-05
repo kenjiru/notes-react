@@ -3,7 +3,7 @@ import * as React from "react";
 import {ReactElement, EventHandler} from "react";
 import {connect} from "react-redux";
 import {browserHistory} from "react-router";
-import {Toolbar, TextField} from "material-ui";
+import {Toolbar, TextField, Snackbar} from "material-ui";
 import {
     Table, TableHeader, TableHeaderColumn, TableBody, TableRow, TableRowColumn, TableFooter
 } from "material-ui/Table";
@@ -22,7 +22,9 @@ class NoteList extends React.Component<IListNotesProps, IListNotesState> {
 
         this.state = {
             filter: "",
-            selectedRows: []
+            selectedRows: [],
+            isSnackbarOpen: false,
+            snackbarMessage: ""
         };
     }
 
@@ -46,6 +48,9 @@ class NoteList extends React.Component<IListNotesProps, IListNotesState> {
                     </TableBody>
                     {this.renderNoItems()}
                 </Table>
+
+                <Snackbar open={this.state.isSnackbarOpen} message={this.state.snackbarMessage}
+                          autoHideDuration={4000} onRequestClose={this.handleSnackbarClose}/>
 
                 <ActionButton isDelete={this.hasSelectedItem()} onDelete={this.handleDeleteNotes}
                               onAdd={this.handleAddNote}/>
@@ -110,16 +115,30 @@ class NoteList extends React.Component<IListNotesProps, IListNotesState> {
 
         if (typeof selectedRows !== "string") {
             let notesToDelete: INote[] = _.map(selectedRows, (rowIndex: number): INote => visibleNotes[rowIndex]);
-
-            _.each(notesToDelete, (note: INote) => console.log(note.title));
-
-            this.props.dispatch(deleteNotes(notesToDelete));
-
-            this.setState({
-                selectedRows: []
-            });
+            this.deleteNotes(notesToDelete);
+            this.showDeleteMessage(notesToDelete);
         }
     };
+
+    private deleteNotes(notesToDelete: INote[]): void {
+        this.props.dispatch(deleteNotes(notesToDelete));
+
+        this.setState({
+            selectedRows: []
+        });
+    }
+
+    private showDeleteMessage(notesToDelete: INote[]): void {
+        let message: string;
+
+        if (notesToDelete.length > 1) {
+            message = `Deleted ${notesToDelete.length} notes!`;
+        } else {
+            message = `Deleted '${notesToDelete[0].title}'`;
+        }
+
+        this.showSnackbarMessage(message);
+    }
 
     private handleAddNote = () => {
         console.log("handleAddNote");
@@ -129,6 +148,10 @@ class NoteList extends React.Component<IListNotesProps, IListNotesState> {
         this.setState({
             selectedRows
         });
+    };
+
+    private handleSnackbarClose = () => {
+        this.hideSnackbar();
     };
 
     private isRowSelected(rowIndex: number): boolean {
@@ -148,6 +171,19 @@ class NoteList extends React.Component<IListNotesProps, IListNotesState> {
     private hasSelectedItem(): boolean {
         return this.state.selectedRows.length > 0;
     }
+
+    private showSnackbarMessage(snackbarMessage: string): void {
+        this.setState({
+            isSnackbarOpen: true,
+            snackbarMessage
+        });
+    }
+
+    private hideSnackbar(): void {
+        this.setState({
+            isSnackbarOpen: false
+        });
+    }
 }
 
 interface IListNotesProps {
@@ -158,6 +194,8 @@ interface IListNotesProps {
 interface IListNotesState {
     filter?: string;
     selectedRows?: string|number[];
+    isSnackbarOpen?: boolean;
+    snackbarMessage?: string;
 }
 
 export default connect((state: IStore) => ({
