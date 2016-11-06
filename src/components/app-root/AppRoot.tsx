@@ -42,13 +42,13 @@ class AppRoot extends React.Component<IAppRootProps, IAppRootState> {
         );
     }
 
-    handleToggleDrawer = (): void => {
+    private handleToggleDrawer = (): void => {
         this.setState({
             isDrawerVisible: !this.state.isDrawerVisible
         });
     };
 
-    handleFolderSelected = (selectedFolder: string): void => {
+    private handleFolderSelected = (selectedFolder: string): void => {
         this.setState({
             selectedFolder,
             isDrawerVisible: false
