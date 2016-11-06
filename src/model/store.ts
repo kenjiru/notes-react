@@ -40,6 +40,7 @@ export interface INote {
     createDate: string;
     lastChanged: string;
     content: string;
+    tags?: string[];
 }
 
 export interface IManifest {

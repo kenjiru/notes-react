@@ -1,6 +1,5 @@
 import * as moment from "moment";
 
-import IdUtil from "./IdUtil";
 import {INote, IManifestNote} from "../model/store";
 
 class NoteUtil {
@@ -84,7 +83,8 @@ class NoteUtil {
             title: NoteUtil.getNodeValue(noteStr, "title"),
             createDate: NoteUtil.getNodeValue(noteStr, "create-date"),
             lastChanged: NoteUtil.getNodeValue(noteStr, "last-change-date"),
-            content: NoteUtil.getNodeValue(noteStr, "note-content")
+            content: NoteUtil.getNodeValue(noteStr, "note-content"),
+            tags: NoteUtil.getAllNodeValues(noteStr, "tag")
         };
     }
 
@@ -92,12 +92,23 @@ class NoteUtil {
         let re: RegExp = new RegExp(`<${tagName}.*>([\\s\\S]*)<\/${tagName}>`);
 
         let result: string[] = xmlStr.match(re);
-
         if (result) {
             return result[1];
         }
 
         return "";
+    }
+
+    private static getAllNodeValues(xmlStr: string, tagName: string): string[] {
+        let values: string[] = [];
+        let re: RegExp = new RegExp(`(?:<${tagName}>)([\\s\\S]*?)(?:<\/${tagName}>)`, "g");
+
+        let result: string[];
+        while (result = re.exec(xmlStr)) {
+            values.push(result[1]);
+        }
+
+        return values;
     }
 
     public static convertToHtml(noteContent: string): string {
