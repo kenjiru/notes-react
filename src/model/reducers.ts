@@ -2,7 +2,7 @@ import * as _ from "lodash";
 import {INote, ILocal, IDropbox, IUi} from "./store";
 import {
     DROPBOX_SET_CURRENT_ACCOUNT, DROPBOX_SET_ACCESS_TOKEN, DROPBOX_SET_LAST_SYNC,
-    RESTORE_STATE, CREATE_NEW_NOTE, UPDATE_NOTE, SET_NOTES, DELETE_NOTES, SHOW_SNACKBAR_MESSAGE
+    RESTORE_STATE, CREATE_NEW_NOTE, UPDATE_NOTE, SET_NOTES, DELETE_NOTES, SHOW_SNACKBAR_MESSAGE, CONFIRMATION_DELETION
 } from "./actions";
 import {IAction} from "../utils/ActionUtil";
 import {combineReducers} from "redux";
@@ -105,6 +105,11 @@ function ui(store: IUi = defaultUi, action: IAction): IUi {
                 snackbar: {
                     message: action.payload
                 }
+            });
+
+        case CONFIRMATION_DELETION:
+            return _.assign({}, store, {
+                notesToDelete: action.payload
             });
     }
 

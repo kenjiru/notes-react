@@ -10,6 +10,7 @@ export interface IStore {
 
 export interface IUi {
     snackbar?: ISnackbar;
+    notesToDelete?: INote[];
 }
 
 export interface ISnackbar {

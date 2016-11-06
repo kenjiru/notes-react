@@ -180,3 +180,8 @@ export const SHOW_SNACKBAR_MESSAGE: string = "SHOW_SNACKBAR_MESSAGE";
 export function showSnackbarMessage(message: string): IAction {
     return createAction(SHOW_SNACKBAR_MESSAGE, message);
 }
+
+export const CONFIRMATION_DELETION: string = "CONFIRMATION_DELETION";
+export function confirmDeletion(noteToDelete): IAction {
+    return createAction(CONFIRMATION_DELETION, noteToDelete);
+}

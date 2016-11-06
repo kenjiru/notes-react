@@ -3,13 +3,13 @@ import * as React from "react";
 import {ReactElement, EventHandler} from "react";
 import {connect} from "react-redux";
 import {browserHistory} from "react-router";
-import {Toolbar, TextField, Dialog, FlatButton} from "material-ui";
+import {Toolbar, TextField} from "material-ui";
 import {
     Table, TableHeader, TableHeaderColumn, TableBody, TableRow, TableRowColumn, TableFooter
 } from "material-ui/Table";
 
 import {INote, IStore} from "../../model/store";
-import {deleteNotes, createNewNote, showSnackbarMessage} from "../../model/actions";
+import {createNewNote, showSnackbarMessage, confirmDeletion} from "../../model/actions";
 
 import NoteUtil from "../../utils/NoteUtil";
 import {IDispatchFunction} from "../../utils/ActionUtil";
@@ -24,17 +24,11 @@ class NoteList extends React.Component<IListNotesProps, IListNotesState> {
 
         this.state = {
             filter: "",
-            selectedRows: [],
-            isDeleteDialogShown: false
+            selectedRows: []
         };
     }
 
     public render(): React.ReactElement<any> {
-        let deleteDialogActions: React.ReactElement<any>[] = [
-            <FlatButton label="Cancel" primary={true} onClick={this.handleCloseDeleteDialog}/>,
-            <FlatButton label="Delete" primary={true} onClick={this.handleDeleteNotes}/>
-        ];
-
         return (
             <div className="note-list">
                 <Toolbar>
@@ -54,11 +48,6 @@ class NoteList extends React.Component<IListNotesProps, IListNotesState> {
                     </TableBody>
                     {this.renderNoItems()}
                 </Table>
-
-                <Dialog title="Confirm deletion" actions={deleteDialogActions} modal={true}
-                        open={this.state.isDeleteDialogShown} onRequestClose={this.handleCloseDeleteDialog}>
-                    {this.state.deleteMessage}?
-                </Dialog>
 
                 <ActionButton isDelete={this.hasSelectedItem()} onDelete={this.handleDeleteClick}
                               onAdd={this.handleAddNote}/>
@@ -117,19 +106,11 @@ class NoteList extends React.Component<IListNotesProps, IListNotesState> {
     };
 
     private handleDeleteClick = () => {
-        this.showDeleteConfirmationDialog();
-    };
+        this.props.dispatch(confirmDeletion(this.getSelectedNotes()));
 
-    private handleCloseDeleteDialog = () => {
-        this.hideDeleteConfirmationDialog();
-    };
-
-    private handleDeleteNotes = () => {
-        let notesToDelete: INote[] = this.getSelectedNotes();
-
-        this.hideDeleteConfirmationDialog();
-        this.deleteSelectedNotes(notesToDelete);
-        this.showDeleteSnackbarMessage(notesToDelete);
+        this.setState({
+            selectedRows: []
+        });
     };
 
     private handleAddNote = () => {
@@ -146,49 +127,6 @@ class NoteList extends React.Component<IListNotesProps, IListNotesState> {
             selectedRows
         });
     };
-
-    private deleteSelectedNotes(notesToDelete: INote[]): void {
-        this.props.dispatch(deleteNotes(notesToDelete));
-
-        this.setState({
-            selectedRows: []
-        });
-    }
-
-    private showDeleteSnackbarMessage(notesToDelete: INote[]): void {
-        let message: string;
-
-        if (notesToDelete.length > 1) {
-            message = `Deleted ${notesToDelete.length} notes!`;
-        } else {
-            message = `Deleted note '${notesToDelete[0].title}'`;
-        }
-
-        this.props.dispatch(showSnackbarMessage(message));
-    }
-
-    private showDeleteConfirmationDialog(): void {
-        let notesToDelete: INote[] = this.getSelectedNotes();
-        let message: string = "Are you sure you want to delete ";
-
-        if (notesToDelete.length > 1) {
-            message += `${notesToDelete.length} notes`;
-        } else {
-            message += `the note '${notesToDelete[0].title}'`;
-        }
-
-        this.setState({
-            isDeleteDialogShown: true,
-            deleteMessage: message
-        });
-    }
-
-    private hideDeleteConfirmationDialog(): void {
-        this.setState({
-            isDeleteDialogShown: false,
-            deleteMessage: ""
-        });
-    }
 
     private isRowSelected(rowIndex: number): boolean {
         let selectedRows: string|number[] = this.state.selectedRows;
@@ -230,8 +168,6 @@ interface IListNotesProps {
 interface IListNotesState {
     filter?: string;
     selectedRows?: string|number[];
-    isDeleteDialogShown?: boolean;
-    deleteMessage?: string;
 }
 
 export default connect((state: IStore) => ({
