@@ -1,4 +1,6 @@
 import * as React from "react";
+import {InjectedRouter, withRouter} from "react-router";
+import {Location} from "history";
 import {AppBar, Drawer} from "material-ui";
 
 import store from "../../model/store";
@@ -24,7 +26,7 @@ class AppRoot extends React.Component<IAppRootProps, IAppRootState> {
         return (
             <div className="app-root">
                 <AppBar title={this.state.selectedFolder} onLeftIconButtonTouchTap={this.handleToggleDrawer}
-                        iconElementRight={<AppMenu/>}/>
+                        iconElementRight={<AppMenu router={this.props.router} location={this.props.location}/>}/>
                 <Drawer docked={false} open={this.state.isDrawerVisible}
                         onRequestChange={(isDrawerVisible) => this.setState({isDrawerVisible})}>
                     <FolderList onFolderSelected={this.handleFolderSelected}/>
@@ -55,6 +57,8 @@ class AppRoot extends React.Component<IAppRootProps, IAppRootState> {
 }
 
 interface IAppRootProps {
+    router?: InjectedRouter;
+    location?: Location;
 }
 
 interface IAppRootState {
@@ -62,4 +66,4 @@ interface IAppRootState {
     selectedFolder?: string;
 }
 
-export default AppRoot;
+export default withRouter(AppRoot);

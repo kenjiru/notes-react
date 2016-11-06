@@ -1,11 +1,13 @@
 import * as _ from "lodash";
 import * as React from "react";
 import {connect} from "react-redux";
+import {InjectedRouter} from "react-router";
+import {Location} from "history";
 import {IconButton, IconMenu, MenuItem} from "material-ui";
 import MoreVertIcon from "material-ui/svg-icons/navigation/more-vert";
 
-import {IStore, IUser} from "../../model/store";
-import {startSync} from "../../model/actions";
+import {IStore, IUser, INote} from "../../model/store";
+import {startSync, confirmDeletion} from "../../model/actions";
 import DropboxAuth from "../dropbox-auth/DropboxAuth";
 
 class AppMenu extends React.Component<IAppMenuProps, IAppMenuState> {
@@ -23,6 +25,7 @@ class AppMenu extends React.Component<IAppMenuProps, IAppMenuState> {
                       width={200}>
                 <DropboxAuth/>
                 {this.renderReloadNotes()}
+                {this.renderDeleteNote()}
                 <MenuItem primaryText="About"/>
             </IconMenu>
         );
@@ -34,9 +37,51 @@ class AppMenu extends React.Component<IAppMenuProps, IAppMenuState> {
         }
     }
 
-    handleReload = (): void => {
+    private renderDeleteNote(): React.ReactElement<any> {
+        if (this.isEditPage()) {
+            return <MenuItem primaryText="Delete note" onClick={this.handleDeleteNote}/>
+        }
+     }
+
+    private handleReload = (): void => {
         this.props.dispatch(startSync());
     };
+
+    private handleDeleteNote = (): void => {
+        this.deleteCurrentNote();
+        this.navigateBack();
+    };
+
+    private navigateBack(): void {
+        this.props.router.goBack();
+    }
+
+    private deleteCurrentNote(): void {
+        let note: INote = this.getCurrentNote();
+
+        this.props.dispatch(confirmDeletion([note]))
+    }
+
+    private getCurrentNote(): INote {
+        let noteId: string = this.getCurrentNoteId();
+
+        return _.find(this.props.notes, (note: INote): boolean => note.id === noteId);
+    }
+
+    private getCurrentNoteId(): string {
+        let path: string = this.props.location.pathname.toString();
+        let match: string[] = path.match(/\/edit-note\/([^\s]*)[\/]*/);
+
+        if (match) {
+            return match[1];
+        }
+    }
+
+    private isEditPage(): boolean {
+        let path: string = this.props.location.pathname.toString();
+
+        return path.indexOf("edit-note") !== -1;
+    }
 
     private isLoggedIn(): boolean {
         return _.isNil(this.props.user) === false;
@@ -46,11 +91,17 @@ class AppMenu extends React.Component<IAppMenuProps, IAppMenuState> {
 interface IAppMenuProps {
     dispatch?: Function;
     user?: IUser;
+    notes?: INote[];
+    router?: InjectedRouter;
+    location?: Location;
 }
 
 interface IAppMenuState {
 }
 
-export default connect((store: IStore): IAppMenuProps => ({
-    user: store.dropbox.accessToken && store.dropbox.user ? store.dropbox.user : null
+export default connect((store: IStore, props: IAppMenuProps): IAppMenuProps => ({
+    user: store.dropbox.accessToken && store.dropbox.user ? store.dropbox.user : null,
+    notes: store.local.notes,
+    router: props.router,
+    location: props.location
 }))(AppMenu);
