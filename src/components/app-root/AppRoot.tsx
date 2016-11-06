@@ -1,9 +1,10 @@
 import * as React from "react";
+import {connect} from "react-redux";
 import {InjectedRouter, withRouter} from "react-router";
 import {Location} from "history";
 import {AppBar, Drawer} from "material-ui";
 
-import store from "../../model/store";
+import store, {IStore} from "../../model/store";
 import {restoreState} from "../../model/actions";
 
 import AppMenu from "../app-menu/AppMenu";
@@ -25,7 +26,8 @@ class AppRoot extends React.Component<IAppRootProps, IAppRootState> {
     public render(): React.ReactElement<any> {
         return (
             <div className="app-root">
-                <AppBar title={this.state.selectedFolder} onLeftIconButtonTouchTap={this.handleToggleDrawer}
+                <AppBar title={this.getTitle()}
+                        onLeftIconButtonTouchTap={this.handleToggleDrawer}
                         iconElementRight={<AppMenu router={this.props.router} location={this.props.location}/>}/>
                 <Drawer docked={false} open={this.state.isDrawerVisible}
                         onRequestChange={(isDrawerVisible) => this.setState({isDrawerVisible})}>
@@ -42,6 +44,16 @@ class AppRoot extends React.Component<IAppRootProps, IAppRootState> {
         );
     }
 
+    private getTitle(): string {
+        let selectedFolder: string = this.props.selectedFolder;
+
+        if (_.isNil(selectedFolder) === false) {
+            return `Folder: ${selectedFolder}`;
+        }
+
+        return "All notes";
+    }
+
     private handleToggleDrawer = (): void => {
         this.setState({
             isDrawerVisible: !this.state.isDrawerVisible
@@ -50,20 +62,23 @@ class AppRoot extends React.Component<IAppRootProps, IAppRootState> {
 
     private handleFolderSelected = (selectedFolder: string): void => {
         this.setState({
-            selectedFolder,
             isDrawerVisible: false
         });
     };
 }
 
 interface IAppRootProps {
+    selectedFolder?: string;
     router?: InjectedRouter;
     location?: Location;
 }
 
 interface IAppRootState {
     isDrawerVisible?: boolean;
-    selectedFolder?: string;
 }
 
-export default withRouter(AppRoot);
+export default connect((store: IStore, props: IAppRootProps): IAppRootProps => ({
+    selectedFolder: store.ui.selectedFolder,
+    router: props.router,
+    location: props.location
+}))(withRouter(AppRoot));

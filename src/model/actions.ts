@@ -188,3 +188,8 @@ export const CONFIRMATION_DELETION: string = "CONFIRMATION_DELETION";
 export function confirmDeletion(noteToDelete): IAction {
     return createAction(CONFIRMATION_DELETION, noteToDelete);
 }
+
+export const SELECT_FOLDER: string = "SELECT_FOLDER";
+export function selectFolder(folder): IAction {
+    return createAction(SELECT_FOLDER, folder);
+}

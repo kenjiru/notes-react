@@ -12,6 +12,7 @@ export interface IUi {
     snackbar?: ISnackbar;
     notesToDelete?: INote[];
     deleteConfirmationId?: string;
+    selectedFolder?: string;
 }
 
 export interface ISnackbar {
