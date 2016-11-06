@@ -30,6 +30,10 @@ class NoteUtil {
         "list-item": "li"
     };
 
+    public static isNoteInFolder(note: INote, folder: string): boolean {
+        return _.some(note.tags, (tag: string): boolean => tag === `system:notebook:${folder}`);
+    }
+
     public static createNewNote(noteId: string): INote {
         let noteTitle: string = "New Note";
 

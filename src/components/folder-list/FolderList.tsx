@@ -47,7 +47,11 @@ class FolderList extends React.Component<IFolderListProps, IFolderListState> {
     }
 
     handleFolderClicked = (index: number): void => {
-        let selectedFolder: string = index !== -1 ? this.state.folders[index] : null;
+        let selectedFolder: string;
+
+        if (index !== -1) {
+            selectedFolder = this.state.folders[index];
+        }
 
         this.props.dispatch(selectFolder(selectedFolder));
         this.props.onFolderSelected(selectedFolder);

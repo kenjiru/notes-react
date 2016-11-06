@@ -95,11 +95,25 @@ class NoteList extends React.Component<IListNotesProps, IListNotesState> {
     }
 
     private getFilteredNotes(): INote[] {
-        return _.filter(this.props.notes, (note: INote) => {
+        return _.filter(this.props.notes, (note: INote): boolean => {
             let noteText: string = NoteUtil.getText(note);
+
+            if (this.isInSelectedFolder(note) === false) {
+                return false;
+            }
 
             return noteText.indexOf(this.state.filter) > -1;
         });
+    }
+
+    private isInSelectedFolder(note: INote): boolean {
+        let selectedFolder: string = this.props.selectedFolder;
+
+        if (_.isNil(selectedFolder)) {
+            return true;
+        }
+
+        return NoteUtil.isNoteInFolder(note, selectedFolder);
     }
 
     private handleTableClick = (selectedNote: number, columnId: number) => {
@@ -171,6 +185,7 @@ class NoteList extends React.Component<IListNotesProps, IListNotesState> {
 interface IListNotesProps {
     notes?: INote[];
     deleteConfirmationId?: string;
+    selectedFolder?: string;
     dispatch?: IDispatchFunction;
 }
 
@@ -181,5 +196,6 @@ interface IListNotesState {
 
 export default connect((state: IStore): IListNotesProps => ({
     notes: state.local.notes,
-    deleteConfirmationId: state.ui.deleteConfirmationId
+    deleteConfirmationId: state.ui.deleteConfirmationId,
+    selectedFolder: state.ui.selectedFolder
 }))(NoteList);
