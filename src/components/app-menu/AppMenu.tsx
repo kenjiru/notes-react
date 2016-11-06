@@ -9,11 +9,21 @@ import MoreVertIcon from "material-ui/svg-icons/navigation/more-vert";
 import {IStore, IUser, INote} from "../../model/store";
 import {startSync, confirmDeletion} from "../../model/actions";
 import DropboxAuth from "../dropbox-auth/DropboxAuth";
+import IdUtil from "../../utils/IdUtil";
 
 class AppMenu extends React.Component<IAppMenuProps, IAppMenuState> {
     public componentWillReceiveProps(nextProps: IAppMenuProps): void {
         if (this.props.user !== nextProps.user && _.isNil(nextProps.user) === false) {
             this.props.dispatch(startSync());
+        }
+
+        if (this.props.deleteConfirmationId !== nextProps.deleteConfirmationId) {
+            let currentNotes: INote[] = [this.getCurrentNote()];
+            let deleteConfirmationId = IdUtil.getNodeListId(currentNotes);
+
+            if (nextProps.deleteConfirmationId === deleteConfirmationId) {
+                this.navigateBack();
+            }
         }
     }
 
@@ -41,7 +51,7 @@ class AppMenu extends React.Component<IAppMenuProps, IAppMenuState> {
         if (this.isEditPage()) {
             return <MenuItem primaryText="Delete note" onClick={this.handleDeleteNote}/>
         }
-     }
+    }
 
     private handleReload = (): void => {
         this.props.dispatch(startSync());
@@ -49,7 +59,6 @@ class AppMenu extends React.Component<IAppMenuProps, IAppMenuState> {
 
     private handleDeleteNote = (): void => {
         this.deleteCurrentNote();
-        this.navigateBack();
     };
 
     private navigateBack(): void {
@@ -92,6 +101,7 @@ interface IAppMenuProps {
     dispatch?: Function;
     user?: IUser;
     notes?: INote[];
+    deleteConfirmationId?: string;
     router?: InjectedRouter;
     location?: Location;
 }
@@ -102,6 +112,7 @@ interface IAppMenuState {
 export default connect((store: IStore, props: IAppMenuProps): IAppMenuProps => ({
     user: store.dropbox.accessToken && store.dropbox.user ? store.dropbox.user : null,
     notes: store.local.notes,
+    deleteConfirmationId: store.ui.deleteConfirmationId,
     router: props.router,
     location: props.location
 }))(AppMenu);

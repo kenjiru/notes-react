@@ -11,6 +11,7 @@ export interface IStore {
 export interface IUi {
     snackbar?: ISnackbar;
     notesToDelete?: INote[];
+    deleteConfirmationId?: string;
 }
 
 export interface ISnackbar {

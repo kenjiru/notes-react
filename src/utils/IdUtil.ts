@@ -1,4 +1,12 @@
+import {INote} from "../model/store";
+
 class IdUtil {
+    public static getNodeListId(notes: INote[]): string {
+        let smallIds: string[] = _.map(notes, (note: INote) => note.id.substr(0, 4));
+
+        return smallIds.join("-");
+    }
+
     public static newId(): string {
         let callback: (result: string) => string = (result: string) => {
             return result += IdUtil.newSegment();

@@ -28,6 +28,18 @@ class NoteList extends React.Component<IListNotesProps, IListNotesState> {
         };
     }
 
+    public componentWillReceiveProps(nextProps: IListNotesProps): void {
+        if (this.props.deleteConfirmationId !== nextProps.deleteConfirmationId) {
+            let deleteConfirmationId = IdUtil.getNodeListId(this.getSelectedNotes());
+
+            if (nextProps.deleteConfirmationId === deleteConfirmationId) {
+                this.setState({
+                    selectedRows: []
+                });
+            }
+        }
+    }
+
     public render(): React.ReactElement<any> {
         return (
             <div className="note-list">
@@ -107,10 +119,6 @@ class NoteList extends React.Component<IListNotesProps, IListNotesState> {
 
     private handleDeleteClick = () => {
         this.props.dispatch(confirmDeletion(this.getSelectedNotes()));
-
-        this.setState({
-            selectedRows: []
-        });
     };
 
     private handleAddNote = () => {
@@ -161,8 +169,9 @@ class NoteList extends React.Component<IListNotesProps, IListNotesState> {
 }
 
 interface IListNotesProps {
-    notes: INote[];
-    dispatch: IDispatchFunction;
+    notes?: INote[];
+    deleteConfirmationId?: string;
+    dispatch?: IDispatchFunction;
 }
 
 interface IListNotesState {
@@ -170,6 +179,7 @@ interface IListNotesState {
     selectedRows?: string|number[];
 }
 
-export default connect((state: IStore) => ({
-    notes: state.local.notes
+export default connect((state: IStore): IListNotesProps => ({
+    notes: state.local.notes,
+    deleteConfirmationId: state.ui.deleteConfirmationId
 }))(NoteList);

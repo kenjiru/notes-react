@@ -8,6 +8,7 @@ import DropboxUtil from "../utils/DropboxUtil";
 import SyncUtil from "../utils/SyncUtil";
 import {ISyncData} from "../utils/DropboxUtil";
 import NoteUtil from "../utils/NoteUtil";
+import IdUtil from "../utils/IdUtil";
 
 export const CLIENT_ID: string = "17zzlf216nsykj9";
 
@@ -139,10 +140,12 @@ export function createNewNote(noteId: string): IActionCallback {
 }
 
 export const DELETE_NOTES: string = "DELETE_NOTES";
+export const CONFIRM_DELETION: string = "CONFIRM_DELETION";
 export function deleteNotes(notes: INote[]): IActionCallback {
     return (dispatch: IDispatchFunction): Promise<any> => {
         console.log("deleteNotes");
         dispatch(createAction(DELETE_NOTES, notes));
+        dispatch(createAction(CONFIRM_DELETION, IdUtil.getNodeListId(notes)));
 
         return dispatch(persistState());
     };
