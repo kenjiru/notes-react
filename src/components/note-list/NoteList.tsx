@@ -98,7 +98,7 @@ class NoteList extends React.Component<IListNotesProps, IListNotesState> {
         return _.filter(this.props.notes, (note: INote): boolean => {
             let noteText: string = NoteUtil.getText(note);
 
-            if (this.isInSelectedFolder(note) === false) {
+            if (this.isInSelectedFolder(note) === false || NoteUtil.isTemplateNote(note)) {
                 return false;
             }
 

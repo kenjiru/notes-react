@@ -31,7 +31,15 @@ class NoteUtil {
     };
 
     public static isNoteInFolder(note: INote, folder: string): boolean {
-        return _.some(note.tags, (tag: string): boolean => tag === `system:notebook:${folder}`);
+        return NoteUtil.hasTag(note, `system:notebook:${folder}`);
+    }
+
+    public static isTemplateNote(note: INote): boolean {
+        return NoteUtil.hasTag(note, "system:template");
+    }
+
+    private static hasTag(note: INote, targetTag: string): boolean {
+        return _.some(note.tags, (tag: string): boolean => tag === targetTag);
     }
 
     public static createNewNote(noteId: string): INote {
