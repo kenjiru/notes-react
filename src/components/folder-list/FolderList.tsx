@@ -62,7 +62,7 @@ class FolderList extends React.Component<IFolderListProps, IFolderListState> {
         }
 
         this.props.dispatch(selectFolder(selectedFolder));
-        this.props.onFolderSelected(selectedFolder);
+        this.props.hideDrawer();
     };
 }
 
@@ -70,7 +70,7 @@ interface IFolderListProps {
     dispatch?: IDispatchFunction;
     notes?: INote[];
     selectedFolder?: string;
-    onFolderSelected?: (folderName: string) => void;
+    hideDrawer?: () => void;
 }
 
 interface IFolderListState {
@@ -80,5 +80,5 @@ interface IFolderListState {
 export default connect((state: IStore, props: IFolderListProps): IFolderListProps => ({
     notes: state.local.notes,
     selectedFolder: state.ui.selectedFolder,
-    onFolderSelected: props.onFolderSelected
+    hideDrawer: props.hideDrawer
 }))(FolderList);

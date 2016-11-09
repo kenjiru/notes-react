@@ -31,7 +31,7 @@ class AppRoot extends React.Component<IAppRootProps, IAppRootState> {
                         iconElementRight={<AppMenu router={this.props.router} location={this.props.location}/>}/>
                 <Drawer docked={false} open={this.state.isDrawerVisible}
                         onRequestChange={(isDrawerVisible) => this.setState({isDrawerVisible})}>
-                    <FolderList onFolderSelected={this.handleFolderSelected}/>
+                    <FolderList hideDrawer={this.handleHideDrawer}/>
                 </Drawer>
 
                 <div className="app-content">
@@ -60,11 +60,15 @@ class AppRoot extends React.Component<IAppRootProps, IAppRootState> {
         });
     };
 
-    private handleFolderSelected = (selectedFolder: string): void => {
+    private handleHideDrawer = (): void => {
+        this.hideDrawer();
+    };
+
+    private hideDrawer(): void {
         this.setState({
             isDrawerVisible: false
         });
-    };
+    }
 }
 
 interface IAppRootProps {
