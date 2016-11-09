@@ -3,7 +3,7 @@ import * as React from "react";
 import {ReactElement} from "react";
 import {connect} from "react-redux";
 
-import {List, ListItem, Subheader} from "material-ui";
+import {List, ListItem, Subheader, IconButton} from "material-ui";
 import FileFolder from "material-ui/svg-icons/file/folder";
 
 import {IStore, INote} from "../../model/store";
@@ -29,9 +29,17 @@ class FolderList extends React.Component<IFolderListProps, IFolderListState> {
     }
 
     public render(): React.ReactElement<any> {
+        let subheaderStyles: Object = {
+            display: "inline-flex",
+            verticalAlign: "middle"
+        };
+
         return (
             <List>
-                <Subheader>Folders</Subheader>
+                <Subheader style={subheaderStyles}>
+                    <span style={{flexGrow: 2}}>Folders</span>
+                    <IconButton iconClassName="material-icons">create_new_folder</IconButton>
+                </Subheader>
                 <ListItem key="all-folder" leftIcon={<FileFolder />} primaryText={"All notes"}
                           onClick={() => this.handleFolderClicked(-1)}/>
                 {this.renderFolders()}
