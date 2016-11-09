@@ -3,7 +3,7 @@ import {INote, ILocal, IDropbox, IUi} from "./store";
 import {
     DROPBOX_SET_CURRENT_ACCOUNT, DROPBOX_SET_ACCESS_TOKEN, DROPBOX_SET_LAST_SYNC,
     RESTORE_STATE, CREATE_NEW_NOTE, UPDATE_NOTE, SET_NOTES, DELETE_NOTES, SHOW_SNACKBAR_MESSAGE, CONFIRMATION_DELETION,
-    CONFIRM_DELETION, SELECT_FOLDER
+    CONFIRM_DELETION, SELECT_FOLDER, SHOW_CREATE_FOLDER_DIALOG
 } from "./actions";
 import {IAction} from "../utils/ActionUtil";
 import {combineReducers} from "redux";
@@ -101,6 +101,12 @@ let defaultUi: IUi = {
 
 function ui(store: IUi = defaultUi, action: IAction): IUi {
     switch (action.type) {
+        case SHOW_CREATE_FOLDER_DIALOG:
+            console.log("SHOW_CREATE_FOLDER_DIALOG");
+            return _.assign({}, store, {
+                showCreateFolderDialog: {}
+            });
+
         case SHOW_SNACKBAR_MESSAGE:
             return _.assign({}, store, {
                 snackbar: {

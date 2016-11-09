@@ -11,6 +11,7 @@ import AppMenu from "../app-menu/AppMenu";
 import FolderList from "../folder-list/FolderList";
 import DeleteConfirmationDialog from "../delete-confirmation-dialog/DeleteConfirmationDialog";
 import SnackbarMessage from "../snackbar-message/SnackbarMessage";
+import CreateFolderDialog from "../create-folder-dialog/CreateFolderDialog";
 
 class AppRoot extends React.Component<IAppRootProps, IAppRootState> {
     constructor(props: IAppRootProps) {
@@ -40,6 +41,7 @@ class AppRoot extends React.Component<IAppRootProps, IAppRootState> {
 
                 <SnackbarMessage/>
                 <DeleteConfirmationDialog/>
+                <CreateFolderDialog/>
             </div>
         );
     }

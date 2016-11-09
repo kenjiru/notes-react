@@ -179,6 +179,11 @@ export function persistState(): IActionCallback {
     };
 }
 
+export const SHOW_CREATE_FOLDER_DIALOG: string = "SHOW_CREATE_FOLDER_DIALOG";
+export function showCreateFolderDialog(): IAction {
+    return createAction(SHOW_CREATE_FOLDER_DIALOG);
+}
+
 export const SHOW_SNACKBAR_MESSAGE: string = "SHOW_SNACKBAR_MESSAGE";
 export function showSnackbarMessage(message: string): IAction {
     return createAction(SHOW_SNACKBAR_MESSAGE, message);

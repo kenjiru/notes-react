@@ -7,7 +7,7 @@ import {List, ListItem, Subheader, IconButton} from "material-ui";
 import FileFolder from "material-ui/svg-icons/file/folder";
 
 import {IStore, INote} from "../../model/store";
-import {selectFolder} from "../../model/actions";
+import {selectFolder, showCreateFolderDialog} from "../../model/actions";
 import FolderUtil from "../../utils/FolderUtil";
 import {IDispatchFunction} from "../../utils/ActionUtil";
 
@@ -38,7 +38,9 @@ class FolderList extends React.Component<IFolderListProps, IFolderListState> {
             <List>
                 <Subheader style={subheaderStyles}>
                     <span style={{flexGrow: 2}}>Folders</span>
-                    <IconButton iconClassName="material-icons">create_new_folder</IconButton>
+                    <IconButton iconClassName="material-icons" onClick={this.handleCreateFolder}>
+                        create_new_folder
+                    </IconButton>
                 </Subheader>
                 <ListItem key="all-folder" leftIcon={<FileFolder />} primaryText={"All notes"}
                           onClick={() => this.handleFolderClicked(-1)}/>
@@ -54,7 +56,7 @@ class FolderList extends React.Component<IFolderListProps, IFolderListState> {
         );
     }
 
-    handleFolderClicked = (index: number): void => {
+    private handleFolderClicked = (index: number): void => {
         let selectedFolder: string;
 
         if (index !== -1) {
@@ -62,6 +64,11 @@ class FolderList extends React.Component<IFolderListProps, IFolderListState> {
         }
 
         this.props.dispatch(selectFolder(selectedFolder));
+        this.props.hideDrawer();
+    };
+
+    private handleCreateFolder = (): void => {
+        this.props.dispatch(showCreateFolderDialog());
         this.props.hideDrawer();
     };
 }

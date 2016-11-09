@@ -13,6 +13,7 @@ export interface IUi {
     notesToDelete?: INote[];
     deleteConfirmationId?: string;
     selectedFolder?: string;
+    showCreateFolderDialog?: Object;
 }
 
 export interface ISnackbar {
