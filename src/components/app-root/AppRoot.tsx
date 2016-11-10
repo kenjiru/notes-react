@@ -27,9 +27,8 @@ class AppRoot extends React.Component<IAppRootProps, IAppRootState> {
     public render(): React.ReactElement<any> {
         return (
             <div className="app-root">
-                <AppBar title={this.getTitle()}
-                        onLeftIconButtonTouchTap={this.handleToggleDrawer}
-                        iconElementRight={<AppMenu router={this.props.router} location={this.props.location}/>}/>
+                <AppBar title={this.getTitle()} onLeftIconButtonTouchTap={this.handleToggleDrawer}
+                        iconElementRight={<AppMenu location={this.props.location}/>}/>
                 <Drawer docked={false} open={this.state.isDrawerVisible}
                         onRequestChange={(isDrawerVisible) => this.setState({isDrawerVisible})}>
                     <FolderList hideDrawer={this.handleHideDrawer}/>

@@ -1,6 +1,7 @@
 import * as _ from "lodash";
 import * as React from "react";
 import {connect} from "react-redux";
+import {InjectedRouter, withRouter} from "react-router";
 import * as moment from "moment";
 import {Editor, EditorState, ContentState, RichUtils} from "draft-js";
 import {stateFromHTML} from "draft-js-import-html";
@@ -11,6 +12,7 @@ import {updateNote} from "../../model/actions";
 import NoteUtil from "../../utils/NoteUtil";
 import EditorUtil from "../../utils/EditorUtil";
 import {IDispatchFunction} from "../../utils/ActionUtil";
+import IdUtil from "../../utils/IdUtil";
 
 import EditToolbar from "./EditToolbar";
 
@@ -36,7 +38,15 @@ class EditNote extends React.Component<IEditNoteProps, IEditNoteState> {
         if (nextProps.note !== this.props.note) {
             this.setState({
                 editorState: this.getEditorState(this.props.note)
-            })
+            });
+        }
+
+        if (this.props.deleteConfirmationId !== nextProps.deleteConfirmationId && _.isNil(this.props.note) === false) {
+            let deleteConfirmationId = IdUtil.getNodeListId([this.props.note]);
+
+            if (nextProps.deleteConfirmationId === deleteConfirmationId) {
+                this.navigateBack();
+            }
         }
     }
 
@@ -123,14 +133,21 @@ class EditNote extends React.Component<IEditNoteProps, IEditNoteState> {
     private didContentChange(editorState: EditorState): boolean {
         return this.state.editorState.getCurrentContent() !== editorState.getCurrentContent();
     }
+
+    private navigateBack(): void {
+        console.log("navigate back!");
+        this.props.router.goBack();
+    }
 }
 
 interface IEditNoteProps {
+    dispatch?: IDispatchFunction;
     params?: {
         noteId: string;
     };
+    router?: InjectedRouter;
     note?: INote;
-    dispatch?: IDispatchFunction;
+    deleteConfirmationId?: string;
 }
 
 interface IEditNoteState {
@@ -138,5 +155,7 @@ interface IEditNoteState {
 }
 
 export default connect((state: IStore, props: IEditNoteProps): IEditNoteProps => ({
-    note: _.find(state.local.notes, {id: props.params.noteId})
-}))(EditNote);
+    note: _.find(state.local.notes, {id: props.params.noteId}),
+    router: props.router,
+    deleteConfirmationId: state.ui.deleteConfirmationId
+}))(withRouter(EditNote));
