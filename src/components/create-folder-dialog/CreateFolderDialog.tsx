@@ -5,6 +5,8 @@ import {Dialog, FlatButton, TextField} from "material-ui";
 import {IStore} from "../../model/store";
 
 class CreateFolderDialog extends React.Component<ICreateFolderDialogProps, ICreateFolderDialogState> {
+    private ERROR_MESSAGE: string = "Folder name cannot be empty";
+
     constructor(props: ICreateFolderDialogProps) {
         super(props);
 
@@ -33,13 +35,27 @@ class CreateFolderDialog extends React.Component<ICreateFolderDialogProps, ICrea
         return (
             <Dialog contentStyle={contentStyle} title="Create new folder" actions={dialogActions} modal={true}
                     open={this.state.isDialogShown} onRequestClose={this.handleCloseDialog}>
-                <TextField hintText="Folder name"/>
+                <TextField hintText="Folder name" value={this.state.folderName} errorText={this.state.errorText}
+                           onChange={this.handleInputChange}/>
             </Dialog>
         );
     }
 
+    private handleInputChange = (ev: any): void => {
+        this.setState({
+            folderName: ev.target.value,
+            errorText: null
+        });
+    };
+
     private handleCreateFolder = (): void => {
-        console.log("handleCreateFolder");
+        if (_.isNil(this.state.folderName) || this.state.folderName === "") {
+            this.setState({
+                errorText: this.ERROR_MESSAGE
+            });
+
+            return;
+        }
     };
 
     private handleCloseDialog = (): void => {
@@ -65,6 +81,8 @@ interface ICreateFolderDialogProps {
 
 interface ICreateFolderDialogState {
     isDialogShown?: boolean;
+    folderName?: string;
+    errorText?: string;
 }
 
 export default connect((store: IStore): ICreateFolderDialogProps => ({
