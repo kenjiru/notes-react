@@ -116,13 +116,13 @@ class NoteList extends React.Component<IListNotesProps, IListNotesState> {
         return NoteUtil.isNoteInFolder(note, selectedFolder);
     }
 
-    private handleTableClick = (selectedNote: number, columnId: number) => {
+    private handleTableClick = (selectedIndex: number, columnId: number) => {
         if (columnId !== 0) {
             return;
         }
 
-        let note: INote = this.props.notes[selectedNote];
-        this.editNote(note.id);
+        let notes: INote[] = this.getFilteredNotes();
+        this.editNote(notes[selectedIndex].id);
     };
 
     private handleFilterChange: EventHandler<any> = (ev: any): void => {
