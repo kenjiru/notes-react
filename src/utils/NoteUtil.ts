@@ -1,6 +1,7 @@
 import * as moment from "moment";
 
 import {INote, IManifestNote} from "../model/store";
+import IdUtil from "./IdUtil";
 
 class NoteUtil {
     public static CHANGED_LOCALLY_REVISION: number = Number.MAX_VALUE;
@@ -42,7 +43,16 @@ class NoteUtil {
         return _.some(note.tags, (tag: string): boolean => tag === targetTag);
     }
 
-    public static createNewNote(noteId: string): INote {
+    public static createTemplateNote(folder: string): INote {
+        let tags: string[] = [
+            "system:template",
+            `system:notebook:${folder}`
+        ];
+
+        return NoteUtil.createNewNote(IdUtil.newId(), tags);
+    }
+
+    public static createNewNote(noteId: string, tags?: string[]): INote {
         let noteTitle: string = "New Note";
 
         return {
@@ -51,7 +61,8 @@ class NoteUtil {
             title: noteTitle,
             createDate: moment().format(),
             lastChanged: moment().format(),
-            content: noteTitle + "\nNew note content"
+            content: noteTitle + "\nNew note content",
+            tags
         };
     }
 
@@ -69,9 +80,23 @@ class NoteUtil {
   <height>360</height>
   <x>0</x>
   <y>0</y>
+  ${NoteUtil.createTagsNode(note.tags)}
   <open-on-startup>False</open-on-startup>
-</note>
-`;
+</note>`;
+    }
+
+    private static createTagsNode(tags: string[]): string {
+        if (_.isArray(tags) === false || tags.length === 0) {
+            return;
+        }
+
+        return `  <tags>
+${NoteUtil.createTagNode(tags)}
+  </tags>`;
+    }
+
+    private static createTagNode(tags: string[]): string[] {
+        return _.map(tags, (tag: string): string => `    <tag>${tag}</tag>`);
     }
 
     public static getTitle(noteContent: string): string {

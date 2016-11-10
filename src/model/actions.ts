@@ -161,6 +161,12 @@ export function updateNote(note: INote): IActionCallback {
     };
 }
 
+export function createFolder(folderName: string): IAction {
+    let folderTemplate: INote = NoteUtil.createTemplateNote(folderName);
+
+    return createAction(CREATE_NEW_NOTE, folderTemplate);
+}
+
 export const RESTORE_STATE: string = "RESTORE_STATE";
 export function restoreState(): IAction {
     let newState: IStore = storage.get("store");

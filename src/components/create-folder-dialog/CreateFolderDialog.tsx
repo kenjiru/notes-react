@@ -3,6 +3,8 @@ import {connect} from "react-redux";
 import {Dialog, FlatButton, TextField} from "material-ui";
 
 import {IStore} from "../../model/store";
+import {createFolder} from "../../model/actions";
+import {IDispatchFunction} from "../../utils/ActionUtil";
 
 class CreateFolderDialog extends React.Component<ICreateFolderDialogProps, ICreateFolderDialogState> {
     private ERROR_MESSAGE: string = "Folder name cannot be empty";
@@ -49,13 +51,18 @@ class CreateFolderDialog extends React.Component<ICreateFolderDialogProps, ICrea
     };
 
     private handleCreateFolder = (): void => {
-        if (_.isNil(this.state.folderName) || this.state.folderName === "") {
+        let folderName: string = this.state.folderName;
+
+        if (_.isNil(folderName) || folderName === "") {
             this.setState({
                 errorText: this.ERROR_MESSAGE
             });
 
             return;
         }
+
+        this.hideDialog();
+        this.props.dispatch(createFolder(this.state.folderName))
     };
 
     private handleCloseDialog = (): void => {
@@ -64,7 +71,8 @@ class CreateFolderDialog extends React.Component<ICreateFolderDialogProps, ICrea
 
     private showDialog(): void {
         this.setState({
-            isDialogShown: true
+            isDialogShown: true,
+            folderName: ""
         });
     }
 
@@ -76,6 +84,7 @@ class CreateFolderDialog extends React.Component<ICreateFolderDialogProps, ICrea
 }
 
 interface ICreateFolderDialogProps {
+    dispatch?: IDispatchFunction;
     showCreateFolderDialog?: Object;
 }
 
