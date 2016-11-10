@@ -3,7 +3,7 @@ import {connect} from "react-redux";
 import {Dialog, FlatButton} from "material-ui";
 
 import {IStore, INote} from "../../model/store";
-import {deleteNotes, showSnackbarMessage} from "../../model/actions";
+import {deleteNotes, showSnackbarMessage, setSelectedNotes} from "../../model/actions";
 import {IDispatchFunction} from "../../utils/ActionUtil";
 
 class DeleteConfirmationDialog extends React.Component<IDeleteConfirmationDialogProps, IDeleteConfirmationDialogState> {
@@ -66,6 +66,7 @@ class DeleteConfirmationDialog extends React.Component<IDeleteConfirmationDialog
         this.hideDialog();
         this.deleteSelectedNotes();
         this.showSnackbarMessage();
+        this.resetSelectedNotes();
     };
 
     private deleteSelectedNotes(): void {
@@ -83,6 +84,10 @@ class DeleteConfirmationDialog extends React.Component<IDeleteConfirmationDialog
         }
 
         this.props.dispatch(showSnackbarMessage(message));
+    }
+
+    private resetSelectedNotes(): void {
+        this.props.dispatch(setSelectedNotes([]));
     }
 }
 

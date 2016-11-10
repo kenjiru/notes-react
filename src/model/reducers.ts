@@ -3,7 +3,7 @@ import {INote, ILocal, IDropbox, IUi} from "./store";
 import {
     DROPBOX_SET_CURRENT_ACCOUNT, DROPBOX_SET_ACCESS_TOKEN, DROPBOX_SET_LAST_SYNC,
     RESTORE_STATE, CREATE_NEW_NOTE, UPDATE_NOTE, SET_NOTES, DELETE_NOTES, SHOW_SNACKBAR_MESSAGE, CONFIRMATION_DELETION,
-    CONFIRM_DELETION, SELECT_FOLDER, SHOW_CREATE_FOLDER_DIALOG
+    CONFIRM_DELETION, SELECT_FOLDER, SHOW_CREATE_FOLDER_DIALOG, SET_SELECTED_NOTES
 } from "./actions";
 import {IAction} from "../utils/ActionUtil";
 import {combineReducers} from "redux";
@@ -96,11 +96,17 @@ function local(store: ILocal = defaultLocal, action: IAction): ILocal {
 let defaultUi: IUi = {
     snackbar: {
         message: ""
-    }
+    },
+    selectedNotes: []
 };
 
 function ui(store: IUi = defaultUi, action: IAction): IUi {
     switch (action.type) {
+        case SET_SELECTED_NOTES:
+            return _.assign({}, store, {
+                selectedNotes: action.payload
+            });
+
         case SHOW_CREATE_FOLDER_DIALOG:
             console.log("SHOW_CREATE_FOLDER_DIALOG");
             return _.assign({}, store, {

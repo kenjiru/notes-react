@@ -9,7 +9,7 @@ import {
 } from "material-ui/Table";
 
 import {INote, IStore} from "../../model/store";
-import {createNewNote, showSnackbarMessage, confirmDeletion} from "../../model/actions";
+import {createNewNote, showSnackbarMessage, confirmDeletion, setSelectedNotes} from "../../model/actions";
 
 import NoteUtil from "../../utils/NoteUtil";
 import {IDispatchFunction} from "../../utils/ActionUtil";
@@ -23,22 +23,21 @@ class NoteList extends React.Component<IListNotesProps, IListNotesState> {
         super(props);
 
         this.state = {
-            filter: "",
-            selectedRows: []
+            filter: ""
         };
     }
 
-    public componentWillReceiveProps(nextProps: IListNotesProps): void {
-        if (this.props.deleteConfirmationId !== nextProps.deleteConfirmationId) {
-            let deleteConfirmationId = IdUtil.getNodeListId(this.getSelectedNotes());
-
-            if (nextProps.deleteConfirmationId === deleteConfirmationId) {
-                this.setState({
-                    selectedRows: []
-                });
-            }
-        }
-    }
+    // public componentWillReceiveProps(nextProps: IListNotesProps): void {
+    //     if (this.props.deleteConfirmationId !== nextProps.deleteConfirmationId) {
+    //         let deleteConfirmationId = IdUtil.getNodeListId(this.getSelectedNotes());
+    //
+    //         if (nextProps.deleteConfirmationId === deleteConfirmationId) {
+    //             this.setState({
+    //                 selectedRows: []
+    //             });
+    //         }
+    //     }
+    // }
 
     public render(): React.ReactElement<any> {
         return (
@@ -71,7 +70,7 @@ class NoteList extends React.Component<IListNotesProps, IListNotesState> {
         let filteredNotes: INote[] = this.getFilteredNotes();
 
         return _.map(filteredNotes, (note: INote, i: number) =>
-            <TableRow key={i} selected={this.isRowSelected(i)}>
+            <TableRow key={i} selected={this.isRowSelected(note.id)}>
                 <TableRowColumn style={{cursor: "pointer"}}>{note.title}</TableRowColumn>
                 <TableRowColumn>{note.lastChanged.toString()}</TableRowColumn>
             </TableRow>
@@ -132,7 +131,7 @@ class NoteList extends React.Component<IListNotesProps, IListNotesState> {
     };
 
     private handleDeleteClick = () => {
-        this.props.dispatch(confirmDeletion(this.getSelectedNotes()));
+        this.props.dispatch(confirmDeletion(this.props.selectedNotes));
     };
 
     private handleAddNote = () => {
@@ -145,27 +144,15 @@ class NoteList extends React.Component<IListNotesProps, IListNotesState> {
     };
 
     private handleRowSelection = (selectedRows: string|number[]): void => {
-        this.setState({
-            selectedRows
-        });
+        let selectedNotes: INote[] = this.getSelectedNotes(selectedRows);
+        this.props.dispatch(setSelectedNotes(selectedNotes));
     };
 
-    private isRowSelected(rowIndex: number): boolean {
-        let selectedRows: string|number[] = this.state.selectedRows;
-
-        if (_.isNil(selectedRows)) {
-            return false;
-        }
-
-        if (typeof selectedRows === "string") {
-            return selectedRows === "all";
-        }
-
-        return selectedRows.indexOf(rowIndex) !== -1;
+    private isRowSelected(noteId: string): boolean {
+        return _.some(this.props.selectedNotes, (note: INote): boolean => note.id === noteId);
     }
 
-    private getSelectedNotes(): INote[] {
-        let selectedRows: string|number[] = this.state.selectedRows;
+    private getSelectedNotes(selectedRows: string|number[]): INote[] {
         let visibleNotes: INote[] = this.getFilteredNotes();
 
         if (typeof selectedRows !== "string") {
@@ -174,7 +161,7 @@ class NoteList extends React.Component<IListNotesProps, IListNotesState> {
     }
 
     private hasSelectedItem(): boolean {
-        return this.state.selectedRows.length > 0;
+        return this.props.selectedNotes.length > 0;
     }
 
     private editNote(noteId: string): void {
@@ -183,19 +170,20 @@ class NoteList extends React.Component<IListNotesProps, IListNotesState> {
 }
 
 interface IListNotesProps {
+    dispatch?: IDispatchFunction;
     notes?: INote[];
     deleteConfirmationId?: string;
+    selectedNotes?: INote[];
     selectedFolder?: string;
-    dispatch?: IDispatchFunction;
 }
 
 interface IListNotesState {
     filter?: string;
-    selectedRows?: string|number[];
 }
 
 export default connect((state: IStore): IListNotesProps => ({
     notes: state.local.notes,
     deleteConfirmationId: state.ui.deleteConfirmationId,
+    selectedNotes: state.ui.selectedNotes,
     selectedFolder: state.ui.selectedFolder
 }))(NoteList);

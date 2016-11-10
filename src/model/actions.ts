@@ -186,6 +186,11 @@ export function persistState(): IActionCallback {
     };
 }
 
+export const SET_SELECTED_NOTES: string = "SET_SELECTED_NOTES";
+export function setSelectedNotes(notes: INote[]): IAction {
+    return createAction(SET_SELECTED_NOTES, notes);
+}
+
 export const SHOW_CREATE_FOLDER_DIALOG: string = "SHOW_CREATE_FOLDER_DIALOG";
 export function showCreateFolderDialog(): IAction {
     return createAction(SHOW_CREATE_FOLDER_DIALOG);

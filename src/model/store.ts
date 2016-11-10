@@ -10,6 +10,7 @@ export interface IStore {
 
 export interface IUi {
     snackbar?: ISnackbar;
+    selectedNotes?: INote[];
     notesToDelete?: INote[];
     deleteConfirmationId?: string;
     selectedFolder?: string;
