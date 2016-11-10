@@ -130,8 +130,9 @@ function syncNotes(): IActionCallback {
 
 export const CREATE_NEW_NOTE: string = "CREATE_NEW_NOTE";
 export function createNewNote(noteId: string): IActionCallback {
-    return (dispatch: IDispatchFunction): Promise<any> => {
-        let newNote: INote = NoteUtil.createNewNote(noteId);
+    return (dispatch: IDispatchFunction, getState: IGetStateFunction): Promise<any> => {
+        let folder: string = getState().ui.selectedFolder;
+        let newNote: INote = NoteUtil.createNewNote(noteId, folder);
 
         dispatch(createAction(CREATE_NEW_NOTE, newNote));
 

@@ -49,10 +49,19 @@ class NoteUtil {
             `system:notebook:${folder}`
         ];
 
-        return NoteUtil.createNewNote(IdUtil.newId(), tags);
+        return NoteUtil.createNote(IdUtil.newId(), tags);
     }
 
-    public static createNewNote(noteId: string, tags?: string[]): INote {
+    public static createNewNote(noteId: string, folder: string): INote {
+        let tags: string[] = [];
+
+        if (_.isNil(folder) === false && folder.length > 0) {
+            tags.push(`system:notebook:${folder}`);
+        }
+        return NoteUtil.createNote(noteId, tags);
+    }
+
+    public static createNote(noteId: string, tags?: string[]): INote {
         let noteTitle: string = "New Note";
 
         return {
