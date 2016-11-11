@@ -2,8 +2,9 @@ import * as _ from "lodash";
 import {INote, ILocal, IDropbox, IUi} from "./store";
 import {
     DROPBOX_SET_CURRENT_ACCOUNT, DROPBOX_SET_ACCESS_TOKEN, DROPBOX_SET_LAST_SYNC,
-    RESTORE_STATE, CREATE_NEW_NOTE, UPDATE_NOTE, SET_NOTES, DELETE_NOTES, SHOW_SNACKBAR_MESSAGE, CONFIRMATION_DELETION,
-    CONFIRM_DELETION, SELECT_FOLDER, SHOW_CREATE_FOLDER_DIALOG, SET_SELECTED_NOTES
+    RESTORE_STATE, SET_NOTES, CREATE_NEW_NOTE, UPDATE_NOTE, DELETE_NOTES, SET_FOLDERS, CREATE_NEW_FOLDER,
+    SET_SELECTED_NOTES, SELECT_FOLDER, CONFIRM_DELETION,
+    SHOW_SNACKBAR_MESSAGE, CONFIRMATION_DELETION, SHOW_CREATE_FOLDER_DIALOG
 } from "./actions";
 import {IAction} from "../utils/ActionUtil";
 import {combineReducers} from "redux";
@@ -45,6 +46,19 @@ function local(store: ILocal = defaultLocal, action: IAction): ILocal {
     let notes: INote[];
 
     switch (action.type) {
+        case SET_FOLDERS:
+            return _.assign({}, store, {
+                folders: action.payload
+            });
+
+        case CREATE_NEW_FOLDER:
+            let folders: string[] = _.clone(store.folders);
+            folders.push(action.payload as string);
+
+            return _.assign({}, store, {
+                folders
+            });
+
         case SET_NOTES:
             return _.assign({}, store, {
                 notes: action.payload

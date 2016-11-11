@@ -1,6 +1,7 @@
 import * as _ from "lodash";
 import * as moment from "moment";
 import {INote, IManifestNote, IManifest} from "../model/store";
+import FolderUtil from "./FolderUtil";
 
 class SyncUtil {
     public static syncNotes(localNotes: INote[], remoteNotes: INote[], baseManifest: IManifest,
@@ -56,6 +57,7 @@ class SyncUtil {
 
         return {
             notes: resultNotes,
+            folders: FolderUtil.getFolders(resultNotes),
             isModifiedLocally,
             idModifiedRemotely
         };
@@ -80,6 +82,7 @@ class SyncUtil {
 
 export interface ISyncResult {
     notes: INote[];
+    folders: string[];
     isModifiedLocally: boolean;
     idModifiedRemotely: boolean;
 }

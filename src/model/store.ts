@@ -23,6 +23,7 @@ export interface ISnackbar {
 
 export interface ILocal {
     notes?: INote[];
+    folders?: string[];
 }
 
 export interface IDropbox {

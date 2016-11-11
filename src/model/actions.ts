@@ -81,6 +81,7 @@ export function startSync(): IActionCallback {
 
 export const DROPBOX_SET_LAST_SYNC: string = "DROPBOX_SET_LAST_SYNC";
 export const SET_NOTES: string = "SET_NOTES";
+export const SET_FOLDERS: string = "SET_FOLDERS";
 function syncNotes(): IActionCallback {
     return (dispatch: IDispatchFunction, getState: IGetStateFunction): Promise<any> => {
         let state: IStore = getState();
@@ -102,7 +103,8 @@ function syncNotes(): IActionCallback {
 
             if (syncResult.idModifiedRemotely) {
                 promises.push.apply(promises, [
-                    dispatch(createAction(SET_NOTES, syncResult.notes))
+                    dispatch(createAction(SET_NOTES, syncResult.notes)),
+                    dispatch(createAction(SET_FOLDERS, syncResult.folders)),
                 ]);
             }
 
@@ -162,10 +164,14 @@ export function updateNote(note: INote): IActionCallback {
     };
 }
 
-export function createFolder(folderName: string): IAction {
-    let folderTemplate: INote = NoteUtil.createTemplateNote(folderName);
+export const CREATE_NEW_FOLDER: string = "CREATE_NEW_FOLDER";
+export function createFolder(folderName: string): IActionCallback {
+    return (dispatch: IDispatchFunction): Promise<any> => {
+        let folderTemplate: INote = NoteUtil.createTemplateNote(folderName);
 
-    return createAction(CREATE_NEW_NOTE, folderTemplate);
+        dispatch(createAction(CREATE_NEW_FOLDER, folderName));
+        return dispatch(createAction(CREATE_NEW_NOTE, folderTemplate));
+    };
 }
 
 export const RESTORE_STATE: string = "RESTORE_STATE";
