@@ -3,6 +3,7 @@ import {connect} from "react-redux";
 import {Dialog, FlatButton, SelectField, MenuItem} from "material-ui";
 
 import {IStore, INote} from "../../model/store";
+import {moveNotesTo} from "../../model/actions";
 
 import {IDispatchFunction} from "../../utils/ActionUtil";
 import FolderUtil from "../../utils/FolderUtil";
@@ -80,6 +81,7 @@ class MoveNotesDialog extends React.Component<IMoveNotesDialogProps, IMoveNotesD
                 errorText: MoveNotesDialog.SELECT_DIFFERENT_FOLDER
             });
         } else {
+            this.props.dispatch(moveNotesTo(this.props.selectedNotes, this.state.folder));
             this.hideDialog();
         }
     };

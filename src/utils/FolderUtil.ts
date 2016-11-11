@@ -30,6 +30,20 @@ class FolderUtil {
 
         return folder;
     }
+
+    public static setFolder(note: INote, folder: string): void {
+        let currentFolder: string = FolderUtil.getFolder(note);
+
+        if (currentFolder === folder) {
+            return;
+        }
+
+        note.tags = _.filter(note.tags, (tag: string): boolean => tag.indexOf("system:notebook") === -1);
+
+        if (folder !== FolderUtil.NO_FOLDER) {
+            note.tags.push(`system:notebook:${folder}`);
+        }
+    }
 }
 
 export default FolderUtil;

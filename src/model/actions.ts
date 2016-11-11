@@ -9,6 +9,7 @@ import SyncUtil from "../utils/SyncUtil";
 import {ISyncData} from "../utils/DropboxUtil";
 import NoteUtil from "../utils/NoteUtil";
 import IdUtil from "../utils/IdUtil";
+import FolderUtil from "../utils/FolderUtil";
 
 export const CLIENT_ID: string = "17zzlf216nsykj9";
 
@@ -160,6 +161,17 @@ export function updateNote(note: INote): IActionCallback {
         console.log("updateNote", note);
         dispatch(createAction(UPDATE_NOTE, note));
 
+        return dispatch(persistState());
+    };
+}
+
+export const UPDATE_ALL_NOTES: string = "UPDATE_ALL_NOTES";
+export function moveNotesTo(notes: INote[], folder: string): IActionCallback {
+    return (dispatch: IDispatchFunction): Promise<any> => {
+        let notesToMove: INote[] = _.clone(notes);
+        _.each(notesToMove, (note: INote): void => FolderUtil.setFolder(note, folder));
+
+        dispatch(createAction(UPDATE_ALL_NOTES, notesToMove));
         return dispatch(persistState());
     };
 }
