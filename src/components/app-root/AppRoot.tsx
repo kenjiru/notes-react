@@ -12,6 +12,7 @@ import FolderList from "../folder-list/FolderList";
 import DeleteConfirmationDialog from "../delete-confirmation-dialog/DeleteConfirmationDialog";
 import SnackbarMessage from "../snackbar-message/SnackbarMessage";
 import CreateFolderDialog from "../create-folder-dialog/CreateFolderDialog";
+import ChangeFolderDialog from "../move-notes-dialog/MoveNotesDialog";
 
 class AppRoot extends React.Component<IAppRootProps, IAppRootState> {
     constructor(props: IAppRootProps) {
@@ -41,6 +42,7 @@ class AppRoot extends React.Component<IAppRootProps, IAppRootState> {
                 <SnackbarMessage/>
                 <DeleteConfirmationDialog/>
                 <CreateFolderDialog/>
+                <ChangeFolderDialog/>
             </div>
         );
     }
