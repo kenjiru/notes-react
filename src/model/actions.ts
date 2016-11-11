@@ -197,6 +197,11 @@ export function setSelectedNotes(notes: INote[]): IAction {
     return createAction(SET_SELECTED_NOTES, notes);
 }
 
+export const SHOW_MOVE_NOTES_DIALOG: string = "SHOW_MOVE_NOTES_DIALOG";
+export function showMoveNotesDialog(): IAction {
+    return createAction(SHOW_MOVE_NOTES_DIALOG);
+}
+
 export const SHOW_CREATE_FOLDER_DIALOG: string = "SHOW_CREATE_FOLDER_DIALOG";
 export function showCreateFolderDialog(): IAction {
     return createAction(SHOW_CREATE_FOLDER_DIALOG);

@@ -6,7 +6,7 @@ import {IconButton, IconMenu, MenuItem} from "material-ui";
 import MoreVertIcon from "material-ui/svg-icons/navigation/more-vert";
 
 import {IStore, IUser, INote} from "../../model/store";
-import {startSync, confirmDeletion} from "../../model/actions";
+import {startSync, confirmDeletion, showMoveNotesDialog} from "../../model/actions";
 import DropboxAuth from "../dropbox-auth/DropboxAuth";
 
 class AppMenu extends React.Component<IAppMenuProps, IAppMenuState> {
@@ -25,9 +25,29 @@ class AppMenu extends React.Component<IAppMenuProps, IAppMenuState> {
                 <DropboxAuth/>
                 {this.renderReloadNotes()}
                 {this.renderDeleteNote()}
+                {this.renderMoveNotes()}
                 <MenuItem primaryText="About"/>
             </IconMenu>
         );
+    }
+
+    private renderMoveNotes(): React.ReactElement<any> {
+        let selectedNotes: INote[] = this.props.selectedNotes;
+        let itemText: string;
+
+        if (selectedNotes.length === 0 && this.isEditPage() === false) {
+            return;
+        }
+
+        if (this.isEditPage()) {
+            itemText = "Move note";
+        }
+
+        if (selectedNotes.length > 0) {
+            itemText = "Move notes";
+        }
+
+        return <MenuItem primaryText={itemText} onClick={this.handleMoveNotes}/>
     }
 
     private renderReloadNotes(): React.ReactElement<any> {
@@ -41,6 +61,10 @@ class AppMenu extends React.Component<IAppMenuProps, IAppMenuState> {
             return <MenuItem primaryText="Delete note" onClick={this.handleDeleteNote}/>
         }
     }
+
+    private handleMoveNotes = (): void => {
+        this.props.dispatch(showMoveNotesDialog());
+    };
 
     private handleReload = (): void => {
         this.props.dispatch(startSync());
@@ -86,6 +110,7 @@ interface IAppMenuProps {
     dispatch?: Function;
     user?: IUser;
     notes?: INote[];
+    selectedNotes?: INote[];
     location?: Location;
 }
 
@@ -95,5 +120,6 @@ interface IAppMenuState {
 export default connect((store: IStore, props: IAppMenuProps): IAppMenuProps => ({
     user: store.dropbox.accessToken && store.dropbox.user ? store.dropbox.user : null,
     notes: store.local.notes,
+    selectedNotes: store.ui.selectedNotes,
     location: props.location
 }))(AppMenu);

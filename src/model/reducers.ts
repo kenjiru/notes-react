@@ -4,7 +4,7 @@ import {
     DROPBOX_SET_CURRENT_ACCOUNT, DROPBOX_SET_ACCESS_TOKEN, DROPBOX_SET_LAST_SYNC,
     RESTORE_STATE, SET_NOTES, CREATE_NEW_NOTE, UPDATE_NOTE, DELETE_NOTES, SET_FOLDERS, CREATE_NEW_FOLDER,
     SET_SELECTED_NOTES, SELECT_FOLDER, CONFIRM_DELETION,
-    SHOW_SNACKBAR_MESSAGE, CONFIRMATION_DELETION, SHOW_CREATE_FOLDER_DIALOG
+    SHOW_SNACKBAR_MESSAGE, CONFIRMATION_DELETION, SHOW_CREATE_FOLDER_DIALOG, SHOW_MOVE_NOTES_DIALOG
 } from "./actions";
 import {IAction} from "../utils/ActionUtil";
 import {combineReducers} from "redux";
@@ -119,6 +119,11 @@ function ui(store: IUi = defaultUi, action: IAction): IUi {
         case SET_SELECTED_NOTES:
             return _.assign({}, store, {
                 selectedNotes: action.payload
+            });
+
+        case SHOW_MOVE_NOTES_DIALOG:
+            return _.assign({}, store, {
+                showMoveNotesDialog: {}
             });
 
         case SHOW_CREATE_FOLDER_DIALOG:
