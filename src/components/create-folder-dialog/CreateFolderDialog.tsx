@@ -7,7 +7,8 @@ import {createFolder} from "../../model/actions";
 import {IDispatchFunction} from "../../utils/ActionUtil";
 
 class CreateFolderDialog extends React.Component<ICreateFolderDialogProps, ICreateFolderDialogState> {
-    private ERROR_MESSAGE: string = "Folder name cannot be empty";
+    private EMPTY_FOLDER: string = "Folder name cannot be empty";
+    private FOLDER_EXISTS: string = "Folder already exists";
 
     constructor(props: ICreateFolderDialogProps) {
         super(props);
@@ -51,18 +52,18 @@ class CreateFolderDialog extends React.Component<ICreateFolderDialogProps, ICrea
     };
 
     private handleCreateFolder = (): void => {
-        let folderName: string = this.state.folderName;
-
-        if (_.isNil(folderName) || folderName === "") {
+        if (this.isEmpty()) {
             this.setState({
-                errorText: this.ERROR_MESSAGE
+                errorText: this.EMPTY_FOLDER
             });
-
-            return;
+        } else if (this.folderAlreadyExists()) {
+            this.setState({
+                errorText: this.FOLDER_EXISTS
+            });
+        } else {
+            this.hideDialog();
+            this.props.dispatch(createFolder(this.state.folderName))
         }
-
-        this.hideDialog();
-        this.props.dispatch(createFolder(this.state.folderName))
     };
 
     private handleCloseDialog = (): void => {
@@ -81,11 +82,20 @@ class CreateFolderDialog extends React.Component<ICreateFolderDialogProps, ICrea
             isDialogShown: false
         });
     }
+
+    private folderAlreadyExists(): boolean {
+        return _.some(this.props.folders, (folder: string): boolean => folder === this.state.folderName);
+    }
+
+    private isEmpty(): boolean {
+        return _.isNil(this.state.folderName) || this.state.folderName === "";
+    }
 }
 
 interface ICreateFolderDialogProps {
     dispatch?: IDispatchFunction;
     showCreateFolderDialog?: Object;
+    folders?: string[];
 }
 
 interface ICreateFolderDialogState {
@@ -95,5 +105,6 @@ interface ICreateFolderDialogState {
 }
 
 export default connect((store: IStore): ICreateFolderDialogProps => ({
-    showCreateFolderDialog: store.ui.showCreateFolderDialog
+    showCreateFolderDialog: store.ui.showCreateFolderDialog,
+    folders: store.local.folders
 }))(CreateFolderDialog);
