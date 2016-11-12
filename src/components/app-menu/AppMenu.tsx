@@ -23,7 +23,7 @@ class AppMenu extends React.Component<IAppMenuProps, IAppMenuState> {
                       anchorOrigin={{horizontal: "right", vertical: "top"}}
                       width={200}>
                 <DropboxAuth/>
-                {this.renderReloadNotes()}
+                {this.renderSynchronizeNotes()}
                 {this.renderDeleteNote()}
                 {this.renderMoveNotes()}
                 <MenuItem primaryText="About"/>
@@ -50,9 +50,9 @@ class AppMenu extends React.Component<IAppMenuProps, IAppMenuState> {
         return <MenuItem primaryText={itemText} onClick={this.handleMoveNotes}/>
     }
 
-    private renderReloadNotes(): React.ReactElement<any> {
+    private renderSynchronizeNotes(): React.ReactElement<any> {
         if (this.isLoggedIn()) {
-            return <MenuItem primaryText="Reload notes" onClick={this.handleReload}/>
+            return <MenuItem primaryText="Synchronize notes" onClick={this.handleSynchronize}/>
         }
     }
 
@@ -66,7 +66,7 @@ class AppMenu extends React.Component<IAppMenuProps, IAppMenuState> {
         this.props.dispatch(showMoveNotesDialog());
     };
 
-    private handleReload = (): void => {
+    private handleSynchronize = (): void => {
         this.props.dispatch(startSync());
     };
 
