@@ -219,6 +219,11 @@ export function showCreateFolderDialog(): IAction {
     return createAction(SHOW_CREATE_FOLDER_DIALOG);
 }
 
+export const SHOW_ABOUT_DIALOG: string = "SHOW_ABOUT_DIALOG";
+export function showAboutDialog(): IAction {
+    return createAction(SHOW_ABOUT_DIALOG);
+}
+
 export const SHOW_SNACKBAR_MESSAGE: string = "SHOW_SNACKBAR_MESSAGE";
 export function showSnackbarMessage(message: string): IAction {
     return createAction(SHOW_SNACKBAR_MESSAGE, message);

@@ -6,6 +6,7 @@ import {AppBar, Drawer} from "material-ui";
 
 import store, {IStore} from "../../model/store";
 import {restoreState} from "../../model/actions";
+import FolderUtil from "../../utils/FolderUtil";
 
 import AppMenu from "../app-menu/AppMenu";
 import FolderList from "../folder-list/FolderList";
@@ -13,8 +14,7 @@ import DeleteConfirmationDialog from "../delete-confirmation-dialog/DeleteConfir
 import SnackbarMessage from "../snackbar-message/SnackbarMessage";
 import CreateFolderDialog from "../create-folder-dialog/CreateFolderDialog";
 import ChangeFolderDialog from "../move-notes-dialog/MoveNotesDialog";
-import NoteUtil from "../../utils/NoteUtil";
-import FolderUtil from "../../utils/FolderUtil";
+import AboutDialog from "../about-dialog/AboutDialog";
 
 class AppRoot extends React.Component<IAppRootProps, IAppRootState> {
     constructor(props: IAppRootProps) {
@@ -45,6 +45,7 @@ class AppRoot extends React.Component<IAppRootProps, IAppRootState> {
                 <DeleteConfirmationDialog/>
                 <CreateFolderDialog/>
                 <ChangeFolderDialog/>
+                <AboutDialog/>
             </div>
         );
     }

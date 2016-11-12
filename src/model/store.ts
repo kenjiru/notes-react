@@ -16,6 +16,7 @@ export interface IUi {
     selectedFolder?: string;
     showCreateFolderDialog?: Object;
     showMoveNotesDialog?: Object;
+    showAboutDialog?: Object;
 }
 
 export interface ISnackbar {
