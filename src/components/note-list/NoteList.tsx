@@ -17,6 +17,7 @@ import IdUtil from "../../utils/IdUtil";
 import ActionButton from "../action-button/ActionButton";
 
 import "./NoteList.less";
+import FolderUtil from "../../utils/FolderUtil";
 
 class NoteList extends React.Component<IListNotesProps, IListNotesState> {
     constructor(props: IListNotesProps) {
@@ -108,11 +109,11 @@ class NoteList extends React.Component<IListNotesProps, IListNotesState> {
     private isInSelectedFolder(note: INote): boolean {
         let selectedFolder: string = this.props.selectedFolder;
 
-        if (_.isNil(selectedFolder)) {
+        if (selectedFolder === FolderUtil.ALL_FOLDERS) {
             return true;
         }
 
-        return NoteUtil.isNoteInFolder(note, selectedFolder);
+        return FolderUtil.getFolder(note) === selectedFolder;
     }
 
     private handleTableClick = (selectedIndex: number, columnId: number) => {

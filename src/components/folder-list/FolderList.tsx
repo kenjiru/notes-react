@@ -5,10 +5,13 @@ import {connect} from "react-redux";
 
 import {List, ListItem, Subheader, IconButton} from "material-ui";
 import FileFolder from "material-ui/svg-icons/file/folder";
+import FolderOpen from "material-ui/svg-icons/file/folder-open";
 
 import {IStore} from "../../model/store";
 import {selectFolder, showCreateFolderDialog} from "../../model/actions";
+
 import {IDispatchFunction} from "../../utils/ActionUtil";
+import FolderUtil from "../../utils/FolderUtil";
 
 class FolderList extends React.Component<IFolderListProps, IFolderListState> {
     public render(): React.ReactElement<any> {
@@ -25,28 +28,24 @@ class FolderList extends React.Component<IFolderListProps, IFolderListState> {
                         create_new_folder
                     </IconButton>
                 </Subheader>
-                <ListItem key="all-folder" leftIcon={<FileFolder />} primaryText={"All notes"}
-                          onClick={() => this.handleFolderClicked(-1)}/>
+                <ListItem key="all-folders" leftIcon={<FolderOpen />} primaryText={"All Notes"}
+                          onClick={() => this.handleFolderClicked(FolderUtil.ALL_FOLDERS)}/>
+                <ListItem key="no-folder" leftIcon={<FolderOpen />} primaryText={"Unfilled Notes"}
+                          onClick={() => this.handleFolderClicked(FolderUtil.NO_FOLDER)}/>
                 {this.renderFolders()}
             </List>
         );
     }
 
     private renderFolders(): ReactElement<any>[] {
-        return _.map(this.props.folders, (folderName: string, index: number): ReactElement<any> =>
-            <ListItem key={index + folderName} leftIcon={<FileFolder />} primaryText={folderName}
-                      onClick={() => this.handleFolderClicked(index)}/>
+        return _.map(this.props.folders, (folder: string, index: number): ReactElement<any> =>
+            <ListItem key={index + folder} leftIcon={<FileFolder />} primaryText={folder}
+                      onClick={() => this.handleFolderClicked(folder)}/>
         );
     }
 
-    private handleFolderClicked = (index: number): void => {
-        let selectedFolder: string;
-
-        if (index !== -1) {
-            selectedFolder = this.props.folders[index];
-        }
-
-        this.props.dispatch(selectFolder(selectedFolder));
+    private handleFolderClicked = (folder: string): void => {
+        this.props.dispatch(selectFolder(folder));
         this.props.hideDrawer();
     };
 

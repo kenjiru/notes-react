@@ -13,6 +13,8 @@ import DeleteConfirmationDialog from "../delete-confirmation-dialog/DeleteConfir
 import SnackbarMessage from "../snackbar-message/SnackbarMessage";
 import CreateFolderDialog from "../create-folder-dialog/CreateFolderDialog";
 import ChangeFolderDialog from "../move-notes-dialog/MoveNotesDialog";
+import NoteUtil from "../../utils/NoteUtil";
+import FolderUtil from "../../utils/FolderUtil";
 
 class AppRoot extends React.Component<IAppRootProps, IAppRootState> {
     constructor(props: IAppRootProps) {
@@ -50,11 +52,13 @@ class AppRoot extends React.Component<IAppRootProps, IAppRootState> {
     private getTitle(): string {
         let selectedFolder: string = this.props.selectedFolder;
 
-        if (_.isNil(selectedFolder) === false) {
-            return `Folder: ${selectedFolder}`;
+        if (selectedFolder === FolderUtil.ALL_FOLDERS) {
+            return "All Notes";
+        } else if (selectedFolder === FolderUtil.NO_FOLDER) {
+            return "Unfilled Notes";
         }
 
-        return "All notes";
+        return `Folder: ${selectedFolder}`;
     }
 
     private handleToggleDrawer = (): void => {

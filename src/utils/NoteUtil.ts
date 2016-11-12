@@ -2,6 +2,7 @@ import * as moment from "moment";
 
 import {INote, IManifestNote} from "../model/store";
 import IdUtil from "./IdUtil";
+import FolderUtil from "./FolderUtil";
 
 class NoteUtil {
     public static CHANGED_LOCALLY_REVISION: number = Number.MAX_VALUE;
@@ -30,10 +31,6 @@ class NoteUtil {
         "list": "ul",
         "list-item": "li"
     };
-
-    public static isNoteInFolder(note: INote, folder: string): boolean {
-        return NoteUtil.hasTag(note, `system:notebook:${folder}`);
-    }
 
     public static isTemplateNote(note: INote): boolean {
         return NoteUtil.hasTag(note, "system:template");
