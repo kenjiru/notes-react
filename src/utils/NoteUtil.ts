@@ -63,13 +63,15 @@ class NoteUtil {
 
     public static createNote(noteId: string, tags?: string[]): INote {
         let noteTitle: string = "New Note";
+        let currentDateTime = moment().format();
 
         return {
             id: noteId,
             rev: -1,
             title: noteTitle,
-            createDate: moment().format(),
-            lastChanged: moment().format(),
+            createDate: currentDateTime,
+            lastChanged: currentDateTime,
+            lastMetadataChanged: currentDateTime,
             content: noteTitle + "\nNew note content",
             tags
         };
@@ -81,7 +83,7 @@ class NoteUtil {
   <title>${note.title}</title>
   <text xml:space="preserve"><note-content version="0.1">${note.content}</note-content></text>
   <last-change-date>${note.lastChanged}</last-change-date>
-  <last-metadata-change-date>2016-10-29T20:31:17.3561690+02:00</last-metadata-change-date>
+  <last-metadata-change-date>${note.lastMetadataChanged}</last-metadata-change-date>
   <create-date>${note.createDate}</create-date>
   <cursor-position>0</cursor-position>
   <selection-bound-position>33</selection-bound-position>
@@ -129,6 +131,7 @@ ${NoteUtil.createTagNode(tags)}
             title: NoteUtil.getNodeValue(noteStr, "title"),
             createDate: NoteUtil.getNodeValue(noteStr, "create-date"),
             lastChanged: NoteUtil.getNodeValue(noteStr, "last-change-date"),
+            lastMetadataChanged: NoteUtil.getNodeValue(noteStr, "last-metadata-change-date"),
             content: NoteUtil.getNodeValue(noteStr, "note-content"),
             tags: NoteUtil.getAllNodeValues(noteStr, "tag")
         };

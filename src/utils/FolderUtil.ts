@@ -1,5 +1,8 @@
 import * as _ from "lodash";
+import * as moment from "moment";
+
 import {INote} from "../model/store";
+import NoteUtil from "./NoteUtil";
 
 class FolderUtil {
     public static NO_FOLDER: string = "NO-FOLDER";
@@ -43,6 +46,9 @@ class FolderUtil {
         if (folder !== FolderUtil.NO_FOLDER) {
             note.tags.push(`system:notebook:${folder}`);
         }
+
+        note.lastMetadataChanged = moment().format();
+        note.rev = NoteUtil.CHANGED_LOCALLY_REVISION;
     }
 }
 

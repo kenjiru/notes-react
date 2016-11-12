@@ -46,8 +46,8 @@ class SyncUtil {
 
         console.log({modifiedLocally, deletedLocally, modifiedRemotely, deletedRemotely});
 
-        let deletedRemotelyOnly: INote[] = _.differenceBy(deletedRemotely, modifiedLocally);
-        let deletedLocallyOnly: INote[] = _.differenceBy(modifiedLocally, deletedRemotely);
+        let deletedRemotelyOnly: INote[] = _.differenceBy(deletedRemotely, modifiedLocally, "ig");
+        let deletedLocallyOnly: INote[] = _.differenceBy(modifiedLocally, deletedRemotely, "id");
 
         let resultNotes: INote[] = _.differenceBy(localNotes, deletedRemotelyOnly, "id");
         resultNotes = _.unionBy(modifiedLocally, modifiedRemotely, resultNotes, "id");
@@ -76,7 +76,8 @@ class SyncUtil {
     }
 
     private static isNoteNewer(note: INote, lastSyncedDate: string): boolean {
-        return _.isNil(note) === false && moment(note.lastChanged).isAfter(lastSyncedDate);
+        return _.isNil(note) === false && (moment(note.lastChanged).isAfter(lastSyncedDate) ||
+            moment(note.lastMetadataChanged).isAfter(lastSyncedDate));
     }
 }
 

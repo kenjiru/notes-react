@@ -44,6 +44,7 @@ export interface INote {
     title: string;
     createDate: string;
     lastChanged: string;
+    lastMetadataChanged: string;
     content: string;
     tags?: string[];
 }
