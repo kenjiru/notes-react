@@ -3,7 +3,7 @@ import {connect} from "react-redux";
 import {Dialog, FlatButton, SelectField, MenuItem} from "material-ui";
 
 import {IStore, INote} from "../../model/store";
-import {moveNotesTo, showSnackbarMessage} from "../../model/actions";
+import {moveNotesTo, showSnackbarMessage, setSelectedNotes} from "../../model/actions";
 
 import {IDispatchFunction} from "../../utils/ActionUtil";
 import FolderUtil from "../../utils/FolderUtil";
@@ -84,6 +84,7 @@ class MoveNotesDialog extends React.Component<IMoveNotesDialogProps, IMoveNotesD
             this.props.dispatch(moveNotesTo(this.props.selectedNotes, this.state.folder));
             this.hideDialog();
             this.showFeedbackMessage();
+            this.resetSelectedNotes();
         }
     };
 
@@ -101,6 +102,10 @@ class MoveNotesDialog extends React.Component<IMoveNotesDialogProps, IMoveNotesD
         this.setState({
             isDialogShown: false
         });
+    }
+
+    private resetSelectedNotes(): void {
+        this.props.dispatch(setSelectedNotes([]));
     }
 
     private showFeedbackMessage(): void {
