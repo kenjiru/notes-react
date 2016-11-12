@@ -3,7 +3,7 @@ import {connect} from "react-redux";
 import {Dialog, FlatButton, SelectField, MenuItem} from "material-ui";
 
 import {IStore, INote} from "../../model/store";
-import {moveNotesTo} from "../../model/actions";
+import {moveNotesTo, showSnackbarMessage} from "../../model/actions";
 
 import {IDispatchFunction} from "../../utils/ActionUtil";
 import FolderUtil from "../../utils/FolderUtil";
@@ -83,6 +83,7 @@ class MoveNotesDialog extends React.Component<IMoveNotesDialogProps, IMoveNotesD
         } else {
             this.props.dispatch(moveNotesTo(this.props.selectedNotes, this.state.folder));
             this.hideDialog();
+            this.showFeedbackMessage();
         }
     };
 
@@ -100,6 +101,20 @@ class MoveNotesDialog extends React.Component<IMoveNotesDialogProps, IMoveNotesD
         this.setState({
             isDialogShown: false
         });
+    }
+
+    private showFeedbackMessage(): void {
+        let message: string;
+        let selectedNotes: INote[] = this.props.selectedNotes;
+        let folder: string = this.state.folder !== FolderUtil.NO_FOLDER ? this.state.folder : "No folder";
+
+        if (selectedNotes.length === 1) {
+            message = `Moved note '${selectedNotes[0].title}' to folder '${folder}'`;
+        } else {
+            message = `Moved ${selectedNotes.length} notes to folder '${folder}'`;
+        }
+
+        this.props.dispatch(showSnackbarMessage(message));
     }
 
     private getCommonFolder(notes: INote[]): string {
