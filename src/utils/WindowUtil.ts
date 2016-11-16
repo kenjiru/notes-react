@@ -1,3 +1,6 @@
+import * as _ from "lodash";
+import * as parseUrl from "url-parse";
+
 class WindowUtil {
     public static getQueryParam(name: string): string {
         let url: string = window.location.href;
@@ -23,16 +26,44 @@ class WindowUtil {
             targetOrigin += ":" + location.port;
         }
 
-        console.log("targetOrigin: ", targetOrigin);
-
         // postMessageToParent requires that you put the correct protocol
-        window.opener.postMessage(message, window.location.protocol + window.location.host);
+        if (_.isNil(window.opener) === false) {
+            window.opener.postMessage(message, targetOrigin);
+        }
+    }
+
+    public static openAuthWindow(url: string, callback: Function, options?: string): void {
+        let win: any = WindowUtil.openWindow(url, options);
+
+        win.addEventListener("loadstop", (ev: any) => {
+            let parsed: any = parseUrl(ev.url, true);
+            let params: any = WindowUtil.getHashParams(parsed.hash);
+
+            if (_.isNil(params.access_token) === false) {
+                callback(params);
+                win.close();
+            }
+        });
     }
 
     public static openWindow(url: string, options?: string): Window {
-        options = options || "";
+        options = options || "location=no,closebuttoncaption=Done,toolbar=no";
 
-        return window.open(url, "Dropbox Authentication", options);
+        return window.open(url, "_blank", options);
+    }
+
+    private static getHashParams = (hash: string): Object => {
+        var hashParams = {};
+        var r = /([^&;=]+)=?([^&;]*)/g,
+            decode = (str: string): string => decodeURIComponent(str.replace(/\+/g, " "));
+
+        hash = hash.substring(1);
+        let execResult: any;
+        while (execResult = r.exec(hash)) {
+            hashParams[decode(execResult[1])] = decode(execResult[2]);
+        }
+
+        return hashParams;
     }
 }
 

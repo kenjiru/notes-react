@@ -32,22 +32,30 @@ class DropboxAuth extends React.Component<IDropboxAuthProps, IDropboxAuthState> 
         }
     };
 
-    handleMessage = (event: MessageEvent): void => {
+    private handleMessage = (event: MessageEvent): void => {
         if (this.dropboxAuthWindow) {
             this.dropboxAuthWindow.close();
         }
 
-        let accessToken: string = event.data.accessToken;
-
-        this.props.dispatch(setAccessToken(accessToken));
-        this.props.dispatch(getCurrentAccount());
+        this.getAccount(event.data.accessToken);
     };
 
     private login(): void {
         let authUrl: string = DropboxUtil.getAuthUrl();
         let windowOptions: string = "width=800,height=600,scrollbars=yes,location=no";
 
-        this.dropboxAuthWindow = WindowUtil.openWindow(authUrl, windowOptions);
+        WindowUtil.openAuthWindow(authUrl, this.handleAuth, windowOptions);
+    }
+
+    private handleAuth = (params: any): void => {
+        if (_.isNil(params.access_token) === false) {
+            this.getAccount(params.access_token);
+        }
+    };
+
+    private getAccount(accessToken: string): void {
+        this.props.dispatch(setAccessToken(accessToken));
+        this.props.dispatch(getCurrentAccount());
     }
 
     private logout(): void {
