@@ -12,10 +12,10 @@ import LockUtil from "./LockUtil";
 class DropboxUtil {
     private dropbox: any;
 
-    public static getAuthUrl() {
+    public static getAuthUrl(): string {
         let dropbox: any = new Dropbox({clientId: CLIENT_ID});
 
-        return dropbox.getAuthenticationUrl("http://localhost:8080/dropbox-auth.html");
+        return dropbox.getAuthenticationUrl(`${window.location.origin}/dropbox-auth.html`);
     }
 
     constructor(private clientId: string, private accessToken: string) {
