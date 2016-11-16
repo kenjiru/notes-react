@@ -57,7 +57,12 @@ var config = {
     plugins: [
         new HtmlWebpackPlugin({
             title: "Notes",
-            chunks: ["app", "vendor"]
+            chunks: ["app", "vendor"],
+            template: require("html-webpack-template"),
+            scripts: [
+                "./cordova.js"
+            ],
+            inject: false
         }),
         new HtmlWebpackPlugin({
             title: "Dropbox Auth",
@@ -67,7 +72,7 @@ var config = {
         new ExtractTextPlugin("[name].css?[hash]"),
         new webpack.optimize.CommonsChunkPlugin({
             name: ["vendor"],
-            filename: "[name].js[hash]"
+            filename: "[name].js?[hash]"
         }),
         new webpack.LoaderOptionsPlugin({
             minimize: true,
@@ -88,7 +93,7 @@ var config = {
             exclude: [
                 /vendor\.js/
             ],
-            filename: '[file].map[hash]',
+            filename: '[file].map?[hash]',
             columns: false
         }),
         new webpack.DefinePlugin({

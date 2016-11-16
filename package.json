@@ -42,11 +42,13 @@
     "file-loader": "^0.9.0",
     "html-minifier": "^3.1.0",
     "html-webpack-plugin": "~2.22.0",
+    "html-webpack-template": "^5.4.1",
     "less": "^2.7.1",
     "less-loader": "^2.2.3",
     "null-loader": "^0.1.1",
     "optimist": "^0.6.1",
     "react-hot-loader": "^3.0.0-beta.5",
+    "script-loader": "^0.7.0",
     "style-loader": "^0.13.1",
     "ts-loader": "^0.8.2",
     "typescript": "2.0.3",
@@ -58,6 +60,10 @@
     "webpack-merge": "^0.16.0"
   },
   "scripts": {
+    "cordova-android": "cd cordova && phonegap run android",
+    "cordova-prepare": "cd cordova && webpack --config webpack-cordova.config.js && phonegap prepare",
+    "cordova-build": "cd cordova && webpack --config webpack-cordova.config.js && phonegap build",
+    "cordova-debug": "cd cordova && HOST=0.0.0.0 webpack-dev-server --hot --config webpack-cordova.config.js",
     "debug": "webpack-dev-server --config webpack.config.js --hot --inline --history-api-fallback",
     "build": "rm -rf dist/** && webpack --config webpack.config.js --devtool source-map",
     "typings": "typings install"
