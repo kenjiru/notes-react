@@ -97,7 +97,7 @@ class NoteList extends React.Component<IListNotesProps, IListNotesState> {
     private isInSelectedFolder(note: INote): boolean {
         let selectedFolder: string = this.props.selectedFolder;
 
-        if (selectedFolder === FolderUtil.ALL_FOLDERS) {
+        if (selectedFolder === FolderUtil.ALL_NOTES) {
             return true;
         }
 

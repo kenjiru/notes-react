@@ -29,7 +29,7 @@ class FolderList extends React.Component<IFolderListProps, IFolderListState> {
                     </IconButton>
                 </Subheader>
                 <ListItem key="all-folders" leftIcon={<FolderOpen />} primaryText={"All Notes"}
-                          onClick={() => this.handleFolderClicked(FolderUtil.ALL_FOLDERS)}/>
+                          onClick={() => this.handleFolderClicked(FolderUtil.ALL_NOTES)}/>
                 <ListItem key="no-folder" leftIcon={<FolderOpen />} primaryText={"Unfilled Notes"}
                           onClick={() => this.handleFolderClicked(FolderUtil.NO_FOLDER)}/>
                 {this.renderFolders()}

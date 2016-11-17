@@ -53,7 +53,7 @@ class AppRoot extends React.Component<IAppRootProps, IAppRootState> {
     private getTitle(): string {
         let selectedFolder: string = this.props.selectedFolder;
 
-        if (selectedFolder === FolderUtil.ALL_FOLDERS) {
+        if (selectedFolder === FolderUtil.ALL_NOTES) {
             return "All Notes";
         } else if (selectedFolder === FolderUtil.NO_FOLDER) {
             return "Unfilled Notes";

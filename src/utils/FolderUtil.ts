@@ -6,7 +6,7 @@ import NoteUtil from "./NoteUtil";
 
 class FolderUtil {
     public static NO_FOLDER: string = "NO_FOLDER";
-    public static ALL_FOLDERS: string = "ALL_FOLDERS";
+    public static ALL_NOTES: string = "ALL_NOTES";
 
     public static getFolders(notes: INote[]): string[] {
         let tags: string[] = _.flatMap(notes, (note: INote): string[] => note.tags || []);

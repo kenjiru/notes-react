@@ -121,7 +121,7 @@ let defaultUi: IUi = {
         message: ""
     },
     selectedNotes: [],
-    selectedFolder: FolderUtil.ALL_FOLDERS
+    selectedFolder: FolderUtil.ALL_NOTES
 };
 
 function ui(store: IUi = defaultUi, action: IAction): IUi {
