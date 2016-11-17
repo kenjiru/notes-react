@@ -2,10 +2,9 @@ import * as React from "react";
 import * as ReactDOM from "react-dom";
 import * as injectTapEventPlugin from "react-tap-event-plugin";
 import {Router, Route, IndexRoute, browserHistory} from "react-router"
-
 import {Provider} from "react-redux";
-
 import MuiThemeProvider from "material-ui/styles/MuiThemeProvider";
+import * as arrayFrom from "array.from";
 
 import store from "./model/store";
 
@@ -21,6 +20,7 @@ import "draft-js/dist/Draft.css";
 import "./App.less";
 
 injectTapEventPlugin();
+arrayFrom.shim();
 
 class App extends React.Component<any, any> {
     render() {
