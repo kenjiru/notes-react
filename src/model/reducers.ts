@@ -1,4 +1,6 @@
 import * as _ from "lodash";
+import {combineReducers} from "redux";
+
 import {INote, ILocal, IDropbox, IUi} from "./store";
 import {
     DROPBOX_SET_CURRENT_ACCOUNT, DROPBOX_SET_ACCESS_TOKEN, DROPBOX_SET_LAST_SYNC,
@@ -7,7 +9,7 @@ import {
     SHOW_SNACKBAR_MESSAGE, CONFIRMATION_DELETION, SHOW_CREATE_FOLDER_DIALOG, SHOW_MOVE_NOTES_DIALOG, SHOW_ABOUT_DIALOG
 } from "./actions";
 import {IAction} from "../utils/ActionUtil";
-import {combineReducers} from "redux";
+import FolderUtil from "../utils/FolderUtil";
 
 function dropbox(store: IDropbox = {}, action: IAction): IDropbox {
     switch (action.type) {
@@ -118,7 +120,8 @@ let defaultUi: IUi = {
     snackbar: {
         message: ""
     },
-    selectedNotes: []
+    selectedNotes: [],
+    selectedFolder: FolderUtil.ALL_FOLDERS
 };
 
 function ui(store: IUi = defaultUi, action: IAction): IUi {
@@ -139,7 +142,6 @@ function ui(store: IUi = defaultUi, action: IAction): IUi {
             });
 
         case SHOW_CREATE_FOLDER_DIALOG:
-            console.log("SHOW_CREATE_FOLDER_DIALOG");
             return _.assign({}, store, {
                 showCreateFolderDialog: {}
             });
