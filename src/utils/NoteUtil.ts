@@ -1,3 +1,4 @@
+import * as _ from "lodash";
 import * as moment from "moment";
 
 import {INote, IManifestNote} from "../model/store";

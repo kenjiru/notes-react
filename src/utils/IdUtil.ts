@@ -1,3 +1,4 @@
+import * as _ from "lodash";
 import {INote} from "../model/store";
 
 class IdUtil {
