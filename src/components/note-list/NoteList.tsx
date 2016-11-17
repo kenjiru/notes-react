@@ -28,18 +28,6 @@ class NoteList extends React.Component<IListNotesProps, IListNotesState> {
         };
     }
 
-    // public componentWillReceiveProps(nextProps: IListNotesProps): void {
-    //     if (this.props.deleteConfirmationId !== nextProps.deleteConfirmationId) {
-    //         let deleteConfirmationId = IdUtil.getNodeListId(this.getSelectedNotes());
-    //
-    //         if (nextProps.deleteConfirmationId === deleteConfirmationId) {
-    //             this.setState({
-    //                 selectedRows: []
-    //             });
-    //         }
-    //     }
-    // }
-
     public render(): React.ReactElement<any> {
         return (
             <div className="note-list">
