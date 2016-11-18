@@ -1,7 +1,8 @@
+import * as _ from "lodash";
 import * as React from "react";
 import * as ReactDOM from "react-dom";
 import * as injectTapEventPlugin from "react-tap-event-plugin";
-import {Router, Route, IndexRoute, browserHistory} from "react-router"
+import {Router, Route, IndexRoute, browserHistory, hashHistory} from "react-router"
 import {Provider} from "react-redux";
 import MuiThemeProvider from "material-ui/styles/MuiThemeProvider";
 import * as arrayFrom from "array.from";
@@ -22,12 +23,14 @@ import "./App.less";
 injectTapEventPlugin();
 arrayFrom.shim();
 
+const history: any = typeof cordova === "undefined" ? browserHistory : hashHistory;
+
 class App extends React.Component<any, any> {
     render() {
         return (
             <MuiThemeProvider>
                 <Provider store={store}>
-                    <Router history={browserHistory}>
+                    <Router history={history}>
                         <Route path="/" component={AppRoot}>
                             <IndexRoute component={NoteList}/>
                             <Route path="login" component={Login}/>
