@@ -53,9 +53,10 @@ class NoteUtil {
     public static createNewNote(noteId: string, folder: string): INote {
         let tags: string[] = [];
 
-        if (_.isNil(folder) === false && folder.length > 0) {
+        if (FolderUtil.isValidFolder(folder)) {
             tags.push(`system:notebook:${folder}`);
         }
+
         return NoteUtil.createNote(noteId, tags);
     }
 

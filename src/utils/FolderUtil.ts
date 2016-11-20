@@ -44,12 +44,17 @@ class FolderUtil {
 
         note.tags = _.filter(note.tags, (tag: string): boolean => tag.indexOf("system:notebook") === -1);
 
-        if (folder !== FolderUtil.NO_FOLDER) {
+        if (FolderUtil.isValidFolder(folder)) {
             note.tags.push(`system:notebook:${folder}`);
         }
 
         note.lastMetadataChanged = moment().format();
         note.rev = NoteUtil.CHANGED_LOCALLY_REVISION;
+    }
+
+    public static isValidFolder(folder: string): boolean {
+        return _.isNil(folder) === false && folder.length > 0 && folder !== FolderUtil.ALL_NOTES &&
+            folder !== FolderUtil.NO_FOLDER;
     }
 }
 
