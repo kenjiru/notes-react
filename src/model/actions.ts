@@ -46,11 +46,15 @@ export function revokeAccess(): IActionCallback {
             accessToken: getState().dropbox.accessToken
         });
 
-        return dropbox.authTokenRevoke().then((result) => {
-            console.log("authTokenRevoke");
-
+        let resetAuth: Function = (): void => {
+            console.log("revokeAccess reset authentication credentials");
             dispatch(createAction(DROPBOX_SET_ACCESS_TOKEN, null));
             dispatch(createAction(DROPBOX_SET_CURRENT_ACCOUNT, null))
+        };
+
+        return dropbox.authTokenRevoke().then(resetAuth, (error: Error): void => {
+            console.log("revokeAccess error", error);
+            resetAuth();
         });
     };
 }
