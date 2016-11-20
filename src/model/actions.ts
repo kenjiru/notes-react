@@ -61,7 +61,7 @@ export function revokeAccess(): IActionCallback {
 
 let numSyncRetries: number = 0;
 const NUM_RETRIES: number = 4;
-
+const LOCK_WAIT_TIME: number = 2000;
 export function startSync(): IActionCallback {
     return (dispatch: IDispatchFunction, getState: IGetStateFunction): Promise<any> => {
         let dropboxUtil: DropboxUtil = new DropboxUtil(CLIENT_ID, getState().dropbox.accessToken);
@@ -70,8 +70,9 @@ export function startSync(): IActionCallback {
             if (lockExists) {
                 if (numSyncRetries < NUM_RETRIES) {
                     ++numSyncRetries;
+
                     return new Promise((resolve) => {
-                        setTimeout(() => resolve(dispatch(startSync())), 2000);
+                        setTimeout(() => resolve(dispatch(startSync())), LOCK_WAIT_TIME);
                     })
                 } else {
                     console.log(`hasLock: I gave up after ${NUM_RETRIES} tries`);
