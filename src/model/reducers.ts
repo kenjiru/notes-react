@@ -10,8 +10,13 @@ import {
 } from "./actions";
 import {IAction} from "../utils/ActionUtil";
 import FolderUtil from "../utils/FolderUtil";
+import DropboxUtil from "../utils/DropboxUtil";
 
-function dropbox(store: IDropbox = {}, action: IAction): IDropbox {
+let defaultDropbox: IDropbox = {
+    lastSyncRevision: DropboxUtil.NEVER_SYNCED_REVISION
+};
+
+function dropbox(store: IDropbox = defaultDropbox, action: IAction): IDropbox {
     switch (action.type) {
         case DROPBOX_SET_ACCESS_TOKEN:
             return _.assign({}, store, {

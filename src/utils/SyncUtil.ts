@@ -2,31 +2,30 @@ import * as _ from "lodash";
 import * as moment from "moment";
 import {INote, IManifestNote, IManifest} from "../model/store";
 import FolderUtil from "./FolderUtil";
+import DropboxUtil from "./DropboxUtil";
 
 class SyncUtil {
     public static syncNotes(localNotes: INote[], remoteNotes: INote[], baseManifest: IManifest,
-                            lastSyncDate: string): ISyncResult {
-        let lastSyncRevision: number = baseManifest.revision;
+                            lastSyncDate: string, lastSyncRevision: number): ISyncResult {
         let modifiedLocally: INote[] = [];
         let modifiedRemotely: INote[] = [];
         let deletedLocally: INote[] = [];
         let deletedRemotely: INote[] = [];
 
-        console.log("lastSyncDate", lastSyncDate);
+        console.log({lastSyncDate, lastSyncRevision});
 
         _.each(localNotes, (localNote: INote): void => {
             let remoteNote: INote = SyncUtil.findNote(remoteNotes, localNote.id);
 
-            if (_.isNil(remoteNote) && localNote.rev <= lastSyncRevision) {
+            if (_.isNil(remoteNote) && localNote.rev <= lastSyncRevision &&
+                lastSyncRevision > DropboxUtil.NEVER_SYNCED_REVISION) {
                 deletedRemotely.push(localNote);
             } else if (SyncUtil.areAllNotesNewer([localNote, remoteNote], lastSyncDate)) {
                 // TODO Better way to decide which note to pick
                 modifiedLocally.push(localNote);
             } else if (SyncUtil.isNoteNewer(remoteNote, lastSyncDate)) {
                 modifiedRemotely.push(remoteNote);
-            }
-
-            if (SyncUtil.isNoteNewer(localNote, lastSyncDate)) {
+            } else if (SyncUtil.isNoteNewer(localNote, lastSyncDate)) {
                 modifiedLocally.push(localNote);
             }
         });
@@ -36,7 +35,8 @@ class SyncUtil {
             let baseNote: IManifestNote = SyncUtil.findManifestNote(baseManifest, remoteNote.id);
 
             if (_.isNil(localNote)) {
-                if (_.isNil(baseNote) === false && remoteNote.rev > lastSyncRevision) {
+                if (_.isNil(baseNote) === false && remoteNote.rev <= lastSyncRevision &&
+                    lastSyncRevision > DropboxUtil.NEVER_SYNCED_REVISION) {
                     deletedLocally.push(remoteNote);
                 } else {
                     modifiedRemotely.push(remoteNote);
@@ -47,7 +47,7 @@ class SyncUtil {
         console.log({modifiedLocally, deletedLocally, modifiedRemotely, deletedRemotely});
 
         let deletedRemotelyOnly: INote[] = _.differenceBy(deletedRemotely, modifiedLocally, "ig");
-        let deletedLocallyOnly: INote[] = _.differenceBy(modifiedLocally, deletedRemotely, "id");
+        let deletedLocallyOnly: INote[] = _.differenceBy(deletedLocally, deletedRemotely, "id");
 
         let resultNotes: INote[] = _.differenceBy(localNotes, deletedRemotelyOnly, "id");
         resultNotes = _.unionBy(modifiedLocally, modifiedRemotely, resultNotes, "id");

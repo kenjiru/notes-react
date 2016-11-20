@@ -96,7 +96,7 @@ function syncNotes(): IActionCallback {
 
         return dropboxUtil.getSyncData(state.dropbox.lastSyncRevision).then((syncData: ISyncData) => {
             let syncResult = SyncUtil.syncNotes(state.local.notes, syncData.remoteNotes, syncData.baseManifest,
-                state.dropbox.lastSyncDate);
+                state.dropbox.lastSyncDate, state.dropbox.lastSyncRevision);
 
             console.log("syncResult", syncResult);
 

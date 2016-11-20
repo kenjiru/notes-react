@@ -10,6 +10,8 @@ import NoteUtil from "./NoteUtil";
 import LockUtil from "./LockUtil";
 
 class DropboxUtil {
+    public static NEVER_SYNCED_REVISION: number = -1;
+
     private dropbox: any;
 
     public static getAuthUrl(): string {
@@ -26,10 +28,16 @@ class DropboxUtil {
     }
 
     public getSyncData(lastSyncRevision: number): Promise<ISyncData> {
+        let baseRevision: number = 0;
+
+        if (lastSyncRevision !== DropboxUtil.NEVER_SYNCED_REVISION) {
+            baseRevision = lastSyncRevision;
+        }
+
         return this.setLock().then(() => {
             return Promise.all([
                 this.readManifest(),
-                this.readManifestFor(lastSyncRevision || 0)
+                this.readManifestFor(baseRevision)
             ]).then(([manifest, baseManifest]: IManifest[]): Promise<ISyncData> => {
                 console.log("readManifest", manifest);
 
