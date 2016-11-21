@@ -2,7 +2,7 @@ import * as _ from "lodash";
 import * as React from "react";
 import {ReactElement, EventHandler} from "react";
 import {connect} from "react-redux";
-import {browserHistory} from "react-router";
+import {withRouter} from "react-router";
 import {Toolbar, TextField} from "material-ui";
 import {
     Table, TableHeader, TableHeaderColumn, TableBody, TableRow, TableRowColumn, TableFooter
@@ -154,7 +154,7 @@ class NoteList extends React.Component<IListNotesProps, IListNotesState> {
     }
 
     private editNote(noteId: string): void {
-        browserHistory.push(`/edit-note/${noteId}`);
+        this.props.router.push(`/edit-note/${noteId}`);
     }
 }
 
@@ -164,15 +164,17 @@ interface IListNotesProps {
     deleteConfirmationId?: string;
     selectedNotes?: INote[];
     selectedFolder?: string;
+    router?: any;
 }
 
 interface IListNotesState {
     filter?: string;
 }
 
-export default connect((state: IStore): IListNotesProps => ({
+export default connect((state: IStore, props: IListNotesProps): IListNotesProps => ({
     notes: state.local.notes,
     deleteConfirmationId: state.ui.deleteConfirmationId,
     selectedNotes: state.ui.selectedNotes,
-    selectedFolder: state.ui.selectedFolder
-}))(NoteList);
+    selectedFolder: state.ui.selectedFolder,
+    router: props.router
+}))(withRouter(NoteList));
