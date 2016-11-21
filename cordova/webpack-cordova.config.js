@@ -6,9 +6,6 @@ const base = require("../webpack.config");
 const ENV = getEnv();
 
 const common = {
-    output: {
-        publicPath: "./"
-    },
     plugins: [
         new CordovaPlugin({
             config: "config.xml",  // Location of Cordova" config.xml (will be created if not found)
@@ -31,7 +28,11 @@ if (ENV === "development") {
         }
     });
 } else {
-    module.exports = merge(base, common);
+    module.exports = merge(base, common, {
+        output: {
+            publicPath: "./"
+        }
+    });
 }
 
 function getEnv() {
