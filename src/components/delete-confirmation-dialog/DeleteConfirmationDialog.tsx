@@ -29,8 +29,8 @@ class DeleteConfirmationDialog extends React.Component<IDeleteConfirmationDialog
         ];
 
         return (
-            <Dialog className="delete-confirmation" title="Confirm deletion" actions={deleteDialogActions} modal={true}
-                    open={this.state.isDialogShown} onRequestClose={this.handleCloseDialog}>
+            <Dialog className="delete-confirmation-dialog" title="Confirm deletion" actions={deleteDialogActions}
+                    modal={true} open={this.state.isDialogShown} onRequestClose={this.handleCloseDialog}>
                 {this.state.deleteMessage}?
             </Dialog>
         );

@@ -46,8 +46,9 @@ class MoveNotesDialog extends React.Component<IMoveNotesDialogProps, IMoveNotesD
         };
 
         return (
-            <Dialog contentStyle={contentStyle} title="Move to folder" actions={dialogActions} modal={true}
-                    open={this.state.isDialogShown} onRequestClose={this.handleCloseDialog}>
+            <Dialog className="move-notes-dialog" contentStyle={contentStyle} title="Move to folder"
+                    actions={dialogActions} modal={true} open={this.state.isDialogShown}
+                    onRequestClose={this.handleCloseDialog}>
                 <SelectField floatingLabelText="Select option" errorText={this.state.errorText}
                              value={this.state.folder} onChange={this.handleSelectChange}>
                     <MenuItem key="no-folder" value={FolderUtil.NO_FOLDER} primaryText="No folder"/>

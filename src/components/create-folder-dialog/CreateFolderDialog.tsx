@@ -37,8 +37,9 @@ class CreateFolderDialog extends React.Component<ICreateFolderDialogProps, ICrea
         };
 
         return (
-            <Dialog contentStyle={contentStyle} title="Create new folder" actions={dialogActions} modal={true}
-                    open={this.state.isDialogShown} onRequestClose={this.handleCloseDialog}>
+            <Dialog className="create-folder-dialog" contentStyle={contentStyle} title="Create new folder"
+                    actions={dialogActions} modal={true} open={this.state.isDialogShown}
+                    onRequestClose={this.handleCloseDialog}>
                 <TextField hintText="Folder name" value={this.state.folderName} errorText={this.state.errorText}
                            onChange={this.handleInputChange}/>
             </Dialog>
