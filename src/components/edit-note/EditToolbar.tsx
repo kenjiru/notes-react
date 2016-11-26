@@ -7,8 +7,8 @@ class EditToolbar extends React.Component<IEditToolbarProps, IEditToolbarState> 
     public render(): React.ReactElement<any> {
         return (
             <div className="edit-note-toolbar">
-                <Toolbar>
-                    <ToolbarGroup className="edit-toolbar" firstChild={true}>
+                <Toolbar className="toolbar">
+                    <ToolbarGroup className="toolbar-group" firstChild={true}>
                         <IconButton iconClassName="material-icons" tooltip="Bold"
                                     onClick={() => this.props.toggleInlineStyle("BOLD")}>format_bold</IconButton>
                         <IconButton iconClassName="material-icons" tooltip="Italic"
