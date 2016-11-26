@@ -6,3 +6,4 @@ dist/
 cordova/platforms/
 cordova/plugins/
 cordova/www/
+/cordova/config.xml
