@@ -102,7 +102,8 @@ var config = {
     ],
     devServer: {
         contentBase: "./",
-        hot: true
+        hot: true,
+        stats: "errors-only"
     }
 };
 
