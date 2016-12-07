@@ -2,13 +2,14 @@ import * as _ from "lodash";
 import * as React from "react";
 import {ReactElement} from "react";
 import {connect} from "react-redux";
+import {InjectedRouter, withRouter} from "react-router";
 
 import {List, ListItem, Subheader, IconButton} from "material-ui";
 import FileFolder from "material-ui/svg-icons/file/folder";
 import FolderOpen from "material-ui/svg-icons/file/folder-open";
 
 import {IStore} from "../../model/store";
-import {selectFolder, showCreateFolderDialog} from "../../model/actions";
+import {selectFolder, showCreateFolderDialog, setSelectedNotes} from "../../model/actions";
 
 import {IDispatchFunction} from "../../utils/ActionUtil";
 import FolderUtil from "../../utils/FolderUtil";
@@ -45,14 +46,28 @@ class FolderList extends React.Component<IFolderListProps, IFolderListState> {
     }
 
     private handleFolderClicked = (folder: string): void => {
-        this.props.dispatch(selectFolder(folder));
-        this.props.hideDrawer();
+        if (this.props.selectedFolder !== folder) {
+            this.props.dispatch(selectFolder(folder));
+            this.props.dispatch(setSelectedNotes([]));
+        }
+
+        this.switchToNotesList();
     };
 
     private handleCreateFolder = (): void => {
         this.props.dispatch(showCreateFolderDialog());
-        this.props.hideDrawer();
+        this.props.dispatch(setSelectedNotes([]));
+
+        this.switchToNotesList();
     };
+
+    private switchToNotesList(): void {
+        this.props.hideDrawer();
+
+        if (this.props.router.isActive("/list-notes") === false) {
+            this.props.router.push("/list-notes");
+        }
+    }
 }
 
 interface IFolderListProps {
@@ -60,6 +75,7 @@ interface IFolderListProps {
     folders?: string[];
     selectedFolder?: string;
     hideDrawer?: () => void;
+    router?: InjectedRouter;
 }
 
 interface IFolderListState {
@@ -69,4 +85,4 @@ export default connect((state: IStore, props: IFolderListProps): IFolderListProp
     folders: state.local.folders,
     selectedFolder: state.ui.selectedFolder,
     hideDrawer: props.hideDrawer
-}))(FolderList);
+}))(withRouter(FolderList));
