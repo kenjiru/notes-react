@@ -6,7 +6,6 @@ import {AppBar, Drawer} from "material-ui";
 
 import store, {IStore} from "../../model/store";
 import {restoreState} from "../../model/actions";
-import FolderUtil from "../../utils/FolderUtil";
 
 import AppMenu from "../app-menu/AppMenu";
 import FolderList from "../folder-list/FolderList";
@@ -15,6 +14,8 @@ import SnackbarMessage from "../snackbar-message/SnackbarMessage";
 import CreateFolderDialog from "../create-folder-dialog/CreateFolderDialog";
 import MoveNotesDialog from "../move-notes-dialog/MoveNotesDialog";
 import AboutDialog from "../about-dialog/AboutDialog";
+
+import FolderName from "./FolderName";
 
 class AppRoot extends React.Component<IAppRootProps, IAppRootState> {
     constructor(props: IAppRootProps) {
@@ -30,8 +31,9 @@ class AppRoot extends React.Component<IAppRootProps, IAppRootState> {
     public render(): React.ReactElement<any> {
         return (
             <div className="app-root">
-                <AppBar title={this.getTitle()} onLeftIconButtonTouchTap={this.handleToggleDrawer}
-                        iconElementRight={<AppMenu location={this.props.location}/>}/>
+                <AppBar title={<FolderName selectedFolder={this.props.selectedFolder}/>}
+                        iconElementRight={<AppMenu location={this.props.location}/>}
+                        onLeftIconButtonTouchTap={this.handleToggleDrawer}/>
                 <Drawer docked={false} open={this.state.isDrawerVisible}
                         onRequestChange={(isDrawerVisible) => this.setState({isDrawerVisible})}>
                     <FolderList hideDrawer={this.handleHideDrawer}/>
@@ -48,18 +50,6 @@ class AppRoot extends React.Component<IAppRootProps, IAppRootState> {
                 <AboutDialog/>
             </div>
         );
-    }
-
-    private getTitle(): string {
-        let selectedFolder: string = this.props.selectedFolder;
-
-        if (selectedFolder === FolderUtil.ALL_NOTES) {
-            return "All Notes";
-        } else if (selectedFolder === FolderUtil.NO_FOLDER) {
-            return "Unfilled Notes";
-        }
-
-        return `Folder: ${selectedFolder}`;
     }
 
     private handleToggleDrawer = (): void => {
