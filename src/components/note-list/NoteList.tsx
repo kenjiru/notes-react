@@ -3,6 +3,7 @@ import * as React from "react";
 import {ReactElement, EventHandler} from "react";
 import {connect} from "react-redux";
 import {withRouter} from "react-router";
+import * as moment from "moment";
 import {Toolbar, TextField} from "material-ui";
 import {
     Table, TableHeader, TableHeaderColumn, TableBody, TableRow, TableRowColumn, TableFooter
@@ -18,6 +19,7 @@ import ActionButton from "../action-button/ActionButton";
 
 import "./NoteList.less";
 import FolderUtil from "../../utils/FolderUtil";
+import MomentUtil from "../../utils/MomentUtil";
 
 class NoteList extends React.Component<IListNotesProps, IListNotesState> {
     constructor(props: IListNotesProps) {
@@ -61,9 +63,19 @@ class NoteList extends React.Component<IListNotesProps, IListNotesState> {
         return _.map(filteredNotes, (note: INote, i: number) =>
             <TableRow key={i} selected={this.isRowSelected(note.id)}>
                 <TableRowColumn style={{cursor: "pointer"}}>{note.title}</TableRowColumn>
-                <TableRowColumn>{note.lastChanged.toString()}</TableRowColumn>
+                <TableRowColumn>{this.renderLastChanged(note.lastChanged)}</TableRowColumn>
             </TableRow>
         );
+    }
+
+    private renderLastChanged(lastChanged: string): string {
+        let lastChangedDuration: moment.Duration = MomentUtil.getDuration(lastChanged);
+
+        if (lastChangedDuration.asDays() > -7) {
+            return lastChangedDuration.humanize(true);
+        }
+
+        return MomentUtil.formatAsDateTime(lastChanged);
     }
 
     private renderNoItems(): ReactElement<any> {
