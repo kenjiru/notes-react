@@ -2,9 +2,11 @@ import * as React from "react";
 import {connect} from "react-redux";
 import {Dialog, FlatButton} from "material-ui";
 
-import {IStore, INote} from "../../model/store";
-import {deleteNotes, showSnackbarMessage, setSelectedNotes} from "../../model/actions";
+import FolderUtil from "../../utils/FolderUtil";
 import {IDispatchFunction} from "../../utils/ActionUtil";
+
+import {IStore} from "../../model/store";
+import {showSnackbarMessage, setSelectedNotes, deleteFolder, selectFolder} from "../../model/actions";
 
 class DeleteFolderDialog extends React.Component<IDeleteFolderDialogProps, IDeleteFolderDialogState> {
     constructor(props: IDeleteFolderDialogProps) {
@@ -45,8 +47,9 @@ class DeleteFolderDialog extends React.Component<IDeleteFolderDialogProps, IDele
         this.hideDialog();
         this.showSnackbarMessage();
 
-        // this.props.dispatch(setSelectedNotes([]));
-        // this.props.dispatch(deleteFolder(this.props.folderToDelete));
+        this.props.dispatch(selectFolder(FolderUtil.ALL_NOTES));
+        this.props.dispatch(setSelectedNotes([]));
+        this.props.dispatch(deleteFolder(this.props.folderToDelete));
     };
 
     private hideDialog(): void {

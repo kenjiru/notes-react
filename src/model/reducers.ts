@@ -7,7 +7,7 @@ import {
     RESTORE_STATE, SET_NOTES, CREATE_NEW_NOTE, UPDATE_NOTE, UPDATE_ALL_NOTES, DELETE_NOTES, SET_FOLDERS,
     CREATE_NEW_FOLDER, RENAME_FOLDER, SET_SELECTED_NOTES, SELECT_FOLDER, CONFIRM_DELETION,
     SHOW_SNACKBAR_MESSAGE, CONFIRMATION_DELETION, SHOW_CREATE_FOLDER_DIALOG, SHOW_DELETE_FOLDER_DIALOG,
-    SHOW_MOVE_NOTES_DIALOG, SHOW_ABOUT_DIALOG
+    SHOW_MOVE_NOTES_DIALOG, SHOW_ABOUT_DIALOG, DELETE_FOLDER
 } from "./actions";
 import {IAction} from "../utils/ActionUtil";
 import FolderUtil from "../utils/FolderUtil";
@@ -53,6 +53,7 @@ let defaultLocal: ILocal = {
 function local(store: ILocal = defaultLocal, action: IAction): ILocal {
     let notes: INote[];
     let folders: string[];
+    let index: number;
 
     switch (action.type) {
         case SET_FOLDERS:
@@ -70,9 +71,19 @@ function local(store: ILocal = defaultLocal, action: IAction): ILocal {
 
         case RENAME_FOLDER:
             folders = _.clone(store.folders);
-            let index: number = _.findIndex(folders, (folder: string): boolean => folder === action.payload.oldName);
+            index = _.findIndex(folders, (folder: string): boolean => folder === action.payload.oldName);
 
             folders[index] = action.payload.newName;
+
+            return _.assign({}, store, {
+                folders
+            });
+
+        case DELETE_FOLDER:
+            folders = _.clone(store.folders);
+            index = _.findIndex(folders, (folder: string): boolean => folder === action.payload);
+
+            folders.splice(index, 1);
 
             return _.assign({}, store, {
                 folders

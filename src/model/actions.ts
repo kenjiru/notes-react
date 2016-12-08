@@ -202,7 +202,30 @@ export function renameFolder(oldName: string, newName: string): IActionCallback 
         _.each(notesToUpdate, (note: INote): void => FolderUtil.setFolder(note, newName));
 
         dispatch(createAction(UPDATE_ALL_NOTES, notesToUpdate));
-        dispatch(createAction(RENAME_FOLDER, {oldName, newName}))
+        dispatch(createAction(RENAME_FOLDER, {oldName, newName}));
+
+        return dispatch(persistState());
+    };
+}
+
+export const DELETE_FOLDER: string = "DELETE_FOLDER";
+export function deleteFolder(folderName: string): IActionCallback {
+    return (dispatch: IDispatchFunction, getState: IGetStateFunction): Promise<any> => {
+        let state: IStore = getState();
+        let notesToUpdate: INote[] = FolderUtil.getAllNotesInFolder(state.local.notes, folderName);
+        let templateNote: INote = _.find(notesToUpdate, (note: INote): boolean => NoteUtil.isTemplateNote(note));
+
+        notesToUpdate = _.filter(notesToUpdate, (note: INote): boolean => NoteUtil.isTemplateNote(note) === false);
+        notesToUpdate = _.clone(notesToUpdate);
+        _.each(notesToUpdate, (note: INote): void => FolderUtil.setFolder(note, null));
+
+        if (_.isNil(templateNote) === false) {
+            dispatch(deleteNotes([templateNote]));
+        }
+
+        dispatch(createAction(UPDATE_ALL_NOTES, notesToUpdate));
+        dispatch(createAction(DELETE_FOLDER, folderName));
+
         return dispatch(persistState());
     };
 }
