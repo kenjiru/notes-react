@@ -245,6 +245,11 @@ export function showAboutDialog(): IAction {
     return createAction(SHOW_ABOUT_DIALOG);
 }
 
+export const SHOW_DELETE_FOLDER_DIALOG: string = "SHOW_DELETE_FOLDER_DIALOG";
+export function showDeleteFolderDialog(folderToDelete: string): IAction {
+    return createAction(SHOW_DELETE_FOLDER_DIALOG, folderToDelete);
+}
+
 export const SHOW_SNACKBAR_MESSAGE: string = "SHOW_SNACKBAR_MESSAGE";
 export function showSnackbarMessage(message: string): IAction {
     return createAction(SHOW_SNACKBAR_MESSAGE, message);

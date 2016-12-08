@@ -15,6 +15,8 @@ export interface IUi {
     deleteConfirmationId?: string;
     selectedFolder?: string;
     showCreateFolderDialog?: Object;
+    showDeleteFolderDialog?: Object;
+    folderToDelete?: string;
     showMoveNotesDialog?: Object;
     showAboutDialog?: Object;
 }

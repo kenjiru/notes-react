@@ -6,7 +6,7 @@ import {TextField, IconButton} from "material-ui";
 import store from "../../model/store";
 import FolderUtil from "../../utils/FolderUtil";
 
-import {renameFolder, selectFolder} from "../../model/actions";
+import {selectFolder, renameFolder, showDeleteFolderDialog} from "../../model/actions";
 
 import "./FolderName.less"
 
@@ -63,6 +63,8 @@ class FolderName extends React.Component<IFolderNameProps, IFolderNameState> {
                 <span className="buttons-container">
                     <IconButton iconClassName="material-icons" style={this.smallButton} iconStyle={this.smallIcon}
                                 onClick={this.handleEdit}>mode_edit</IconButton>
+                    <IconButton iconClassName="material-icons" style={this.smallButton} iconStyle={this.smallIcon}
+                                onClick={this.handleDelete}>delete</IconButton>
                 </span>
             </span>
         );
@@ -137,6 +139,10 @@ class FolderName extends React.Component<IFolderNameProps, IFolderNameState> {
             newFolder: this.props.selectedFolder
         });
     };
+
+    private handleDelete = (): void => {
+        store.dispatch(showDeleteFolderDialog(this.props.selectedFolder));
+    }
 }
 
 interface IFolderNameState {
