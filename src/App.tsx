@@ -1,4 +1,3 @@
-import * as _ from "lodash";
 import * as React from "react";
 import * as ReactDOM from "react-dom";
 import * as injectTapEventPlugin from "react-tap-event-plugin";
@@ -6,6 +5,8 @@ import {Router, Route, IndexRoute, browserHistory, hashHistory} from "react-rout
 import {Provider} from "react-redux";
 import MuiThemeProvider from "material-ui/styles/MuiThemeProvider";
 import * as arrayFrom from "array.from";
+
+import "moment-range";
 
 import store from "./model/store";
 
