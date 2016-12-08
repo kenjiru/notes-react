@@ -67,7 +67,7 @@ class NoteList extends React.Component<IListNotesProps, IListNotesState> {
     }
 
     private renderNoItems(): ReactElement<any> {
-        if (this.getFilteredNotes().length > 0 || this.props.notes.length === 0) {
+        if (this.getFilteredNotes().length > 0) {
             return;
         }
 
@@ -75,11 +75,27 @@ class NoteList extends React.Component<IListNotesProps, IListNotesState> {
             <TableFooter>
                 <TableRow >
                     <TableRowColumn colSpan={2} style={{textAlign: 'center'}}>
-                        No items satisfy the filter criteria.
+                        {this.getNoItemsMessage()}
                     </TableRowColumn>
                 </TableRow>
             </TableFooter>
         );
+    }
+
+    private getNoItemsMessage(): string {
+        if (_.isNil(this.state.filter) || _.isEmpty(this.state.filter)) {
+            let selectedFolder : string = this.props.selectedFolder;
+
+            if (_.isNil(selectedFolder) || selectedFolder === FolderUtil.NO_FOLDER ||
+                selectedFolder === FolderUtil.ALL_NOTES) {
+
+                return "There are no notes";
+            }
+
+            return "There are no notes in the current folder.";
+        }
+
+        return "No items satisfy the filter criteria.";
     }
 
     private getFilteredNotes(): INote[] {
