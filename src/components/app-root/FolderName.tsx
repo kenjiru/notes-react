@@ -1,7 +1,12 @@
+import * as _ from "lodash";
 import * as React from "react";
+import {EventHandler} from "react";
 import {TextField, IconButton} from "material-ui";
 
+import store from "../../model/store";
 import FolderUtil from "../../utils/FolderUtil";
+
+import {renameFolder, selectFolder} from "../../model/actions";
 
 import "./FolderName.less"
 
@@ -57,7 +62,7 @@ class FolderName extends React.Component<IFolderNameProps, IFolderNameState> {
 
                 <span className="buttons-container">
                     <IconButton iconClassName="material-icons" style={this.smallButton} iconStyle={this.smallIcon}
-                                onClick={this.handleEditClick}>mode_edit</IconButton>
+                                onClick={this.handleEdit}>mode_edit</IconButton>
                 </span>
             </span>
         );
@@ -78,13 +83,13 @@ class FolderName extends React.Component<IFolderNameProps, IFolderNameState> {
             <span className="edit-folder-name">
                 <span>
                     Folder:
-                    <TextField style={textFieldStyle} inputStyle={inputStyle} defaultValue={this.props.selectedFolder}/>
+                    <TextField name="folder-name" style={textFieldStyle} inputStyle={inputStyle}
+                               defaultValue={this.props.selectedFolder} onChange={this.handleInputChange}/>
                 </span>
-                <IconButton iconClassName="material-icons" style={this.smallButton} iconStyle={this.smallIcon}>
-                    save</IconButton>
                 <IconButton iconClassName="material-icons" style={this.smallButton} iconStyle={this.smallIcon}
-                            onClick={this.handleEditClick}>
-                    cancel</IconButton>
+                            onClick={this.handleSave}>save</IconButton>
+                <IconButton iconClassName="material-icons" style={this.smallButton} iconStyle={this.smallIcon}
+                            onClick={this.handleCancel}>cancel</IconButton>
             </span>
         );
     }
@@ -99,15 +104,44 @@ class FolderName extends React.Component<IFolderNameProps, IFolderNameState> {
         }
     }
 
-    private handleEditClick = (): void => {
+    private handleInputChange: EventHandler<any> = (ev: any): void => {
         this.setState({
-            isEditMode: !this.state.isEditMode
+            newFolder: ev.target.value
+        });
+    };
+
+    private handleEdit = (): void => {
+        this.setState({
+            isEditMode: true
+        });
+    };
+
+    private handleSave = (): void => {
+        let newFolder: string = this.state.newFolder;
+
+        if (_.isEmpty(newFolder)) {
+            return;
+        }
+
+        store.dispatch(renameFolder(this.props.selectedFolder, newFolder));
+        store.dispatch(selectFolder(newFolder));
+
+        this.setState({
+            isEditMode: false
+        });
+    };
+
+    private handleCancel = (): void => {
+        this.setState({
+            isEditMode: false,
+            newFolder: this.props.selectedFolder
         });
     };
 }
 
 interface IFolderNameState {
     isEditMode?: boolean;
+    newFolder?: string;
 }
 
 interface IFolderNameProps {

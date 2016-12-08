@@ -192,6 +192,21 @@ export function createFolder(folderName: string): IActionCallback {
     };
 }
 
+export const RENAME_FOLDER: string = "RENAME_FOLDER";
+export function renameFolder(oldName: string, newName: string): IActionCallback {
+    return (dispatch: IDispatchFunction, getState: IGetStateFunction): Promise<any> => {
+        let state: IStore = getState();
+        let notesToUpdate: INote[] = FolderUtil.getAllNotesInFolder(state.local.notes, oldName);
+
+        notesToUpdate = _.clone(notesToUpdate);
+        _.each(notesToUpdate, (note: INote): void => FolderUtil.setFolder(note, newName));
+
+        dispatch(createAction(UPDATE_ALL_NOTES, notesToUpdate));
+        dispatch(createAction(RENAME_FOLDER, {oldName, newName}))
+        return dispatch(persistState());
+    };
+}
+
 export const RESTORE_STATE: string = "RESTORE_STATE";
 export function restoreState(): IAction {
     let newState: IStore = storage.get("store");

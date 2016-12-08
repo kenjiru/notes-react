@@ -8,6 +8,10 @@ class FolderUtil {
     public static NO_FOLDER: string = "NO_FOLDER";
     public static ALL_NOTES: string = "ALL_NOTES";
 
+    public static getAllNotesInFolder(notes: INote[], folderName: string): INote[] {
+        return _.filter(notes, (note: INote): boolean => FolderUtil.getFolder(note) === folderName);
+    }
+
     public static getFolders(notes: INote[]): string[] {
         let tags: string[] = _.flatMap(notes, (note: INote): string[] => note.tags || []);
 
