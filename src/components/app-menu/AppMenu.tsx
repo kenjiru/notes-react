@@ -41,9 +41,7 @@ class AppMenu extends React.Component<IAppMenuProps, IAppMenuState> {
 
         if (this.isEditPage()) {
             itemText = "Move note";
-        }
-
-        if (selectedNotes.length > 0) {
+        } else if (selectedNotes.length > 0) {
             itemText = "Move notes";
         }
 

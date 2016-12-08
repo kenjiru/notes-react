@@ -1,6 +1,7 @@
 import * as _ from "lodash";
 import * as React from "react";
 import {connect} from "react-redux";
+import {Location} from "history";
 import {Dialog, FlatButton, SelectField, MenuItem} from "material-ui";
 
 import {IStore, INote} from "../../model/store";
@@ -11,26 +12,29 @@ import FolderUtil from "../../utils/FolderUtil";
 
 class MoveNotesDialog extends React.Component<IMoveNotesDialogProps, IMoveNotesDialogState> {
     private static SELECT_DIFFERENT_FOLDER: string = "Please choose a different folder!";
-    private static SELECT_OPTION: string ="Please select an option!";
+    private static SELECT_OPTION: string = "Please select an option!";
 
     constructor(props: IMoveNotesDialogProps) {
         super(props);
 
         this.state = {
             isDialogShown: false,
-            folder: this.getCommonFolder(this.props.selectedNotes)
+            folder: this.getCommonFolder(props)
         };
     }
 
     public componentWillReceiveProps(nextProps: IMoveNotesDialogProps): void {
         if (this.props.showMoveNotesDialog !== nextProps.showMoveNotesDialog &&
             _.isNil(nextProps.showMoveNotesDialog) === false) {
+
             this.showDialog();
         }
 
-        if (this.props.selectedNotes !== nextProps.selectedNotes && nextProps.selectedNotes.length > 0) {
+        if ((this.props.selectedNotes !== nextProps.selectedNotes && nextProps.selectedFolder.length > 0) ||
+            this.props.params.noteId !== nextProps.params.noteId) {
+
             this.setState({
-                folder: this.getCommonFolder(nextProps.selectedNotes)
+                folder: this.getCommonFolder(nextProps)
             });
         }
     }
@@ -72,7 +76,7 @@ class MoveNotesDialog extends React.Component<IMoveNotesDialogProps, IMoveNotesD
     };
 
     private handleMoveNotes = (): void => {
-        let commonFolder = this.getCommonFolder(this.props.selectedNotes);
+        let commonFolder = this.getCommonFolder(this.props);
 
         if (_.isNil(this.state.folder)) {
             this.setState({
@@ -83,9 +87,11 @@ class MoveNotesDialog extends React.Component<IMoveNotesDialogProps, IMoveNotesD
                 errorText: MoveNotesDialog.SELECT_DIFFERENT_FOLDER
             });
         } else {
-            this.props.dispatch(moveNotesTo(this.props.selectedNotes, this.state.folder));
+            let notesToMove: INote[] = this.getNotesToMove(this.props);
+            this.props.dispatch(moveNotesTo(notesToMove, this.state.folder));
+
             this.hideDialog();
-            this.showFeedbackMessage();
+            this.showFeedbackMessage(notesToMove);
             this.resetSelectedNotes();
         }
     };
@@ -107,24 +113,26 @@ class MoveNotesDialog extends React.Component<IMoveNotesDialogProps, IMoveNotesD
     }
 
     private resetSelectedNotes(): void {
-        this.props.dispatch(setSelectedNotes([]));
+        if (this.isEditPage(this.props) === false) {
+            this.props.dispatch(setSelectedNotes([]));
+        }
     }
 
-    private showFeedbackMessage(): void {
+    private showFeedbackMessage(notesToMove: INote[]): void {
         let message: string;
-        let selectedNotes: INote[] = this.props.selectedNotes;
         let folder: string = this.state.folder !== FolderUtil.NO_FOLDER ? this.state.folder : "No folder";
 
-        if (selectedNotes.length === 1) {
-            message = `Moved note '${selectedNotes[0].title}' to folder '${folder}'`;
+        if (notesToMove.length === 1) {
+            message = `Moved note '${notesToMove[0].title}' to folder '${folder}'`;
         } else {
-            message = `Moved ${selectedNotes.length} notes to folder '${folder}'`;
+            message = `Moved ${notesToMove.length} notes to folder '${folder}'`;
         }
 
         this.props.dispatch(showSnackbarMessage(message));
     }
 
-    private getCommonFolder(notes: INote[]): string {
+    private getCommonFolder(props: IMoveNotesDialogProps): string {
+        let notes: INote[] = this.getNotesToMove(props);
         let folder: string = null;
 
         _.some(notes, (note: INote): boolean => {
@@ -140,6 +148,27 @@ class MoveNotesDialog extends React.Component<IMoveNotesDialogProps, IMoveNotesD
 
         return folder;
     }
+
+    private getNotesToMove(props: IMoveNotesDialogProps): INote[] {
+        if (this.isEditPage(props)) {
+            let noteId: string = props.params.noteId;
+            let editedNote: INote = _.find(props.notes, (note: INote): boolean => note.id === noteId);
+
+            if (_.isNil(editedNote) === false) {
+                return [editedNote];
+            }
+
+            return [];
+        }
+
+        return props.selectedNotes;
+    }
+
+    private isEditPage(props: IMoveNotesDialogProps): boolean {
+        let path: string = props.location.pathname.toString();
+
+        return path.indexOf("edit-note") !== -1;
+    }
 }
 
 interface IMoveNotesDialogProps {
@@ -148,6 +177,9 @@ interface IMoveNotesDialogProps {
     selectedNotes?: INote[];
     selectedFolder?: string;
     folders?: string[];
+    notes?: INote[];
+    location?: Location;
+    params?: any;
 }
 
 interface IMoveNotesDialogState {
@@ -156,9 +188,12 @@ interface IMoveNotesDialogState {
     errorText?: string;
 }
 
-export default connect((store: IStore): IMoveNotesDialogProps => ({
+export default connect((store: IStore, props: IMoveNotesDialogProps): IMoveNotesDialogProps => ({
     showMoveNotesDialog: store.ui.showMoveNotesDialog,
     selectedFolder: store.ui.selectedFolder,
     selectedNotes: store.ui.selectedNotes,
-    folders: store.local.folders
+    folders: store.local.folders,
+    notes: store.local.notes,
+    location: props.location,
+    params: props.params
 }))(MoveNotesDialog);

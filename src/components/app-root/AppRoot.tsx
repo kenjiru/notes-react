@@ -13,7 +13,7 @@ import FolderList from "../folder-list/FolderList";
 import DeleteConfirmationDialog from "../delete-confirmation-dialog/DeleteConfirmationDialog";
 import SnackbarMessage from "../snackbar-message/SnackbarMessage";
 import CreateFolderDialog from "../create-folder-dialog/CreateFolderDialog";
-import ChangeFolderDialog from "../move-notes-dialog/MoveNotesDialog";
+import MoveNotesDialog from "../move-notes-dialog/MoveNotesDialog";
 import AboutDialog from "../about-dialog/AboutDialog";
 
 class AppRoot extends React.Component<IAppRootProps, IAppRootState> {
@@ -44,7 +44,7 @@ class AppRoot extends React.Component<IAppRootProps, IAppRootState> {
                 <SnackbarMessage/>
                 <DeleteConfirmationDialog/>
                 <CreateFolderDialog/>
-                <ChangeFolderDialog/>
+                <MoveNotesDialog location={this.props.location} params={this.props.params}/>
                 <AboutDialog/>
             </div>
         );
@@ -83,6 +83,7 @@ interface IAppRootProps {
     selectedFolder?: string;
     router?: InjectedRouter;
     location?: Location;
+    params?: any;
 }
 
 interface IAppRootState {
@@ -92,5 +93,6 @@ interface IAppRootState {
 export default connect((store: IStore, props: IAppRootProps): IAppRootProps => ({
     selectedFolder: store.ui.selectedFolder,
     router: props.router,
-    location: props.location
+    location: props.location,
+    params: props.params
 }))(withRouter(AppRoot));
