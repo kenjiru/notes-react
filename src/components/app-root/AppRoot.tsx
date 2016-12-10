@@ -8,7 +8,7 @@ import store, {IStore} from "../../model/store";
 import {restoreState} from "../../model/actions";
 
 import AppMenu from "../app-menu/AppMenu";
-import FolderList from "../folder-list/FolderList";
+import FolderDrawer from "../folder-drawer/FolderDrawer";
 import DeleteConfirmationDialog from "../delete-confirmation-dialog/DeleteConfirmationDialog";
 import SnackbarMessage from "../snackbar-message/SnackbarMessage";
 import CreateFolderDialog from "../create-folder-dialog/CreateFolderDialog";
@@ -34,9 +34,9 @@ class AppRoot extends React.Component<IAppRootProps, IAppRootState> {
                 <AppBar title={<FolderName selectedFolder={this.props.selectedFolder}/>}
                         iconElementRight={<AppMenu location={this.props.location}/>}
                         onLeftIconButtonTouchTap={this.handleToggleDrawer}/>
-                <Drawer docked={false} open={this.state.isDrawerVisible}
+                <Drawer containerClassName="app-drawer" docked={false} open={this.state.isDrawerVisible}
                         onRequestChange={(isDrawerVisible) => this.setState({isDrawerVisible})}>
-                    <FolderList hideDrawer={this.handleHideDrawer}/>
+                    <FolderDrawer hideDrawer={this.handleHideDrawer}/>
                 </Drawer>
 
                 <div className="app-content">
