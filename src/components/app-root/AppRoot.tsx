@@ -29,12 +29,17 @@ class AppRoot extends React.Component<IAppRootProps, IAppRootState> {
     }
 
     public render(): React.ReactElement<any> {
+        let containerStyle: Object = {
+            overflow: "visible"
+        };
+
         return (
             <div className="app-root">
                 <AppBar title={<FolderName selectedFolder={this.props.selectedFolder}/>}
                         iconElementRight={<AppMenu location={this.props.location}/>}
                         onLeftIconButtonTouchTap={this.handleToggleDrawer}/>
-                <Drawer containerClassName="app-drawer" docked={false} open={this.state.isDrawerVisible}
+                <Drawer containerClassName="app-drawer" containerStyle={containerStyle} docked={false}
+                        open={this.state.isDrawerVisible}
                         onRequestChange={(isDrawerVisible) => this.setState({isDrawerVisible})}>
                     <FolderDrawer hideDrawer={this.handleHideDrawer}/>
                 </Drawer>

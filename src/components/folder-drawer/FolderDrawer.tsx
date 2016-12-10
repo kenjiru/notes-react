@@ -18,11 +18,15 @@ import "./FolderDrawer.less";
 
 class FolderDrawer extends React.Component<IFolderDrawerProps, IFolderDrawerState> {
     public render(): React.ReactElement<any> {
+        let buttonStyle: Object = {
+            flexShrink: 0
+        };
+
         return (
             <div className="folder-drawer">
+                <Subheader>Folders</Subheader>
                 <div className="folder-list">
                     <List>
-                        <Subheader>Folders</Subheader>
                         <ListItem key="all-folders" leftIcon={<FolderOpen />} primaryText={"All Notes"}
                                   onClick={() => this.handleFolderClicked(FolderUtil.ALL_NOTES)}/>
                         <ListItem key="no-folder" leftIcon={<FolderOpen />} primaryText={"Unfilled Notes"}
@@ -30,7 +34,7 @@ class FolderDrawer extends React.Component<IFolderDrawerProps, IFolderDrawerStat
                         {this.renderFolders()}
                     </List>
                 </div>
-                <FlatButton label="New Folder" onClick={this.handleCreateFolder}/>
+                <FlatButton style={buttonStyle} label="New Folder" onClick={this.handleCreateFolder}/>
             </div>
         );
     }
