@@ -66,7 +66,7 @@ class NoteUtil {
 
         return {
             id: noteId,
-            rev: -1,
+            rev: NoteUtil.CHANGED_LOCALLY_REVISION,
             title: noteTitle,
             createDate: currentDateTime,
             lastChanged: currentDateTime,
