@@ -15,8 +15,7 @@ import CreateFolderDialog from "../create-folder-dialog/CreateFolderDialog";
 import DeleteFolderDialog from "../delete-folder-dialog/DeleteFolderDialog";
 import MoveNotesDialog from "../move-notes-dialog/MoveNotesDialog";
 import AboutDialog from "../about-dialog/AboutDialog";
-
-import FolderName from "./FolderName";
+import FolderName from "../folder-name/FolderName";
 
 class AppRoot extends React.Component<IAppRootProps, IAppRootState> {
     constructor(props: IAppRootProps) {
