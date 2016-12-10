@@ -11,16 +11,7 @@ import {selectFolder, renameFolder, showDeleteFolderDialog} from "../../model/ac
 import "./FolderName.less"
 
 class FolderName extends React.Component<IFolderNameProps, IFolderNameState> {
-    private smallButton: Object = {
-        width: 32,
-        height: 32,
-        padding: 8
-    };
-
     private smallIcon: Object = {
-        width: 16,
-        height: 16,
-        fontSize: 16,
         color: "#eee"
     };
 
@@ -55,17 +46,12 @@ class FolderName extends React.Component<IFolderNameProps, IFolderNameState> {
     private renderShowFolder(): React.ReactElement<any> {
         return (
             <span className="show-folder-name">
-                <span>
-                    Folder:
-                    <span className="folder-name">{this.props.selectedFolder}</span>
-                </span>
-
-                <span className="buttons-container">
-                    <IconButton iconClassName="material-icons" style={this.smallButton} iconStyle={this.smallIcon}
-                                onClick={this.handleEdit}>mode_edit</IconButton>
-                    <IconButton iconClassName="material-icons" style={this.smallButton} iconStyle={this.smallIcon}
-                                onClick={this.handleDelete}>delete</IconButton>
-                </span>
+                Folder:
+                <span className="folder-name">{this.props.selectedFolder}</span>
+                <IconButton iconClassName="material-icons" iconStyle={this.smallIcon}
+                            onClick={this.handleEdit}>mode_edit</IconButton>
+                <IconButton iconClassName="material-icons" iconStyle={this.smallIcon}
+                            onClick={this.handleDelete}>delete</IconButton>
             </span>
         );
     }
@@ -78,7 +64,7 @@ class FolderName extends React.Component<IFolderNameProps, IFolderNameState> {
 
         let inputStyle: Object = {
             color: "white",
-            fontSize: 18
+            fontSize: 24
         };
 
         return (
@@ -88,9 +74,9 @@ class FolderName extends React.Component<IFolderNameProps, IFolderNameState> {
                     <TextField name="folder-name" style={textFieldStyle} inputStyle={inputStyle}
                                defaultValue={this.props.selectedFolder} onChange={this.handleInputChange}/>
                 </span>
-                <IconButton iconClassName="material-icons" style={this.smallButton} iconStyle={this.smallIcon}
+                <IconButton iconClassName="material-icons" iconStyle={this.smallIcon}
                             onClick={this.handleSave}>save</IconButton>
-                <IconButton iconClassName="material-icons" style={this.smallButton} iconStyle={this.smallIcon}
+                <IconButton iconClassName="material-icons" iconStyle={this.smallIcon}
                             onClick={this.handleCancel}>cancel</IconButton>
             </span>
         );
