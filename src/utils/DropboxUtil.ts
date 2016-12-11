@@ -65,35 +65,55 @@ class DropboxUtil {
     public saveNewRevision(notes: INote[], revision: number, serverId: string): Promise<any> {
         let manifest: IManifest = ManifestUtil.createManifest(notes, revision, serverId);
 
-        return Promise.all([
+        let uploadEntries: IUploadEntry[] = _.concat(
             this.saveManifestFile(manifest),
-            this.saveAllNoteFiles(notes, manifest.revision)
-        ]);
-    }
+            this.saveAllNoteFiles(notes, revision)
+        );
 
-    private saveManifestFile(manifest: IManifest): Promise<any> {
-        let manifestPath: string = this.getManifestPath(manifest.revision);
-        let manifestContents: string = ManifestUtil.createManifestFile(manifest);
+        let uploadRequests: Promise<any>[] = _.map(uploadEntries, (uploadEntry: IUploadEntry): any =>
+            this.dropbox.filesUploadSessionStart({
+                contents: uploadEntry.contents,
+                close: true
+            })
+        );
 
-        console.log("saveManifestFile", manifestContents);
+        return Promise.all(uploadRequests).then((uploadSessions: any[]) => {
+            let batchEntries: any = _.map(uploadSessions, (uploadSession: any, index: number) => ({
+                cursor: {
+                    session_id: uploadSession.session_id,
+                    offset: uploadEntries[index].contents.size
+                },
+                commit: {
+                    "path": uploadEntries[index].path,
+                    "mode": {
+                        ".tag": "overwrite"
+                    }
+                }
+            }));
 
-        return Promise.all([
-            this.saveManifestFileAt("/manifest.xml", manifestContents),
-            this.saveManifestFileAt(manifestPath, manifestContents)
-        ]);
-    }
-
-    private saveManifestFileAt(path: string, contents: string): Promise<any> {
-        return this.dropbox.filesUpload({
-            path: path,
-            contents: new Blob([contents]),
-            mode: {
-                ".tag": "overwrite"
-            }
+            return this.dropbox.filesUploadSessionFinishBatch({
+                entries: batchEntries
+            });
         });
     }
 
-    private saveAllNoteFiles(notes: INote[], revision: number): Promise<any> {
+    private saveManifestFile(manifest: IManifest): IUploadEntry[] {
+        let manifestPath: string = this.getManifestPath(manifest.revision);
+        let manifestContents: string = ManifestUtil.createManifestFile(manifest);
+        let manifestBlob: Blob = new Blob([manifestContents]);
+
+        return [
+            {
+                contents: manifestBlob,
+                path: "/manifest.xml"
+            }, {
+                contents: manifestBlob,
+                path: manifestPath
+            }
+        ];
+    }
+
+    private saveAllNoteFiles(notes: INote[], revision: number): IUploadEntry[] {
         let modifiedNotes: INote[] = _.filter(notes, (note: INote): boolean =>
         note.rev === NoteUtil.CHANGED_LOCALLY_REVISION);
 
@@ -101,20 +121,13 @@ class DropboxUtil {
             note.rev = revision
         });
 
-        return Promise.all([
-            _.map(modifiedNotes, (note: INote) => this.saveNote(note))
-        ]);
-    }
+        return _.map(modifiedNotes, (note: INote): IUploadEntry => {
+            let noteContents: string = NoteUtil.createNoteFile(note);
 
-    private saveNote(note: INote): Promise<any> {
-        let noteContents: string = NoteUtil.createNoteFile(note);
-        let notePath: string = this.getNotePath(note);
-
-        console.log("saveNote", notePath);
-
-        return this.dropbox.filesUpload({
-            path: notePath,
-            contents: noteContents
+            return {
+                contents: new Blob([noteContents]),
+                path: this.getNotePath(note)
+            };
         });
     }
 
@@ -195,6 +208,11 @@ export interface ISyncData {
     remoteNotes: INote[];
     remoteRevision: number,
     baseManifest: IManifest;
+}
+
+export interface IUploadEntry {
+    contents: Blob;
+    path: string;
 }
 
 export default DropboxUtil;

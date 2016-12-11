@@ -127,8 +127,8 @@ function syncNotes(): IActionCallback {
 
             if (syncResult.isModifiedLocally) {
                 return dropboxUtil.saveNewRevision(syncResult.notes, latestRevision, syncData.baseManifest.serverId)
-                    .then(() => {
-                        Promise.all(promises)
+                    .then((sessionFinishBatchArg: any): void => {
+                        console.log({sessionFinishBatchArg});
                     });
             }
 
