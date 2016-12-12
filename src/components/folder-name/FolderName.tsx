@@ -6,7 +6,8 @@ import {TextField, IconButton} from "material-ui";
 import store from "../../model/store";
 import FolderUtil from "../../utils/FolderUtil";
 
-import {selectFolder, renameFolder, showDeleteFolderDialog} from "../../model/actions";
+import {selectFolder, showDeleteFolderDialog} from "../../model/actions/ui";
+import {renameFolder} from "../../model/actions/local";
 
 import "./FolderName.less"
 

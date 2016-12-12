@@ -4,7 +4,7 @@ import {connect} from "react-redux";
 import {Dialog, FlatButton, TextField} from "material-ui";
 
 import {IStore} from "../../model/store";
-import {createFolder} from "../../model/actions";
+import {createFolder} from "../../model/actions/local";
 import {IDispatchFunction} from "../../utils/ActionUtil";
 
 class CreateFolderDialog extends React.Component<ICreateFolderDialogProps, ICreateFolderDialogState> {

@@ -5,7 +5,7 @@ import {Location} from "history";
 import {AppBar, Drawer} from "material-ui";
 
 import store, {IStore} from "../../model/store";
-import {restoreState} from "../../model/actions";
+import {restoreState} from "../../model/actions/local";
 
 import AppMenu from "../app-menu/AppMenu";
 import FolderDrawer from "../folder-drawer/FolderDrawer";

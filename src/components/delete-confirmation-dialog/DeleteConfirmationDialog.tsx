@@ -2,9 +2,11 @@ import * as React from "react";
 import {connect} from "react-redux";
 import {Dialog, FlatButton} from "material-ui";
 
-import {IStore, INote} from "../../model/store";
-import {deleteNotes, showSnackbarMessage, setSelectedNotes} from "../../model/actions";
 import {IDispatchFunction} from "../../utils/ActionUtil";
+
+import {IStore, INote} from "../../model/store";
+import {deleteNotes} from "../../model/actions/local";
+import {setSelectedNotes, showSnackbarMessage} from "../../model/actions/ui";
 
 class DeleteConfirmationDialog extends React.Component<IDeleteConfirmationDialogProps, IDeleteConfirmationDialogState> {
     constructor(props: IDeleteConfirmationDialogProps) {

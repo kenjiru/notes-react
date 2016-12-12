@@ -10,7 +10,8 @@ import {
 } from "material-ui/Table";
 
 import {INote, IStore} from "../../model/store";
-import {createNewNote, showSnackbarMessage, confirmDeletion, setSelectedNotes} from "../../model/actions";
+import {showSnackbarMessage, confirmDeletion, setSelectedNotes} from "../../model/actions/ui";
+import {createNewNote} from "../../model/actions/local";
 
 import NoteUtil from "../../utils/NoteUtil";
 import {IDispatchFunction} from "../../utils/ActionUtil";

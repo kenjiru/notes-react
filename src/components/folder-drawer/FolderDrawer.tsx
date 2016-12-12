@@ -9,7 +9,7 @@ import FileFolder from "material-ui/svg-icons/file/folder";
 import FolderOpen from "material-ui/svg-icons/file/folder-open";
 
 import {IStore} from "../../model/store";
-import {selectFolder, showCreateFolderDialog, setSelectedNotes} from "../../model/actions";
+import {selectFolder, showCreateFolderDialog, setSelectedNotes} from "../../model/actions/ui";
 
 import {IDispatchFunction} from "../../utils/ActionUtil";
 import FolderUtil from "../../utils/FolderUtil";

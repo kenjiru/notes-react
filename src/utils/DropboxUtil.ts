@@ -2,7 +2,7 @@ import * as _ from "lodash";
 import * as Dropbox from "dropbox";
 
 import {IManifest, INote, IManifestNote, ILock} from "../model/store";
-import {CLIENT_ID} from "../model/actions";
+import {CLIENT_ID} from "../model/actions/dropbox";
 
 import FileUtil from "./FileUtil";
 import ManifestUtil from "./ManifestUtil";

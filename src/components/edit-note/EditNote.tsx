@@ -7,7 +7,7 @@ import {Editor, EditorState, ContentState, RichUtils} from "draft-js";
 import {stateFromHTML} from "draft-js-import-html";
 
 import {IStore, INote} from "../../model/store";
-import {updateNote} from "../../model/actions";
+import {updateNote} from "../../model/actions/local";
 
 import NoteUtil from "../../utils/NoteUtil";
 import EditorUtil from "../../utils/EditorUtil";

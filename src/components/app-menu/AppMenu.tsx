@@ -6,7 +6,9 @@ import {IconButton, IconMenu, MenuItem} from "material-ui";
 import MoreVertIcon from "material-ui/svg-icons/navigation/more-vert";
 
 import {IStore, IUser, INote} from "../../model/store";
-import {startSync, confirmDeletion, showMoveNotesDialog, showAboutDialog} from "../../model/actions";
+import {startSync} from "../../model/actions/dropbox";
+import {showMoveNotesDialog, showAboutDialog, confirmDeletion} from "../../model/actions/ui";
+
 import DropboxAuth from "../dropbox-auth/DropboxAuth";
 
 class AppMenu extends React.Component<IAppMenuProps, IAppMenuState> {

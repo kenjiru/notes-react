@@ -5,7 +5,8 @@ import {Location} from "history";
 import {Dialog, FlatButton, SelectField, MenuItem} from "material-ui";
 
 import {IStore, INote} from "../../model/store";
-import {moveNotesTo, showSnackbarMessage, setSelectedNotes} from "../../model/actions";
+import {showSnackbarMessage, setSelectedNotes} from "../../model/actions/ui";
+import {moveNotesTo} from "../../model/actions/local";
 
 import {IDispatchFunction} from "../../utils/ActionUtil";
 import FolderUtil from "../../utils/FolderUtil";

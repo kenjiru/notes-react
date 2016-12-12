@@ -6,7 +6,8 @@ import FolderUtil from "../../utils/FolderUtil";
 import {IDispatchFunction} from "../../utils/ActionUtil";
 
 import {IStore} from "../../model/store";
-import {showSnackbarMessage, setSelectedNotes, deleteFolder, selectFolder} from "../../model/actions";
+import {showSnackbarMessage, setSelectedNotes, selectFolder} from "../../model/actions/ui";
+import {deleteFolder} from "../../model/actions/local";
 
 class DeleteFolderDialog extends React.Component<IDeleteFolderDialogProps, IDeleteFolderDialogState> {
     constructor(props: IDeleteFolderDialogProps) {

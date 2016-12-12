@@ -4,7 +4,7 @@ import {connect} from "react-redux";
 import {MenuItem, TouchTapEvent} from "material-ui";
 
 import {IStore, IUser} from "../../model/store";
-import {setAccessToken, getCurrentAccount, revokeAccess} from "../../model/actions";
+import {setAccessToken, getCurrentAccount, revokeAccess} from "../../model/actions/dropbox";
 
 import WindowUtil from "../../utils/WindowUtil";
 import DropboxUtil from "../../utils/DropboxUtil";
