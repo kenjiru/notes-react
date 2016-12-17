@@ -1,18 +1,15 @@
 import * as moment from "moment";
-import * as Dropbox from "dropbox";
 
 import {IStore} from "../store";
-import {IAction, IActionCallback, IDispatchFunction, IGetStateFunction, createAction} from "../../utils/ActionUtil";
-import DropboxUtil from "../../utils/DropboxUtil";
-import SyncUtil from "../../utils/SyncUtil";
-import {ISyncData} from "../../utils/DropboxUtil";
-
 import {persistState, SET_NOTES, SET_FOLDERS} from "./local";
 
-export const CLIENT_ID: string = "17zzlf216nsykj9";
+import {IAction, IActionCallback, IDispatchFunction, IGetStateFunction, createAction} from "../../utils/ActionUtil";
+import SyncUtil from "../../utils/SyncUtil";
+import DropboxUtil, {ISyncData} from "../../utils/DropboxUtil";
 
 export const DROPBOX_SET_ACCESS_TOKEN: string = "DROPBOX_SET_ACCESS_TOKEN_SET_USER_INFO";
 export function setAccessToken(accessToken: string): IAction {
+    DropboxUtil.getInstance().setAccessToken(accessToken);
     console.log("setAccessToken", accessToken);
 
     return createAction(DROPBOX_SET_ACCESS_TOKEN, accessToken);
@@ -20,13 +17,8 @@ export function setAccessToken(accessToken: string): IAction {
 
 export const DROPBOX_SET_CURRENT_ACCOUNT: string = "DROPBOX_SET_CURRENT_ACCOUNT";
 export function getCurrentAccount(): IActionCallback {
-    return (dispatch: IDispatchFunction, getState: IGetStateFunction): Promise<any> => {
-        let dropbox: any = new Dropbox({
-            clientId: CLIENT_ID,
-            accessToken: getState().dropbox.accessToken
-        });
-
-        return dropbox.usersGetCurrentAccount().then((result) => {
+    return (dispatch: IDispatchFunction): Promise<any> => {
+        return DropboxUtil.getInstance().getCurrentAccount().then((result) => {
             console.log("usersGetAccount", result);
 
             dispatch(createAction(DROPBOX_SET_CURRENT_ACCOUNT, {
@@ -37,19 +29,14 @@ export function getCurrentAccount(): IActionCallback {
 }
 
 export function revokeAccess(): IActionCallback {
-    return (dispatch: IDispatchFunction, getState: IGetStateFunction): Promise<any> => {
-        let dropbox: any = new Dropbox({
-            clientId: CLIENT_ID,
-            accessToken: getState().dropbox.accessToken
-        });
-
-        let resetAuth: Function = (): void => {
+    return (dispatch: IDispatchFunction): Promise<any> => {
+        let resetAuth = (): void => {
             console.log("revokeAccess reset authentication credentials");
             dispatch(createAction(DROPBOX_SET_ACCESS_TOKEN, null));
             dispatch(createAction(DROPBOX_SET_CURRENT_ACCOUNT, null))
         };
 
-        return dropbox.authTokenRevoke().then(resetAuth, (error: Error): void => {
+        return DropboxUtil.getInstance().revokeAccess().then(resetAuth, (error: Error): void => {
             console.log("revokeAccess error", error);
             resetAuth();
         });
@@ -60,10 +47,8 @@ let numSyncRetries: number = 0;
 const NUM_RETRIES: number = 4;
 const LOCK_WAIT_TIME: number = 2000;
 export function startSync(): IActionCallback {
-    return (dispatch: IDispatchFunction, getState: IGetStateFunction): Promise<any> => {
-        let dropboxUtil: DropboxUtil = new DropboxUtil(CLIENT_ID, getState().dropbox.accessToken);
-
-        return dropboxUtil.hasLock().then((lockExists: boolean) => {
+    return (dispatch: IDispatchFunction): Promise<any> => {
+        return DropboxUtil.getInstance().hasLock().then((lockExists: boolean) => {
             if (lockExists) {
                 if (numSyncRetries < NUM_RETRIES) {
                     ++numSyncRetries;
@@ -87,7 +72,7 @@ export const DROPBOX_SET_LAST_SYNC: string = "DROPBOX_SET_LAST_SYNC";
 function syncNotes(): IActionCallback {
     return (dispatch: IDispatchFunction, getState: IGetStateFunction): Promise<any> => {
         let state: IStore = getState();
-        let dropboxUtil: DropboxUtil = new DropboxUtil(CLIENT_ID, state.dropbox.accessToken);
+        let dropboxUtil: DropboxUtil = DropboxUtil.getInstance();
 
         return dropboxUtil.getSyncData(state.dropbox.lastSyncRevision).then((syncData: ISyncData) => {
             let syncResult = SyncUtil.syncNotes(state.local.notes, syncData.remoteNotes, syncData.baseManifest,

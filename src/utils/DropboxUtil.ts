@@ -2,14 +2,16 @@ import * as _ from "lodash";
 import * as Dropbox from "dropbox";
 
 import {IManifest, INote, IManifestNote, ILock} from "../model/store";
-import {CLIENT_ID} from "../model/actions/dropbox";
 
 import FileUtil from "./FileUtil";
 import ManifestUtil from "./ManifestUtil";
 import NoteUtil from "./NoteUtil";
 import LockUtil from "./LockUtil";
 
+const CLIENT_ID: string = "17zzlf216nsykj9";
+
 class DropboxUtil {
+    private static instance: DropboxUtil = null;
     public static NEVER_SYNCED_REVISION: number = -1;
 
     private dropbox: any;
@@ -20,11 +22,30 @@ class DropboxUtil {
         return dropbox.getAuthenticationUrl(`http://localhost:8080/dropbox-auth.html`);
     }
 
-    constructor(private clientId: string, private accessToken: string) {
+    public static getInstance(): DropboxUtil {
+        if (_.isNil(DropboxUtil.instance)) {
+            DropboxUtil.instance = new DropboxUtil();
+        }
+
+        return DropboxUtil.instance;
+    }
+
+    private constructor() {
         this.dropbox = new Dropbox({
-            clientId: this.clientId,
-            accessToken: this.accessToken
+            clientId: CLIENT_ID
         });
+    }
+
+    public setAccessToken(accessToken: string) {
+        this.dropbox.setAccessToken(accessToken);
+    }
+
+    public getCurrentAccount(): Promise<any> {
+        return this.dropbox.usersGetCurrentAccount();
+    }
+
+    public revokeAccess(): Promise<any> {
+        return this.dropbox.authTokenRevoke();
     }
 
     public getSyncData(lastSyncRevision: number): Promise<ISyncData> {
