@@ -6,6 +6,9 @@ import {AppBar, Drawer} from "material-ui";
 
 import store, {IStore} from "../../model/store";
 import {restoreState} from "../../model/actions/local";
+import {setAccessToken, getCurrentAccount} from "../../model/actions/dropbox";
+
+import {IDispatchFunction} from "../../utils/ActionUtil";
 
 import AppMenu from "../app-menu/AppMenu";
 import FolderDrawer from "../folder-drawer/FolderDrawer";
@@ -26,6 +29,11 @@ class AppRoot extends React.Component<IAppRootProps, IAppRootState> {
         };
 
         store.dispatch(restoreState());
+        window.addEventListener("message", this.handleMessage);
+    }
+
+    public componentWillUnmount(): void {
+        window.removeEventListener("message", this.handleMessage);
     }
 
     public render(): React.ReactElement<any> {
@@ -58,6 +66,11 @@ class AppRoot extends React.Component<IAppRootProps, IAppRootState> {
         );
     }
 
+    private handleMessage = (event: MessageEvent): void => {
+        this.props.dispatch(setAccessToken(event.data.accessToken));
+        this.props.dispatch(getCurrentAccount());
+    };
+
     private handleToggleDrawer = (): void => {
         this.setState({
             isDrawerVisible: !this.state.isDrawerVisible
@@ -76,6 +89,7 @@ class AppRoot extends React.Component<IAppRootProps, IAppRootState> {
 }
 
 interface IAppRootProps {
+    dispatch?: IDispatchFunction;
     selectedFolder?: string;
     router?: InjectedRouter;
     location?: Location;

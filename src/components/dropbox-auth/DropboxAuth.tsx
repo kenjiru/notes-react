@@ -10,12 +10,6 @@ import WindowUtil from "../../utils/WindowUtil";
 import DropboxUtil from "../../utils/DropboxUtil";
 
 class DropboxAuth extends React.Component<IDropboxAuthProps, IDropboxAuthState> {
-    private dropboxAuthWindow: Window;
-
-    public componentDidMount(): void {
-        window.addEventListener("message", this.handleMessage);
-    }
-
     public render(): React.ReactElement<any> {
         return (
             <MenuItem primaryText={this.getPrimaryText()} secondaryText={this.getSecondaryText()}
@@ -30,14 +24,6 @@ class DropboxAuth extends React.Component<IDropboxAuthProps, IDropboxAuthState> 
         } else {
             this.login();
         }
-    };
-
-    private handleMessage = (event: MessageEvent): void => {
-        if (this.dropboxAuthWindow) {
-            this.dropboxAuthWindow.close();
-        }
-
-        this.getAccount(event.data.accessToken);
     };
 
     private login(): void {
