@@ -55,7 +55,6 @@
     "style-loader": "^0.13.1",
     "ts-loader": "^0.8.2",
     "typescript": "2.0.3",
-    "typings": "^1.4.0",
     "url-loader": "~0.5.7",
     "webpack": "^2.1.0-beta.26",
     "webpack-cordova-plugin": "^0.1.6",
@@ -68,8 +67,7 @@
     "cordova-build": "cd cordova && webpack --config webpack-cordova.config.js && phonegap build",
     "cordova-debug": "cd cordova && HOST=0.0.0.0 webpack-dev-server --hot --config webpack-cordova.config.js",
     "debug": "webpack-dev-server --config webpack.config.js --hot --inline --history-api-fallback",
-    "build": "rm -rf dist/** && webpack --config webpack.config.js --devtool source-map",
-    "typings": "typings install"
+    "build": "rm -rf dist/** && webpack --config webpack.config.js --devtool source-map"
   },
   "engines": {
     "npm": ">=2.0.0"
