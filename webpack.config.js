@@ -14,7 +14,7 @@ var config = {
         app: src_dir + "/App.tsx",
         dropboxAuth: src_dir + "/DropboxAuthPage.tsx",
         vendor: ["react", "react-dom", "react-router", "redux-thunk", "react-redux", "redux", "lodash", "moment",
-            "material-ui", "material-design-icons", "react-tap-event-plugin", "slate",
+            "material-ui", "material-design-icons", "react-tap-event-plugin", "slate", "keycode",
             "dropbox", "store", "blob-util", "text-encoding", "x2js"]
     },
     output: {

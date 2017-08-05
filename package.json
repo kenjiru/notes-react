@@ -9,6 +9,7 @@
     "draft-js": "^0.9.1",
     "draft-js-import-html": "^0.2.2",
     "dropbox": "^2.5.0",
+    "keycode": "^2.1.9",
     "lodash": "^4.16.2",
     "material-design-icons": "^3.0.1",
     "material-ui": "^0.16.4",
