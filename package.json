@@ -21,13 +21,13 @@
     "react-tap-event-plugin": "^2.0.0",
     "redux": "^3.6.0",
     "redux-thunk": "^2.1.0",
+    "slate": "^0.21.1",
     "store": "^1.3.20",
     "text-encoding": "^0.6.1",
     "x2js": "^3.0.1"
   },
   "devDependencies": {
     "@types/classnames": "0.0.31",
-    "@types/draft-js": "^0.7.33",
     "@types/lodash": "^4.14.37",
     "@types/material-ui": "^0.15.37",
     "@types/moment-range": "^2.0.33",
