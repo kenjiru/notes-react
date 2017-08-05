@@ -12,10 +12,14 @@ class NoteUtil {
         "note-content": "",
         bold: "b",
         italic: "i",
-        strikethrough: "strike",
+        strikethrough: "del",
         highlight: {
             "element": "span",
             "style": "background: yellow"
+        },
+        monospace: {
+            "element": "span",
+            "style": "font-family: monospace"
         },
         "size:small": {
             "element": "span",
@@ -170,15 +174,15 @@ ${NoteUtil.createTagNode(tags)}
     private static replaceTitle(text: string): string {
         text = text.replace(/<(\/)?note-content[^>]*>/g, "");
 
-        return text.replace(/^(.*)([\r\n]+.*)/, "<h1>$1</h1>$2");
+        return text.replace(/^(.*)([\r\n].*)/, "<h1>$1</h1>$2");
     }
 
     private static replaceNewLines(text: string): string {
-        let lines: string[] = text.split(/[\r\n]+/);
+        let lines: string[] = text.split(/[\r\n]/);
 
         lines = _.map(lines, (line: string): string => {
-            if (line[0] !== "<") {
-                return line.replace(/^(.+?)$/g, "<p>$1</p>");
+            if (NoteUtil.startsWithBlock(line)) {
+                return `<p>${line}</p>`;
             }
 
             return line;
@@ -213,6 +217,11 @@ ${NoteUtil.createTagNode(tags)}
         }
 
         return text;
+    }
+
+    private static startsWithBlock(line: string): boolean {
+        return line.startsWith("<h1") === false && line.startsWith("<list") === false &&
+            line.startsWith("</list") === false;
     }
 }
 
