@@ -1,32 +1,22 @@
 import * as _ from "lodash";
+import * as moment from "moment";
 import * as React from "react";
 import {connect} from "react-redux";
 import {InjectedRouter, withRouter} from "react-router";
-import {Editor, Plain} from "slate";
 
 import {IStore, INote} from "../../model/store";
+import {updateNote} from "../../model/actions/local";
 
 import {IDispatchFunction} from "../../utils/ActionUtil";
 import IdUtil from "../../utils/IdUtil";
+import NoteUtil from "../../utils/NoteUtil";
+
+import SlateEditor from "../slate-editor/SlateEditor";
 
 import EditToolbar from "./EditToolbar";
 
 class EditNote extends React.Component<IEditNoteProps, IEditNoteState> {
-    constructor(props: IEditNoteProps) {
-        super(props);
-
-        this.state = {
-            editorState: this.getEditorState(props.note)
-        };
-    }
-
     public componentWillReceiveProps(nextProps: IEditNoteProps): void {
-        if (nextProps.note !== this.props.note) {
-            this.setState({
-                editorState: this.getEditorState(this.props.note)
-            });
-        }
-
         if (this.props.deleteConfirmationId !== nextProps.deleteConfirmationId && _.isNil(this.props.note) === false) {
             let deleteConfirmationId = IdUtil.getNodeListId([this.props.note]);
 
@@ -36,26 +26,33 @@ class EditNote extends React.Component<IEditNoteProps, IEditNoteState> {
         }
     }
 
-    private getEditorState(note: INote): any {
-        return Plain.deserialize("");
-    }
-
     public render(): React.ReactElement<any> {
         return (
             <div className="edit-note">
                 <EditToolbar toggleInlineStyle={this.handleToolbar} toggleBlockStyle={this.handleToolbar}
                              exportToHtml={this.handleToolbar}/>
-                <Editor state={this.state.editorState} onChange={this.handleChange}/>
+                <SlateEditor note={this.props.note} onChange={this.handleNoteChanged}/>
             </div>
         );
     }
 
-    private handleChange = (editorState): void => {
-        this.setState({editorState});
-    }
-
     private handleToolbar = (): void => {
         console.log("handle toolbar");
+    }
+
+    private handleNoteChanged = (noteContent: string): void => {
+        // this.updateNote(noteContent);
+    }
+
+    private updateNote(content: string): void {
+        let updatedNote: INote = _.merge({}, this.props.note, {
+            content,
+            title: NoteUtil.getTitle(content),
+            lastChanged: moment().format(),
+            rev: NoteUtil.CHANGED_LOCALLY_REVISION
+        });
+
+        this.props.dispatch(updateNote(updatedNote));
     }
 
     private navigateBack(): void {
@@ -64,7 +61,6 @@ class EditNote extends React.Component<IEditNoteProps, IEditNoteState> {
 }
 
 interface IEditNoteState {
-    editorState?: any;
 }
 
 interface IEditNoteProps {
