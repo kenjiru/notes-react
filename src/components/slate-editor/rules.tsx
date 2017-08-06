@@ -3,8 +3,8 @@ import * as React from "react";
 const BLOCK_TAGS = {
     h1: "header",
     p: "paragraph",
-    ul: "list",
-    li: "listItem"
+    ul: "bulleted-list",
+    li: "list-item"
 };
 
 const MARK_TAGS = {
@@ -38,9 +38,9 @@ const rules: any[] = [
                     return <h1>{children}</h1>;
                 case "paragraph":
                     return <p>{children}</p>;
-                case "list":
+                case "bulleted-list":
                     return <ul>{children}</ul>;
-                case "listItem":
+                case "list-item":
                     return <li>{children}</li>;
             }
         }

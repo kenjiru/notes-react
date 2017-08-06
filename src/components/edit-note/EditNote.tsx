@@ -13,8 +13,6 @@ import NoteUtil from "../../utils/NoteUtil";
 
 import SlateEditor from "../slate-editor/SlateEditor";
 
-import EditToolbar from "./EditToolbar";
-
 class EditNote extends React.Component<IEditNoteProps, IEditNoteState> {
     public componentWillReceiveProps(nextProps: IEditNoteProps): void {
         if (this.props.deleteConfirmationId !== nextProps.deleteConfirmationId && _.isNil(this.props.note) === false) {
@@ -29,15 +27,9 @@ class EditNote extends React.Component<IEditNoteProps, IEditNoteState> {
     public render(): React.ReactElement<any> {
         return (
             <div className="edit-note">
-                <EditToolbar toggleInlineStyle={this.handleToolbar} toggleBlockStyle={this.handleToolbar}
-                             exportToHtml={this.handleToolbar}/>
                 <SlateEditor note={this.props.note} onChange={this.handleNoteChanged}/>
             </div>
         );
-    }
-
-    private handleToolbar = (): void => {
-        console.log("handle toolbar");
     }
 
     private handleNoteChanged = (noteContent: string): void => {

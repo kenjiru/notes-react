@@ -2,10 +2,10 @@ import * as React from "react";
 
 const schema = {
     nodes: {
-        header: props => <h1 {...props.attributes}>{props.children}</h1>,
-        paragraph: props => <p {...props.attributes}>{props.children}</p>,
-        list: props => <ul {...props.attributes}>{props.children}</ul>,
-        listItem: props => <li {...props.attributes}>{props.children}</li>,
+        "header": props => <h1 {...props.attributes}>{props.children}</h1>,
+        "paragraph": props => <p {...props.attributes}>{props.children}</p>,
+        "bulleted-list": props => <ul {...props.attributes}>{props.children}</ul>,
+        "list-item": props => <li {...props.attributes}>{props.children}</li>,
     },
     marks: {
         bold: props => <b>{props.children}</b>,

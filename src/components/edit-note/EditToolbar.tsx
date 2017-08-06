@@ -10,23 +10,23 @@ class EditToolbar extends React.Component<IEditToolbarProps, IEditToolbarState> 
                 <Toolbar className="toolbar">
                     <ToolbarGroup className="toolbar-group" firstChild={true}>
                         <IconButton iconClassName="material-icons" tooltip="Bold"
-                                    onClick={() => this.props.toggleInlineStyle("BOLD")}>format_bold</IconButton>
+                                    onClick={() => this.props.onToggleMark("bold")}>format_bold</IconButton>
                         <IconButton iconClassName="material-icons" tooltip="Italic"
-                                    onClick={() => this.props.toggleInlineStyle("ITALIC")}>format_italic</IconButton>
+                                    onClick={() => this.props.onToggleMark("italic")}>format_italic</IconButton>
                         <IconButton iconClassName="material-icons" tooltip="Strike through"
-                                    onClick={() => this.props.toggleInlineStyle("STRIKETHROUGH")}>
+                                    onClick={() => this.props.onToggleMark("strikethrough")}>
                             format_strikethrough</IconButton>
                         <IconButton iconClassName="material-icons" tooltip="Highlight"
-                                    onClick={() => this.props.toggleInlineStyle("HIGHLIGHT")}>highlight</IconButton>
+                                    onClick={() => this.props.onToggleMark("highlight")}>highlight</IconButton>
                         <IconButton iconClassName="material-icons" tooltip="Fixed width"
-                                    onClick={() => this.props.toggleInlineStyle("CODE")}>title</IconButton>
+                                    onClick={() => this.props.onToggleMark("fixed")}>title</IconButton>
 
                         <IconButton iconClassName="material-icons" tooltip="Unordered list"
-                                    onClick={() => this.props.toggleBlockStyle("unordered-list-item")}>
+                                    onClick={() => this.props.onToggleBlock("bulleted-list")}>
                             format_list_bulleted
                         </IconButton>
                         <IconButton iconClassName="material-icons" tooltip="Ordered list"
-                                    onClick={() => this.props.toggleBlockStyle("ordered-list-item")}>
+                                    onClick={() => this.props.onToggleBlock("ordered-list-item")}>
                             format_list_numbered
                         </IconButton>
 
@@ -45,9 +45,9 @@ class EditToolbar extends React.Component<IEditToolbarProps, IEditToolbarState> 
 }
 
 interface IEditToolbarProps {
-    toggleInlineStyle: (command: string) => void;
-    toggleBlockStyle: (command: string) => void;
-    exportToHtml: () => void;
+    onToggleMark: (mark: string) => void;
+    onToggleBlock: (block: string) => void;
+    exportToHtml?: () => void;
 }
 
 interface IEditToolbarState {

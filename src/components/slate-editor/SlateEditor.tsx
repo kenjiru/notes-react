@@ -3,7 +3,10 @@ import * as React from "react";
 import {Editor, Plain, Html} from "slate";
 
 import NoteUtil from "../../utils/NoteUtil";
+import SlateUtil from "../../utils/SlateUtil";
 import {INote} from "../../model/store";
+
+import EditToolbar from "../edit-note/EditToolbar";
 
 import rules from "./rules";
 import schema from "./schema";
@@ -30,10 +33,13 @@ class SlateEditor extends React.Component<ISlateEditorProps, ISlateEditorState> 
 
     public render(): React.ReactElement<any> {
         return (
-            <Editor className="slate-editor"
-                    schema={schema} plugins={plugins}
-                    state={this.state.editorState} onChange={this.handleChange}
-                    onDocumentChange={this.handleDocumentChange}/>
+            <div className="slate-editor">
+                <EditToolbar onToggleMark={this.handleToggleMark} onToggleBlock={this.handleToggleBlock}/>
+                <Editor className="slate-editor"
+                        schema={schema} plugins={plugins}
+                        state={this.state.editorState} onChange={this.handleChange}
+                        onDocumentChange={this.handleDocumentChange}/>
+            </div>
         );
     }
 
@@ -45,6 +51,22 @@ class SlateEditor extends React.Component<ISlateEditorProps, ISlateEditorState> 
 
     private handleChange = (editorState): void => {
         this.setState({editorState});
+    }
+
+    private handleToggleMark = (mark: string): void => {
+        const editorState = SlateUtil.toggleMark(this.state.editorState, mark);
+
+        this.setState({
+            editorState
+        });
+    }
+
+    private handleToggleBlock = (block: string): void => {
+        const editorState = SlateUtil.toggleBlock(this.state.editorState, block);
+
+        this.setState({
+            editorState
+        });
     }
 
     private getEditorState(note: INote): any {

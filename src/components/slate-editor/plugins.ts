@@ -13,7 +13,7 @@ function MarkHotkey(options) {
 
             return state
                 .transform()
-                .toggleMark(type)
+                .onToggleMark(type)
                 .apply();
         }
     }
