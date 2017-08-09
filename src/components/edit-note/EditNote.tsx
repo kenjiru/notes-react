@@ -27,13 +27,13 @@ class EditNote extends React.Component<IEditNoteProps, IEditNoteState> {
     public render(): React.ReactElement<any> {
         return (
             <div className="edit-note">
-                <SlateEditor note={this.props.note} onChange={this.handleNoteChanged}/>
+                <SlateEditor note={this.props.note} onDocumentChange={this.handleNoteChanged}/>
             </div>
         );
     }
 
     private handleNoteChanged = (noteContent: string): void => {
-        // this.updateNote(noteContent);
+        this.updateNote(noteContent);
     }
 
     private updateNote(content: string): void {

@@ -10,6 +10,7 @@ import EditToolbar from "../edit-note/EditToolbar";
 
 import rules from "./serialize/html-rules";
 import TomboySerializer from "./serialize/TomboySerializer";
+import RawSerializer from "./serialize/RawSerializer";
 
 import schema from "./schema";
 import plugins from "./plugins";
@@ -49,7 +50,7 @@ class SlateEditor extends React.Component<ISlateEditorProps, ISlateEditorState> 
     private handleDocumentChange = (document: any, state: any): void => {
         const tomboyFormat: string = TomboySerializer.serialize(state);
 
-        this.props.onChange(tomboyFormat);
+        this.props.onDocumentChange(tomboyFormat);
     }
 
     private handleChange = (editorState): void => {
@@ -74,7 +75,9 @@ class SlateEditor extends React.Component<ISlateEditorProps, ISlateEditorState> 
 
     private handleExportToHtml = (): void => {
         const tomboyFormat: string = TomboySerializer.serialize(this.state.editorState);
+        const rawFormat: any = RawSerializer.serialize(this.state.editorState);
 
+        console.log(rawFormat);
         console.log(tomboyFormat);
     }
 
@@ -95,7 +98,7 @@ interface ISlateEditorState {
 
 interface ISlateEditorProps {
     note?: INote;
-    onChange?: (noteContent: string) => void;
+    onDocumentChange?: (noteContent: string) => void;
 }
 
 export default SlateEditor;
