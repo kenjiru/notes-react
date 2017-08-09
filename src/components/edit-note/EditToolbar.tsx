@@ -36,7 +36,7 @@ class EditToolbar extends React.Component<IEditToolbarProps, IEditToolbarState> 
                                     tooltip="List outdent">format_indent_decrease</IconButton>
 
                         <IconButton iconClassName="material-icons" tooltip="Export to Note"
-                                    onClick={this.props.exportToHtml}>import_export</IconButton>
+                                    onClick={this.props.onExportToHtml}>import_export</IconButton>
                     </ToolbarGroup>
                 </Toolbar>
             </div>
@@ -47,7 +47,7 @@ class EditToolbar extends React.Component<IEditToolbarProps, IEditToolbarState> 
 interface IEditToolbarProps {
     onToggleMark: (mark: string) => void;
     onToggleBlock: (block: string) => void;
-    exportToHtml?: () => void;
+    onExportToHtml?: () => void;
 }
 
 interface IEditToolbarState {

@@ -8,7 +8,9 @@ import {INote} from "../../model/store";
 
 import EditToolbar from "../edit-note/EditToolbar";
 
-import rules from "./rules";
+import rules from "./serialize/html-rules";
+import TomboySerializer from "./serialize/TomboySerializer";
+
 import schema from "./schema";
 import plugins from "./plugins";
 
@@ -34,7 +36,8 @@ class SlateEditor extends React.Component<ISlateEditorProps, ISlateEditorState> 
     public render(): React.ReactElement<any> {
         return (
             <div className="slate-editor">
-                <EditToolbar onToggleMark={this.handleToggleMark} onToggleBlock={this.handleToggleBlock}/>
+                <EditToolbar onToggleMark={this.handleToggleMark} onToggleBlock={this.handleToggleBlock}
+                             onExportToHtml={this.handleExportToHtml}/>
                 <Editor className="slate-editor"
                         schema={schema} plugins={plugins}
                         state={this.state.editorState} onChange={this.handleChange}
@@ -44,9 +47,9 @@ class SlateEditor extends React.Component<ISlateEditorProps, ISlateEditorState> 
     }
 
     private handleDocumentChange = (document: any, state: any): void => {
-        const content: string = html.serialize(state);
+        const tomboyFormat: string = TomboySerializer.serialize(state);
 
-        this.props.onChange(content);
+        this.props.onChange(tomboyFormat);
     }
 
     private handleChange = (editorState): void => {
@@ -69,16 +72,17 @@ class SlateEditor extends React.Component<ISlateEditorProps, ISlateEditorState> 
         });
     }
 
+    private handleExportToHtml = (): void => {
+        const tomboyFormat: string = TomboySerializer.serialize(this.state.editorState);
+
+        console.log(tomboyFormat);
+    }
+
     private getEditorState(note: INote): any {
         let noteContent: string = "<p></p>";
 
         if (_.isNil(note) === false) {
             noteContent = NoteUtil.convertToHtml(this.props.note.content);
-
-            console.log({
-                tomboyNote: this.props.note.content,
-                htmlNote: noteContent
-            });
         }
 
         return html.deserialize(noteContent);

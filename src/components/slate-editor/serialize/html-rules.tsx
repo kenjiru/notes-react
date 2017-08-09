@@ -14,6 +14,9 @@ const MARK_TAGS = {
     monospace: "fixed"
 };
 
+/**
+ * The serialize() part is not used, as we use the TomboySerializer for that.
+ */
 const rules: any[] = [
     {
         deserialize(el: HTMLElement, next) {
