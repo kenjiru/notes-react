@@ -1,3 +1,4 @@
+import * as _ from "lodash";
 import * as React from "react";
 import {connect} from "react-redux";
 import {InjectedRouter, withRouter} from "react-router";
@@ -35,6 +36,12 @@ class AppRoot extends React.Component<IAppRootProps, IAppRootState> {
 
     public componentWillUnmount(): void {
         window.removeEventListener("message", this.handleMessage);
+    }
+
+    public componentWillReceiveProps(nextProps: IAppRootProps): void {
+        if (this.props.accessToken !== nextProps.accessToken && _.isNil(nextProps.accessToken) === false) {
+            this.props.dispatch(setAccessToken(nextProps.accessToken));
+        }
     }
 
     public render(): React.ReactElement<any> {
@@ -95,6 +102,7 @@ class AppRoot extends React.Component<IAppRootProps, IAppRootState> {
 
 interface IAppRootProps {
     dispatch?: IDispatchFunction;
+    accessToken?: string;
     selectedFolder?: string;
     router?: InjectedRouter;
     location?: Location;
@@ -106,6 +114,7 @@ interface IAppRootState {
 }
 
 export default connect((store: IStore, props: IAppRootProps): IAppRootProps => ({
+    accessToken: store.dropbox.accessToken,
     selectedFolder: store.ui.selectedFolder,
     router: props.router,
     location: props.location,
