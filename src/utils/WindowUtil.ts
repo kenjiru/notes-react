@@ -2,6 +2,8 @@ import * as _ from "lodash";
 import * as parseUrl from "url-parse";
 
 class WindowUtil {
+    public static GENERIC_MESSAGE: string = "NOTES-REACT-GENERIC-MESSAGE";
+
     public static getQueryParam(name: string): string {
         let url: string = window.location.href;
 
@@ -19,17 +21,23 @@ class WindowUtil {
         return decodeURIComponent(results[2].replace(/\+/g, " "));
     }
 
-    public static postMessageToParent(message: any): void {
+    public static postMessageToParent(payload: any, type: string = WindowUtil.GENERIC_MESSAGE): void {
+        // postMessageToParent requires that you put the correct protocol
+        if (_.isNil(window.opener) === false) {
+            const targetOrigin = WindowUtil.getTargetOrigin();
+
+            window.opener.postMessage({type, payload}, targetOrigin);
+        }
+    }
+
+    private static getTargetOrigin(): string {
         let targetOrigin: string = location.protocol + "//" + location.hostname;
 
         if (location.port) {
             targetOrigin += ":" + location.port;
         }
 
-        // postMessageToParent requires that you put the correct protocol
-        if (_.isNil(window.opener) === false) {
-            window.opener.postMessage(message, targetOrigin);
-        }
+        return targetOrigin;
     }
 
     public static openAuthWindow(url: string, callback: Function, options?: string): void {

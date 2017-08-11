@@ -19,6 +19,7 @@ import DeleteFolderDialog from "../delete-folder-dialog/DeleteFolderDialog";
 import MoveNotesDialog from "../move-notes-dialog/MoveNotesDialog";
 import AboutDialog from "../about-dialog/AboutDialog";
 import FolderName from "../folder-name/FolderName";
+import WindowUtil from "../../utils/WindowUtil";
 
 class AppRoot extends React.Component<IAppRootProps, IAppRootState> {
     constructor(props: IAppRootProps) {
@@ -67,7 +68,11 @@ class AppRoot extends React.Component<IAppRootProps, IAppRootState> {
     }
 
     private handleMessage = (event: MessageEvent): void => {
-        this.props.dispatch(setAccessToken(event.data.accessToken));
+        if (event.data.type !== WindowUtil.GENERIC_MESSAGE) {
+            return;
+        }
+
+        this.props.dispatch(setAccessToken(event.data.payload.accessToken));
         this.props.dispatch(getCurrentAccount());
     };
 
