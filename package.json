@@ -43,6 +43,9 @@
     "autoprefixer": "^6.5.0",
     "autoprefixer-loader": "^3.2.0",
     "css-loader": "^0.25.0",
+    "electron": "^1.7.5",
+    "electron-builder": "^19.20.1",
+    "electron-debug": "^1.4.0",
     "extract-text-webpack-plugin": "^2.0.0-beta.4",
     "file-loader": "^0.9.0",
     "html-minifier": "^3.1.0",
@@ -68,11 +71,29 @@
     "cordova-prepare": "cd cordova && webpack --config webpack-cordova.config.js && phonegap prepare",
     "cordova-build": "cd cordova && webpack --config webpack-cordova.config.js && phonegap build",
     "cordova-start": "cd cordova && HOST=0.0.0.0 webpack-dev-server --hot --config webpack-cordova.config.js",
+    "electron-pack": "electron-builder --dir",
+    "electron-build": "electron-builder",
+    "electron-main-dev": "cross-env HOT=1 NODE_ENV=development electron -r babel-register ./app/main.dev",
+    "electron-renderer-dev": "cross-env NODE_ENV=development node --trace-warnings -r babel-register ./node_modules/webpack-dev-server/bin/webpack-dev-server --config webpack.config.renderer.dev.js",
     "start": "webpack-dev-server --config webpack.config.js --hot --inline --history-api-fallback",
-    "build": "rm -rf dist/** && webpack --config webpack.config.js --devtool source-map"
+    "build": "rm -rf dist/** && webpack --config webpack.config.js --devtool source-map",
+    "postinstall": "electron-builder install-app-deps"
+  },
+  "main": "src/main.js",
+  "build": {
+    "appId": "ro.kenjiru.notes",
+    "mac": {
+      "category": "public.app-category.productivity"
+    },
+    "files": [
+      "dist/",
+      "node_modules/",
+      "main.js",
+      "package.json"
+    ]
   },
   "engines": {
-    "npm": ">=2.0.0"
+    "npm": ">=5.0.0"
   },
   "private": true
 }

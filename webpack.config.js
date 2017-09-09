@@ -8,7 +8,7 @@ const nodeEnv = process.env.NODE_ENV || "development";
 
 var config = {
     devtool: "cheap-module-eval-source-map",
-    cache : true,
+    cache: true,
     context: __dirname,
     entry: {
         app: src_dir + "/App.tsx",
@@ -98,7 +98,7 @@ var config = {
             columns: false
         }),
         new webpack.DefinePlugin({
-            "process.env": { NODE_ENV: JSON.stringify(nodeEnv) }
+            "process.env": {NODE_ENV: JSON.stringify(nodeEnv)}
         })
     ],
     devServer: {
