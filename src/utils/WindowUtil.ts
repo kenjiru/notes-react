@@ -43,15 +43,18 @@ class WindowUtil {
     public static openAuthWindow(url: string, callback: Function, options?: string): void {
         let win: any = WindowUtil.openWindow(url, options);
 
-        win.addEventListener("loadstop", (ev: any) => {
-            let parsed: any = parseUrl(ev.url, true);
-            let params: any = WindowUtil.getHashParams(parsed.hash);
+        // In Electron, the BrowserWindowProxy does not have a method addEventListener()
+        if (typeof win.addEventListener !== "undefined") {
+            win.addEventListener("loadstop", (ev: any) => {
+                let parsed: any = parseUrl(ev.url, true);
+                let params: any = WindowUtil.getHashParams(parsed.hash);
 
-            if (_.isNil(params.access_token) === false) {
-                callback(params);
-                win.close();
-            }
-        });
+                if (_.isNil(params.access_token) === false) {
+                    callback(params);
+                    win.close();
+                }
+            });
+        }
     }
 
     public static openWindow(url: string, options?: string): Window {
