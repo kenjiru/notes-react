@@ -1,18 +1,23 @@
 import * as _ from "lodash";
 import * as React from "react";
-import {EventHandler} from "react";
-import {TextField, IconButton} from "material-ui";
+import { EventHandler } from "react";
+import { TextField, IconButton, FontIcon } from "material-ui";
 
 import store from "../../model/store";
 import FolderUtil from "../../utils/FolderUtil";
 
-import {selectFolder, showDeleteFolderDialog} from "../../model/actions/ui";
-import {renameFolder} from "../../model/actions/local";
+import { selectFolder, showDeleteFolderDialog } from "../../model/actions/ui";
+import { renameFolder } from "../../model/actions/local";
 
 import "./FolderName.less"
 
 class FolderName extends React.Component<IFolderNameProps, IFolderNameState> {
     private smallIcon: Object = {
+        color: "#eee",
+        paddingTop: "8px"
+    };
+
+    private folderIcon: Object = {
         color: "#eee"
     };
 
@@ -32,7 +37,7 @@ class FolderName extends React.Component<IFolderNameProps, IFolderNameState> {
         );
     }
 
-    private renderFolder(): React.ReactElement<any>|string {
+    private renderFolder(): React.ReactElement<any> | string {
         if (FolderUtil.isValidFolder(this.props.selectedFolder)) {
             if (this.state.isEditMode) {
                 return this.renderEditFolder();
@@ -46,21 +51,24 @@ class FolderName extends React.Component<IFolderNameProps, IFolderNameState> {
 
     private renderShowFolder(): React.ReactElement<any> {
         return (
-            <span className="show-folder-name">
-                Folder:
+            <span className="folder-name show-folder-name">
+                <span className="folder-icon">
+                    <FontIcon className="material-icons" style={this.folderIcon}>folder</FontIcon>
+                </span>
                 <span className="folder-name">{this.props.selectedFolder}</span>
-                <IconButton iconClassName="material-icons" iconStyle={this.smallIcon}
-                            onClick={this.handleEdit}>mode_edit</IconButton>
-                <IconButton iconClassName="material-icons" iconStyle={this.smallIcon}
-                            onClick={this.handleDelete}>delete</IconButton>
+                <span className="folder-actions">
+                    <IconButton iconClassName="material-icons" iconStyle={this.smallIcon}
+                                onClick={this.handleEdit}>mode_edit</IconButton>
+                    <IconButton iconClassName="material-icons" iconStyle={this.smallIcon}
+                                onClick={this.handleDelete}>delete</IconButton>
+                </span>
             </span>
         );
     }
 
-    private renderEditFolder(): React.ReactElement<any>|string {
+    private renderEditFolder(): React.ReactElement<any> | string {
         let textFieldStyle: Object = {
-            width: 140,
-            marginLeft: 10
+            width: "100%"
         };
 
         let inputStyle: Object = {
@@ -69,16 +77,20 @@ class FolderName extends React.Component<IFolderNameProps, IFolderNameState> {
         };
 
         return (
-            <span className="edit-folder-name">
-                <span>
-                    Folder:
+            <span className="folder-name edit-folder-name">
+                <span className="folder-icon">
+                    <FontIcon className="material-icons" style={this.folderIcon}>folder</FontIcon>
+                </span>
+                <span className="folder-name">
                     <TextField name="folder-name" style={textFieldStyle} inputStyle={inputStyle}
                                defaultValue={this.props.selectedFolder} onChange={this.handleInputChange}/>
                 </span>
-                <IconButton iconClassName="material-icons" iconStyle={this.smallIcon}
-                            onClick={this.handleSave}>save</IconButton>
-                <IconButton iconClassName="material-icons" iconStyle={this.smallIcon}
-                            onClick={this.handleCancel}>cancel</IconButton>
+                <span className="folder-actions">
+                    <IconButton iconClassName="material-icons" iconStyle={this.smallIcon}
+                                onClick={this.handleSave}>save</IconButton>
+                    <IconButton iconClassName="material-icons" iconStyle={this.smallIcon}
+                                onClick={this.handleCancel}>cancel</IconButton>
+                </span>
             </span>
         );
     }

@@ -1,12 +1,31 @@
 .folder-name {
-  .show-folder-name {
+  .folder-name {
+    display: flex;
+    flex-direction: row;
+
+    .folder-icon {
+      padding-top: 4px;
+    }
+
     .folder-name {
-      display: inline-block;
-      margin-left: 10px;
-      min-width: 140px;
+      display: block;
+      flex-grow: 1;
+      padding-left: 10px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+
+      > div {
+        width: 100%;
+      }
+    }
+
+    .folder-actions {
+      flex-shrink: 0;
     }
 
     button {
+      display: inline-block;
       opacity: 0.6;
 
       &:hover {
