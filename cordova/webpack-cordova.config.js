@@ -1,6 +1,5 @@
 const CordovaPlugin = require("webpack-cordova-plugin");
 const merge = require("webpack-merge");
-const path = require("path");
 
 const base = require("../webpack.config");
 const ENV = getEnv();
@@ -37,10 +36,10 @@ if (ENV === "development") {
 
 function getEnv() {
     const TARGET = process.env.npm_lifecycle_event;
-    var env = "build";
+    let env = "build";
 
     switch (TARGET) {
-        case "cordova-debug":
+        case "cordova-start":
         case "cordova-android":
             env = "development";
     }
