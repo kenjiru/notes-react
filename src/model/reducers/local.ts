@@ -8,7 +8,8 @@ import {
 import {IAction} from "../../utils/ActionUtil";
 
 let defaultLocal: ILocal = {
-    notes: []
+    notes: [],
+    folders: []
 };
 
 export function local(store: ILocal = defaultLocal, action: IAction): ILocal {
