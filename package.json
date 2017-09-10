@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "dependencies": {
     "array.from": "^1.0.3",
+    "array.prototype.find": "^2.0.4",
     "blob-util": "^1.2.1",
     "classnames": "^2.2.5",
     "draft-convert": "^1.2.3",

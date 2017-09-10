@@ -5,6 +5,7 @@ import {Router, Route, IndexRoute, browserHistory, hashHistory} from "react-rout
 import {Provider} from "react-redux";
 import MuiThemeProvider from "material-ui/styles/MuiThemeProvider";
 import * as arrayFrom from "array.from";
+import * as arrayFind from "array.prototype.find";
 
 import "moment-range";
 
@@ -23,6 +24,7 @@ import "./App.less";
 
 injectTapEventPlugin();
 arrayFrom.shim();
+arrayFind.shim();
 
 const history: any = typeof cordova === "undefined" ? browserHistory : hashHistory;
 
