@@ -22,6 +22,12 @@ class WindowUtil {
     }
 
     public static postMessageToParent(payload: any, type: string = WindowUtil.GENERIC_MESSAGE): void {
+        const global: any = window;
+
+        if (typeof global.ipc !== "undefined") {
+            global.ipc.send("ELECTRON_MESSAGE", {type, payload});
+        }
+
         // postMessageToParent requires that you put the correct protocol
         if (_.isNil(window.opener) === false) {
             const targetOrigin = WindowUtil.getTargetOrigin();
@@ -53,6 +59,14 @@ class WindowUtil {
                     callback(params);
                     win.close();
                 }
+            });
+        }
+
+        const global: any = window;
+
+        if (typeof global.ipc !== "undefined") {
+            global.ipc.on("ELECTRON_MESSAGE", (event, {payload}) => {
+                callback(payload);
             });
         }
     }

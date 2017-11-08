@@ -92,6 +92,10 @@ app.on('activate', () => {
     }
 });
 
+ipcMain.on('ELECTRON_MESSAGE', (event, ...args) => {
+    mainWin.webContents.send('ELECTRON_MESSAGE', ...args)
+});
+
 function isDebugActive() {
     return process.env.NODE_ENV === 'development' || process.env.DEBUG_PROD === 'true';
 }
