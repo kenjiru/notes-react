@@ -33,9 +33,9 @@ class DropboxAuth extends React.Component<IDropboxAuthProps, IDropboxAuthState> 
         WindowUtil.openAuthWindow(authUrl, this.handleAuth, windowOptions);
     }
 
-    private handleAuth = (params: any): void => {
-        if (_.isNil(params.access_token) === false) {
-            this.getAccount(params.access_token);
+    private handleAuth = (params: IAuthenticationParams): void => {
+        if (_.isNil(params.accessToken) === false) {
+            this.getAccount(params.accessToken);
         }
     };
 
@@ -59,6 +59,13 @@ class DropboxAuth extends React.Component<IDropboxAuthProps, IDropboxAuthState> 
     private isUserLoggedIn(): boolean {
         return _.isNil(this.props.user) === false;
     }
+}
+
+interface IAuthenticationParams {
+    accessToken: string;
+    tokenType: string;
+    uid: string;
+    state: string;
 }
 
 interface IDropboxAuthProps {
