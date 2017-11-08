@@ -1,10 +1,13 @@
 const {app, BrowserWindow} = require('electron');
 const path = require('path');
 const url = require('url');
+const {ipcMain} = require('electron');
+
+const preload = path.join(__dirname, 'preload.js');
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
-let win;
+let mainWin;
 
 if (isDebugActive()) {
     require('electron-debug')({
@@ -14,8 +17,12 @@ if (isDebugActive()) {
 
 function createWindow() {
     // Create the browser window.
-    win = new BrowserWindow({
-        width: 800, height: 600
+    mainWin = new BrowserWindow({
+        width: 800,
+        height: 600,
+        webPreferences: {
+            preload
+        }
     });
 
     let pathname = path.join(__dirname, 'index.html');
@@ -27,22 +34,40 @@ function createWindow() {
     }
 
     // and load the index.html of the app.
-    win.loadURL(url.format({
+    mainWin.loadURL(url.format({
         pathname,
         protocol,
         slashes: true
     }));
 
     // Open the DevTools.
-    win.webContents.openDevTools();
+    mainWin.webContents.openDevTools();
 
     // Emitted when the window is closed.
-    win.on('closed', () => {
+    mainWin.on('closed', () => {
         // Dereference the window object, usually you would store windows
         // in an array if your app supports multi windows, this is the time
         // when you should delete the corresponding element.
-        win = null
-    })
+        mainWin = null
+    });
+
+    mainWin.webContents.on('new-window', (event, url, frameName, disposition, options, additionalFeatures) => {
+        if (frameName === '_blank') {
+            // open window as modal
+            event.preventDefault();
+
+            Object.assign(options, {
+                opener: mainWin,
+                webPreferences: {
+                    nodeIntegration: false,
+                    preload
+                }
+            });
+
+            event.newGuest = new BrowserWindow(options);
+            event.newGuest.loadURL(url);
+        }
+    });
 }
 
 // This method will be called when Electron has finished
@@ -62,7 +87,7 @@ app.on('window-all-closed', () => {
 app.on('activate', () => {
     // On macOS it's common to re-create a window in the app when the
     // dock icon is clicked and there are no other windows open.
-    if (win === null) {
+    if (mainWin === null) {
         createWindow()
     }
 });
