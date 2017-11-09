@@ -19,7 +19,6 @@ import ViewNote from "./components/view-note/ViewNote";
 import NotFound from "./components/not-found/NotFound";
 
 import "material-design-icons-iconfont/dist/material-design-icons.css";
-import "draft-js/dist/Draft.css";
 import "./App.less";
 
 injectTapEventPlugin();
