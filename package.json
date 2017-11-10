@@ -75,8 +75,8 @@
     "electron-build": "electron-builder",
     "electron-main-dev": "cross-env HOT=1 NODE_ENV=development electron -r babel-register ./src/main.js",
     "electron-renderer-dev": "cross-env NODE_ENV=development node --trace-warnings -r babel-register ./node_modules/webpack-dev-server/bin/webpack-dev-server --config webpack.config.renderer.dev.js",
-    "start": "webpack-dev-server --config webpack.config.js --hot --inline --history-api-fallback",
-    "build": "rm -rf dist/** && webpack --config webpack.config.js --devtool source-map",
+    "start": "NODE_ENV=development webpack-dev-server --config webpack.config.js --hot --inline --history-api-fallback",
+    "build": "rm -rf dist/** && NODE_ENV=prod webpack --config webpack.config.js",
     "postinstall": "electron-builder install-app-deps"
   },
   "main": "src/main.js",

@@ -7,7 +7,7 @@ var src_dir = path.join(__dirname, "/src");
 const nodeEnv = process.env.NODE_ENV || "development";
 
 var config = {
-    devtool: "cheap-module-eval-source-map",
+    devtool: buildDep("cheap-module-eval-source-map"),
     cache: true,
     context: __dirname,
     entry: {
@@ -37,12 +37,29 @@ var config = {
                 loader: "ts-loader",
                 exclude: /node_modules/
             }, {
-                test: /\.less$/,
-                loaders: ["style-loader", "css-loader", "less-loader"],
-                exclude: /node_modules/
-            }, {
-                test: /\.css/,
-                loaders: ["style-loader", "css-loader"]
+                test: /\.(less$|css)/,
+                use: ExtractTextPlugin.extract({
+                    fallback: {
+                        loader: "style-loader",
+                        options: {
+                            sourceMap: false
+                        }
+                    },
+                    use: [
+                        {
+                            loader: "css-loader",
+                            options: {
+                                sourceMap: false
+                            }
+                        },
+                        {
+                            loader: "less-loader",
+                            options: {
+                                sourceMap: false
+                            }
+                        }
+                    ]
+                })
             }, {
                 test: /\.(png|jpg|gif|eot|ttf|woff|woff2|svg)$/,
                 exclude: /public/,
@@ -70,7 +87,11 @@ var config = {
             chunks: ["dropboxAuth", "vendor"],
             filename: "dropbox-auth.html"
         }),
-        new ExtractTextPlugin("[name].css?[hash]"),
+        new ExtractTextPlugin({
+            filename: "[name].css?[contenthash]",
+            allChunks: true,
+            disable: buildDep(true)
+        }),
         new webpack.optimize.CommonsChunkPlugin({
             name: ["vendor"],
             filename: "[name].js?[hash]"
@@ -86,8 +107,8 @@ var config = {
             output: {
                 comments: false
             },
-            sourceMap: false,
-            mangle: false
+            sourceMap: buildDep(true, false),
+            mangle: buildDep(false, true)
         }),
         new webpack.SourceMapDevToolPlugin({
             test: /\.js/,
@@ -107,5 +128,13 @@ var config = {
         stats: "errors-only"
     }
 };
+
+function buildDep(devValue, prodValue) {
+    return isDevelopment() ? devValue : prodValue;
+}
+
+function isDevelopment() {
+    return nodeEnv === "development";
+}
 
 module.exports = config;
