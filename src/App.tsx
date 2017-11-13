@@ -12,7 +12,6 @@ import "moment-range";
 import store from "./model/store";
 
 import AppRoot from "./components/app-root/AppRoot";
-import Login from "./components/login/Login";
 import NoteList from "./components/note-list/NoteList";
 import EditNote from "./components/edit-note/EditNote";
 import ViewNote from "./components/view-note/ViewNote";
@@ -35,7 +34,6 @@ class App extends React.Component<any, any> {
                     <Router history={history}>
                         <Route path="/" component={AppRoot}>
                             <IndexRoute component={NoteList}/>
-                            <Route path="login" component={Login}/>
                             <Route path="list-notes" component={NoteList}/>
                             <Route path="edit-note/:noteId" component={EditNote}/>
                             <Route path="view-note/:noteId" component={ViewNote}/>

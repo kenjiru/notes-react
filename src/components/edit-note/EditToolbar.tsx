@@ -1,43 +1,57 @@
 import * as React from "react";
-import {Toolbar, ToolbarGroup, IconButton} from "material-ui";
+import { Toolbar, IconButton } from "material-ui";
+import Icon from "material-ui/Icon";
 
 import "./EditToolbar.less";
 
 class EditToolbar extends React.Component<IEditToolbarProps, IEditToolbarState> {
     public render(): React.ReactElement<any> {
         return (
-            <div className="edit-note-toolbar">
+            <div className="edit-toolbar">
                 <Toolbar className="toolbar">
-                    <ToolbarGroup className="toolbar-group" firstChild={true}>
-                        <IconButton iconClassName="material-icons" tooltip="Bold"
-                                    onClick={() => this.props.onToggleMark("bold")}>format_bold</IconButton>
-                        <IconButton iconClassName="material-icons" tooltip="Italic"
-                                    onClick={() => this.props.onToggleMark("italic")}>format_italic</IconButton>
-                        <IconButton iconClassName="material-icons" tooltip="Strike through"
+                    <div className="toolbar-group">
+                        <IconButton aria-label="Bold"
+                                    onClick={() => this.props.onToggleMark("bold")}>
+                            <Icon>format_bold</Icon>
+                        </IconButton>
+                        <IconButton aria-label="Italic"
+                                    onClick={() => this.props.onToggleMark("italic")}>
+                            <Icon>format_italic</Icon>
+                        </IconButton>
+                        <IconButton aria-label="Strike through"
                                     onClick={() => this.props.onToggleMark("strikethrough")}>
-                            format_strikethrough</IconButton>
-                        <IconButton iconClassName="material-icons" tooltip="Highlight"
-                                    onClick={() => this.props.onToggleMark("highlight")}>highlight</IconButton>
-                        <IconButton iconClassName="material-icons" tooltip="Fixed width"
-                                    onClick={() => this.props.onToggleMark("fixed")}>title</IconButton>
+                            <Icon>format_strikethrough</Icon>
+                        </IconButton>
+                        <IconButton aria-label="Highlight"
+                                    onClick={() => this.props.onToggleMark("highlight")}>
+                            <Icon>highlight</Icon>
+                        </IconButton>
+                        <IconButton aria-label="Fixed width"
+                                    onClick={() => this.props.onToggleMark("fixed")}>
+                            <Icon>title</Icon>
+                        </IconButton>
 
-                        <IconButton iconClassName="material-icons" tooltip="Unordered list"
+                        <IconButton aria-label="Unordered list"
                                     onClick={() => this.props.onToggleBlock("bulleted-list")}>
-                            format_list_bulleted
+                            <Icon>format_list_bulleted</Icon>
                         </IconButton>
-                        <IconButton iconClassName="material-icons" tooltip="Ordered list"
+                        <IconButton aria-label="Ordered list"
                                     onClick={() => this.props.onToggleBlock("ordered-list-item")}>
-                            format_list_numbered
+                            <Icon>format_list_numbered</Icon>
                         </IconButton>
 
-                        <IconButton iconClassName="material-icons"
-                                    tooltip="List indent">format_indent_increase</IconButton>
-                        <IconButton iconClassName="material-icons"
-                                    tooltip="List outdent">format_indent_decrease</IconButton>
+                        <IconButton aria-label="List indent">
+                            <Icon>format_indent_increase</Icon>
+                        </IconButton>
+                        <IconButton aria-label="List outdent">
+                            <Icon>format_indent_decrease</Icon>
+                        </IconButton>
 
-                        <IconButton iconClassName="material-icons" tooltip="Export to Note"
-                                    onClick={this.props.onExportToHtml}>import_export</IconButton>
-                    </ToolbarGroup>
+                        <IconButton aria-label="Export to Note"
+                                    onClick={this.props.onExportToHtml}>
+                            <Icon>import_export</Icon>
+                        </IconButton>
+                    </div>
                 </Toolbar>
             </div>
         );

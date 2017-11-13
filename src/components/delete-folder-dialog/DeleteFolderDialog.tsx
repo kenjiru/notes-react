@@ -1,6 +1,6 @@
 import * as React from "react";
 import {connect} from "react-redux";
-import {Dialog, FlatButton} from "material-ui";
+import { Dialog, DialogContent, DialogActions, Button } from "material-ui";
 
 import FolderUtil from "../../utils/FolderUtil";
 import {IDispatchFunction} from "../../utils/ActionUtil";
@@ -27,15 +27,16 @@ class DeleteFolderDialog extends React.Component<IDeleteFolderDialogProps, IDele
     }
 
     public render(): React.ReactElement<any> {
-        let deleteDialogActions: React.ReactElement<any>[] = [
-            <FlatButton label="Cancel" primary={true} onClick={this.handleCloseDialog}/>,
-            <FlatButton label="Delete" primary={true} onClick={this.handleDeleteFolder}/>
-        ];
-
         return (
-            <Dialog className="delete-folder-dialog" title="Confirm folder deletion" actions={deleteDialogActions}
-                    modal={true} open={this.state.isDialogShown} onRequestClose={this.handleCloseDialog}>
-                Are you sure you want to delete the folder {this.props.folderToDelete}?
+            <Dialog className="delete-folder-dialog" title="Confirm folder deletion"
+                    open={this.state.isDialogShown} onRequestClose={this.handleCloseDialog}>
+                <DialogContent>
+                    Are you sure you want to delete the folder {this.props.folderToDelete}?
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={this.handleCloseDialog}>Cancel</Button>
+                    <Button onClick={this.handleDeleteFolder}>Delete</Button>
+                </DialogActions>
             </Dialog>
         );
     }

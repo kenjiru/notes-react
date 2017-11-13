@@ -1,12 +1,12 @@
 import * as React from "react";
-import {connect} from "react-redux";
-import {Dialog, FlatButton} from "material-ui";
+import { connect } from "react-redux";
+import { Dialog, DialogContent, DialogActions, Button } from "material-ui";
 
-import {IDispatchFunction} from "../../utils/ActionUtil";
+import { IDispatchFunction } from "../../utils/ActionUtil";
 
-import {IStore, INote} from "../../model/store";
-import {deleteNotes} from "../../model/actions/local";
-import {setSelectedNotes, showSnackbarMessage} from "../../model/actions/ui";
+import { IStore, INote } from "../../model/store";
+import { deleteNotes } from "../../model/actions/local";
+import { setSelectedNotes, showSnackbarMessage } from "../../model/actions/ui";
 
 class DeleteConfirmationDialog extends React.Component<IDeleteConfirmationDialogProps, IDeleteConfirmationDialogState> {
     constructor(props: IDeleteConfirmationDialogProps) {
@@ -25,15 +25,16 @@ class DeleteConfirmationDialog extends React.Component<IDeleteConfirmationDialog
     }
 
     public render(): React.ReactElement<any> {
-        let deleteDialogActions: React.ReactElement<any>[] = [
-            <FlatButton label="Cancel" primary={true} onClick={this.handleCloseDialog}/>,
-            <FlatButton label="Delete" primary={true} onClick={this.handleDeleteNotes}/>
-        ];
-
         return (
-            <Dialog className="delete-confirmation-dialog" title="Confirm deletion" actions={deleteDialogActions}
-                    modal={true} open={this.state.isDialogShown} onRequestClose={this.handleCloseDialog}>
-                {this.state.deleteMessage}?
+            <Dialog className="delete-confirmation-dialog" title="Confirm deletion"
+                    open={this.state.isDialogShown} onRequestClose={this.handleCloseDialog}>
+                <DialogContent>
+                    {this.state.deleteMessage}?
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={this.handleCloseDialog}>Cancel</Button>
+                    <Button onClick={this.handleDeleteNotes}>Delete</Button>
+                </DialogActions>
             </Dialog>
         );
     }

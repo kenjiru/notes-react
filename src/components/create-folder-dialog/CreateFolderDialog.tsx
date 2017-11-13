@@ -1,7 +1,7 @@
 import * as _ from "lodash";
 import * as React from "react";
 import {connect} from "react-redux";
-import {Dialog, FlatButton, TextField} from "material-ui";
+import { Dialog, DialogContent, DialogActions, Button, TextField } from "material-ui";
 
 import {IStore} from "../../model/store";
 import {createFolder} from "../../model/actions/local";
@@ -27,21 +27,18 @@ class CreateFolderDialog extends React.Component<ICreateFolderDialogProps, ICrea
     }
 
     public render(): React.ReactElement<any> {
-        let dialogActions: React.ReactElement<any>[] = [
-            <FlatButton label="Cancel" primary={true} onClick={this.handleCloseDialog}/>,
-            <FlatButton label="Create" primary={true} onClick={this.handleCreateFolder}/>
-        ];
-
-        let contentStyle: Object = {
-            maxWidth: "300px"
-        };
-
         return (
-            <Dialog className="create-folder-dialog" contentStyle={contentStyle} title="Create new folder"
-                    actions={dialogActions} modal={true} open={this.state.isDialogShown}
+            <Dialog className="create-folder-dialog" title="Create new folder"
+                    open={this.state.isDialogShown}
                     onRequestClose={this.handleCloseDialog}>
-                <TextField hintText="Folder name" value={this.state.folderName} errorText={this.state.errorText}
-                           onChange={this.handleInputChange}/>
+                <DialogContent>
+                    <TextField helperText="Folder name" value={this.state.folderName} label={this.state.errorText}
+                               onChange={this.handleInputChange}/>
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={this.handleCloseDialog}>Cancel</Button>
+                    <Button onClick={this.handleCreateFolder}>Create</Button>
+                </DialogActions>
             </Dialog>
         );
     }

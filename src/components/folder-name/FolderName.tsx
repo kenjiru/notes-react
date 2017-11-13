@@ -1,7 +1,7 @@
 import * as _ from "lodash";
 import * as React from "react";
 import { EventHandler } from "react";
-import { TextField, IconButton, FontIcon } from "material-ui";
+import { TextField, IconButton, Icon } from "material-ui";
 
 import store from "../../model/store";
 import FolderUtil from "../../utils/FolderUtil";
@@ -12,11 +12,6 @@ import { renameFolder } from "../../model/actions/local";
 import "./FolderName.less"
 
 class FolderName extends React.Component<IFolderNameProps, IFolderNameState> {
-    private smallIcon: Object = {
-        color: "#eee",
-        paddingTop: "8px"
-    };
-
     private folderIcon: Object = {
         color: "#eee"
     };
@@ -51,45 +46,41 @@ class FolderName extends React.Component<IFolderNameProps, IFolderNameState> {
 
     private renderShowFolder(): React.ReactElement<any> {
         return (
-            <span className="folder-name show-folder-name">
+            <span className="show-folder-name">
                 <span className="folder-icon">
-                    <FontIcon className="material-icons" style={this.folderIcon}>folder</FontIcon>
+                    <Icon style={this.folderIcon}>folder</Icon>
                 </span>
                 <span className="folder-name">{this.props.selectedFolder}</span>
                 <span className="folder-actions">
-                    <IconButton iconClassName="material-icons" iconStyle={this.smallIcon}
-                                onClick={this.handleEdit}>mode_edit</IconButton>
-                    <IconButton iconClassName="material-icons" iconStyle={this.smallIcon}
-                                onClick={this.handleDelete}>delete</IconButton>
+                    <IconButton onClick={this.handleEdit}>
+                        <Icon>mode_edit</Icon>
+                    </IconButton>
+                    <IconButton onClick={this.handleDelete}>
+                        <Icon>delete</Icon>
+                    </IconButton>
                 </span>
             </span>
         );
     }
 
     private renderEditFolder(): React.ReactElement<any> | string {
-        let textFieldStyle: Object = {
-            width: "100%"
-        };
-
-        let inputStyle: Object = {
-            color: "white",
-            fontSize: 24
-        };
-
         return (
-            <span className="folder-name edit-folder-name">
+            <span className="edit-folder-name">
                 <span className="folder-icon">
-                    <FontIcon className="material-icons" style={this.folderIcon}>folder</FontIcon>
+                    <Icon style={this.folderIcon}>folder</Icon>
                 </span>
                 <span className="folder-name">
-                    <TextField name="folder-name" style={textFieldStyle} inputStyle={inputStyle}
-                               defaultValue={this.props.selectedFolder} onChange={this.handleInputChange}/>
+                    <TextField name="folder-name-text"
+                               defaultValue={this.props.selectedFolder}
+                               onChange={this.handleInputChange}/>
                 </span>
                 <span className="folder-actions">
-                    <IconButton iconClassName="material-icons" iconStyle={this.smallIcon}
-                                onClick={this.handleSave}>save</IconButton>
-                    <IconButton iconClassName="material-icons" iconStyle={this.smallIcon}
-                                onClick={this.handleCancel}>cancel</IconButton>
+                    <IconButton onClick={this.handleSave}>
+                        <Icon>save</Icon>
+                    </IconButton>
+                    <IconButton onClick={this.handleCancel}>
+                        <Icon>cancel</Icon>
+                    </IconButton>
                 </span>
             </span>
         );

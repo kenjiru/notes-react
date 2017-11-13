@@ -1,26 +1,27 @@
 import * as _ from "lodash";
 import * as React from "react";
-import {ReactElement, EventHandler} from "react";
-import {connect} from "react-redux";
-import {withRouter} from "react-router";
+import { ReactElement, EventHandler } from "react";
+import { connect } from "react-redux";
+import { withRouter } from "react-router";
 import * as moment from "moment";
-import {Toolbar, TextField} from "material-ui";
-import {
-    Table, TableHeader, TableHeaderColumn, TableBody, TableRow, TableRowColumn, TableFooter
+import { Toolbar, TextField, Checkbox } from "material-ui";
+import Table, {
+    TableHead, TableBody, TableFooter, TableRow, TableCell
 } from "material-ui/Table";
 
-import {INote, IStore} from "../../model/store";
-import {showSnackbarMessage, confirmDeletion, setSelectedNotes} from "../../model/actions/ui";
-import {createNewNote} from "../../model/actions/local";
+import { INote, IStore } from "../../model/store";
+import { showSnackbarMessage, confirmDeletion, setSelectedNotes } from "../../model/actions/ui";
+import { createNewNote } from "../../model/actions/local";
 
 import NoteUtil from "../../utils/NoteUtil";
-import {IDispatchFunction} from "../../utils/ActionUtil";
+import { IDispatchFunction } from "../../utils/ActionUtil";
 import IdUtil from "../../utils/IdUtil";
+import FolderUtil from "../../utils/FolderUtil";
+import MomentUtil from "../../utils/MomentUtil";
+
 import ActionButton from "../action-button/ActionButton";
 
 import "./NoteList.less";
-import FolderUtil from "../../utils/FolderUtil";
-import MomentUtil from "../../utils/MomentUtil";
 
 class NoteList extends React.Component<IListNotesProps, IListNotesState> {
     constructor(props: IListNotesProps) {
@@ -35,18 +36,23 @@ class NoteList extends React.Component<IListNotesProps, IListNotesState> {
         return (
             <div className="note-list">
                 <Toolbar>
-                    <TextField style={{width: "100%"}} hintText="Filter" onChange={this.handleFilterChange}/>
+                    <TextField className="filter-input" onChange={this.handleFilterChange}/>
                 </Toolbar>
-
-                <Table multiSelectable={true} onCellClick={this.handleTableClick}
-                       onRowSelection={this.handleRowSelection}>
-                    <TableHeader enableSelectAll={false}>
+                <Table>
+                    <TableHead>
                         <TableRow>
-                            <TableHeaderColumn>Name</TableHeaderColumn>
-                            <TableHeaderColumn>Last Changed</TableHeaderColumn>
+                            <TableCell padding="checkbox">
+                                <Checkbox
+                                    indeterminate={this.areSomeNotesSelected()}
+                                    checked={this.areAllNotesSelected()}
+                                    onChange={this.handleSelectAll}
+                                />
+                            </TableCell>
+                            <TableCell>Name</TableCell>
+                            <TableCell>Last Changed</TableCell>
                         </TableRow>
-                    </TableHeader>
-                    <TableBody deselectOnClickaway={false}>
+                    </TableHead>
+                    <TableBody>
                         {this.renderNotesRows()}
                     </TableBody>
                     {this.renderNoItems()}
@@ -62,9 +68,19 @@ class NoteList extends React.Component<IListNotesProps, IListNotesState> {
         let filteredNotes: INote[] = this.getFilteredNotes();
 
         return _.map(filteredNotes, (note: INote, i: number) =>
-            <TableRow key={i} selected={this.isRowSelected(note.id)}>
-                <TableRowColumn style={{cursor: "pointer"}}>{note.title}</TableRowColumn>
-                <TableRowColumn>{this.renderLastChanged(note.lastChanged)}</TableRowColumn>
+            <TableRow key={i}>
+                <TableCell padding="checkbox">
+                    <Checkbox
+                        checked={this.isRowSelected(note.id)}
+                        onChange={(ev, checked: boolean) => this.handleCheckboxChange(ev, checked, note)}
+                    />
+                </TableCell>
+                <TableCell style={{cursor: "pointer"}} onClick={(ev) => this.handleTableRowClick(ev, note.id)}>
+                    {note.title}
+                </TableCell>
+                <TableCell>
+                    {this.renderLastChanged(note.lastChanged)}
+                </TableCell>
             </TableRow>
         );
     }
@@ -86,10 +102,10 @@ class NoteList extends React.Component<IListNotesProps, IListNotesState> {
 
         return (
             <TableFooter>
-                <TableRow >
-                    <TableRowColumn colSpan={2} style={{textAlign: 'center'}}>
+                <TableRow>
+                    <TableCell colSpan={2} style={{textAlign: 'center'}}>
                         {this.getNoItemsMessage()}
-                    </TableRowColumn>
+                    </TableCell>
                 </TableRow>
             </TableFooter>
         );
@@ -97,7 +113,7 @@ class NoteList extends React.Component<IListNotesProps, IListNotesState> {
 
     private getNoItemsMessage(): string {
         if (_.isNil(this.state.filter) || _.isEmpty(this.state.filter)) {
-            let selectedFolder : string = this.props.selectedFolder;
+            let selectedFolder: string = this.props.selectedFolder;
 
             if (_.isNil(selectedFolder) || selectedFolder === FolderUtil.NO_FOLDER ||
                 selectedFolder === FolderUtil.ALL_NOTES) {
@@ -133,14 +149,25 @@ class NoteList extends React.Component<IListNotesProps, IListNotesState> {
         return FolderUtil.getFolder(note) === selectedFolder;
     }
 
-    private handleTableClick = (selectedIndex: number, columnId: number) => {
-        if (columnId !== 0) {
-            return;
+    private handleTableRowClick = (ev: any, noteId: string) => {
+        // if (columnId !== 0) {
+        //     return;
+        // }
+
+        this.editNote(noteId);
+    };
+
+    private handleCheckboxChange = (ev: any, checked: boolean, selectedNote: INote) => {
+        let selectedNotes: INote[] = _.clone(this.props.selectedNotes);
+
+        if (checked) {
+            selectedNotes.push(selectedNote);
+        } else {
+            _.remove(selectedNotes, (note: INote): boolean => note.id === selectedNote.id);
         }
 
-        let notes: INote[] = this.getFilteredNotes();
-        this.editNote(notes[selectedIndex].id);
-    };
+        this.props.dispatch(setSelectedNotes(selectedNotes));
+    }
 
     private handleFilterChange: EventHandler<any> = (ev: any): void => {
         this.setState({
@@ -161,16 +188,40 @@ class NoteList extends React.Component<IListNotesProps, IListNotesState> {
         this.editNote(newNoteId);
     };
 
-    private handleRowSelection = (selectedRows: string|number[]): void => {
+    private handleSelectAll = (event: any, checked: boolean): void => {
+        let selectedNotes: INote[] = [];
+
+        if (checked) {
+            selectedNotes = this.getFilteredNotes();
+        }
+
+        this.props.dispatch(setSelectedNotes(selectedNotes));
+    }
+
+    private handleRowSelection = (selectedRows: string | number[]): void => {
         let selectedNotes: INote[] = this.getSelectedNotes(selectedRows);
+
         this.props.dispatch(setSelectedNotes(selectedNotes));
     };
+
+    private areSomeNotesSelected(): boolean {
+        let visibleNotes: INote[] = this.getFilteredNotes();
+        let selectedNotes: INote[] = this.props.selectedNotes;
+
+        return selectedNotes.length > 0 && selectedNotes.length < visibleNotes.length;
+    }
+
+    private areAllNotesSelected(): boolean {
+        let visibleNotes: INote[] = this.getFilteredNotes();
+
+        return visibleNotes.length === this.props.selectedNotes.length;
+    }
 
     private isRowSelected(noteId: string): boolean {
         return _.some(this.props.selectedNotes, (note: INote): boolean => note.id === noteId);
     }
 
-    private getSelectedNotes(selectedRows: string|number[]): INote[] {
+    private getSelectedNotes(selectedRows: string | number[]): INote[] {
         let visibleNotes: INote[] = this.getFilteredNotes();
 
         if (typeof selectedRows !== "string") {

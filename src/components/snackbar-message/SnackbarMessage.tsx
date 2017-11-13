@@ -25,7 +25,8 @@ class SnackbarMessage extends React.Component<ISnackbarMessageProps, ISnackbarMe
 
     public render(): React.ReactElement<any> {
         return (
-            <Snackbar className="snackbar-message" open={this.state.isSnackbarOpen} message={this.state.snackbarMessage}
+            <Snackbar className="snackbar-message" open={this.state.isSnackbarOpen}
+                      message={<span>{this.state.snackbarMessage}</span>}
                       autoHideDuration={this.SNACKBAR_TIMEOUT} onRequestClose={this.handleSnackbarClose}/>
         );
     }

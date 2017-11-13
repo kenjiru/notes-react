@@ -1,13 +1,13 @@
 import * as _ from "lodash";
 import * as React from "react";
-import {connect} from "react-redux";
-import {Location} from "history";
-import {IconButton, IconMenu, MenuItem} from "material-ui";
-import MoreVertIcon from "material-ui/svg-icons/navigation/more-vert";
+import { connect } from "react-redux";
+import { Location } from "history";
+import { IconButton, Menu, MenuItem } from "material-ui";
+import MoreVertIcon from "material-ui-icons/MoreVert";
 
-import {IStore, IUser, INote} from "../../model/store";
-import {startSync} from "../../model/actions/dropbox";
-import {showMoveNotesDialog, showAboutDialog, confirmDeletion} from "../../model/actions/ui";
+import { IStore, IUser, INote } from "../../model/store";
+import { startSync } from "../../model/actions/dropbox";
+import { showMoveNotesDialog, showAboutDialog, confirmDeletion } from "../../model/actions/ui";
 
 import DropboxAuth from "../dropbox-auth/DropboxAuth";
 
@@ -20,16 +20,13 @@ class AppMenu extends React.Component<IAppMenuProps, IAppMenuState> {
 
     public render(): React.ReactElement<any> {
         return (
-            <IconMenu iconButtonElement={<IconButton><MoreVertIcon /></IconButton>}
-                      targetOrigin={{horizontal: "right", vertical: "top"}}
-                      anchorOrigin={{horizontal: "right", vertical: "top"}}
-                      width={200}>
+            <Menu>
                 <DropboxAuth/>
                 {this.renderSynchronizeNotes()}
                 {this.renderDeleteNote()}
                 {this.renderMoveNotes()}
-                <MenuItem primaryText="About" onClick={this.handleAbout}/>
-            </IconMenu>
+                <MenuItem onClick={this.handleAbout}>About</MenuItem>
+            </Menu>
         );
     }
 
@@ -47,18 +44,18 @@ class AppMenu extends React.Component<IAppMenuProps, IAppMenuState> {
             itemText = "Move notes";
         }
 
-        return <MenuItem primaryText={itemText} onClick={this.handleMoveNotes}/>
+        return <MenuItem onClick={this.handleMoveNotes}>{itemText}</MenuItem>
     }
 
     private renderSynchronizeNotes(): React.ReactElement<any> {
         if (this.isLoggedIn()) {
-            return <MenuItem primaryText="Synchronize notes" onClick={this.handleSynchronize}/>
+            return <MenuItem onClick={this.handleSynchronize}>Synchronize notes</MenuItem>
         }
     }
 
     private renderDeleteNote(): React.ReactElement<any> {
         if (this.isEditPage()) {
-            return <MenuItem primaryText="Delete note" onClick={this.handleDeleteNote}/>
+            return <MenuItem onClick={this.handleDeleteNote}>Delete note</MenuItem>
         }
     }
 

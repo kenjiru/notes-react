@@ -1,14 +1,16 @@
 import * as _ from "lodash";
 import * as React from "react";
-import {connect} from "react-redux";
-import {Location} from "history";
-import {Dialog, FlatButton, SelectField, MenuItem} from "material-ui";
+import { connect } from "react-redux";
+import { Location } from "history";
+import {
+    Dialog, DialogContent, DialogActions, Button, FormControl, Select, FormHelperText, MenuItem
+} from "material-ui";
 
-import {IStore, INote} from "../../model/store";
-import {showSnackbarMessage, setSelectedNotes} from "../../model/actions/ui";
-import {moveNotesTo} from "../../model/actions/local";
+import { IStore, INote } from "../../model/store";
+import { showSnackbarMessage, setSelectedNotes } from "../../model/actions/ui";
+import { moveNotesTo } from "../../model/actions/local";
 
-import {IDispatchFunction} from "../../utils/ActionUtil";
+import { IDispatchFunction } from "../../utils/ActionUtil";
 import FolderUtil from "../../utils/FolderUtil";
 
 class MoveNotesDialog extends React.Component<IMoveNotesDialogProps, IMoveNotesDialogState> {
@@ -41,37 +43,36 @@ class MoveNotesDialog extends React.Component<IMoveNotesDialogProps, IMoveNotesD
     }
 
     public render(): React.ReactElement<any> {
-        let dialogActions: React.ReactElement<any>[] = [
-            <FlatButton label="Cancel" primary={true} onClick={this.handleCloseDialog}/>,
-            <FlatButton label="Move" primary={true} onClick={this.handleMoveNotes}/>
-        ];
-
-        let contentStyle: Object = {
-            maxWidth: "300px"
-        };
-
         return (
-            <Dialog className="move-notes-dialog" contentStyle={contentStyle} title="Move to folder"
-                    actions={dialogActions} modal={true} open={this.state.isDialogShown}
+            <Dialog className="move-notes-dialog" title="Move to folder"
+                    open={this.state.isDialogShown}
                     onRequestClose={this.handleCloseDialog}>
-                <SelectField floatingLabelText="Select option" errorText={this.state.errorText}
-                             value={this.state.folder} onChange={this.handleSelectChange}>
-                    <MenuItem key="no-folder" value={FolderUtil.NO_FOLDER} primaryText="No folder"/>
-                    {this.renderFolderOptions()}
-                </SelectField>
+                <DialogContent>
+                    <FormControl error={true}>
+                        <Select value={this.state.folder} onChange={this.handleSelectChange}>
+                            <MenuItem key="no-folder" value={FolderUtil.NO_FOLDER}>No folder</MenuItem>
+                            {this.renderFolderOptions()}
+                        </Select>
+                        <FormHelperText>Select option</FormHelperText>
+                    </FormControl>
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={this.handleCloseDialog}>Cancel</Button>
+                    <Button onClick={this.handleMoveNotes}>Move</Button>
+                </DialogActions>
             </Dialog>
         );
     }
 
     private renderFolderOptions(): React.ReactElement<any>[] {
         return _.map(this.props.folders, (folder: string): React.ReactElement<any> =>
-            <MenuItem key={folder} value={folder} primaryText={folder}/>
+            <MenuItem key={folder} value={folder}>{folder}</MenuItem>
         );
     }
 
-    private handleSelectChange = (event: any, index: number, value: string): void => {
+    private handleSelectChange = (ev: any): void => {
         this.setState({
-            folder: value,
+            folder: ev.target.value,
             errorText: null
         });
     };

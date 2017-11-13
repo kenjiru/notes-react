@@ -1,7 +1,7 @@
 import * as _ from "lodash";
 import * as React from "react";
 import {connect} from "react-redux";
-import {MenuItem, TouchTapEvent} from "material-ui";
+import { MenuItem } from "material-ui";
 
 import {IStore, IUser} from "../../model/store";
 import {setAccessToken, getCurrentAccount, revokeAccess} from "../../model/actions/dropbox";
@@ -12,9 +12,9 @@ import DropboxUtil from "../../utils/DropboxUtil";
 class DropboxAuth extends React.Component<IDropboxAuthProps, IDropboxAuthState> {
     public render(): React.ReactElement<any> {
         return (
-            <MenuItem primaryText={this.getPrimaryText()} secondaryText={this.getSecondaryText()}
-                      onClick={this.handleDropboxAction} focusState={this.props.focusState}
-                      onTouchTap={this.props.onTouchTap}/>
+            <MenuItem onClick={this.handleDropboxAction}>
+                {this.getPrimaryText()}
+            </MenuItem>
         );
     }
 
@@ -75,7 +75,7 @@ interface IDropboxAuthProps {
     // Props we need to pass to the MenuItem
     desktop?: string;
     focusState?: string;
-    onTouchTap?: (ev: TouchTapEvent) => void;
+    onTouchTap?: (ev) => void;
 }
 
 interface IDropboxAuthState {

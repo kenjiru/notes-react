@@ -1,7 +1,7 @@
 import * as React from "react";
-import {FloatingActionButton} from "material-ui";
-import ContentAdd from "material-ui/svg-icons/content/add";
-import ActionDelete from "material-ui/svg-icons/action/delete";
+import { Button } from "material-ui";
+import AddIcon from 'material-ui-icons/Add';
+import ActionDelete from "material-ui-icons/Delete";
 
 import "./ActionButton.less";
 
@@ -9,9 +9,9 @@ class ActionButton extends React.Component<IActionButtonProps, IActionButtonStat
     public render(): React.ReactElement<any> {
         return (
             <div className="action-button">
-                <FloatingActionButton secondary={this.props.isDelete} mini={true} onClick={this.handleClick}>
+                <Button fab onClick={this.handleClick}>
                     {this.renderIcon()}
-                </FloatingActionButton>
+                </Button>
             </div>
         );
     }
@@ -21,7 +21,7 @@ class ActionButton extends React.Component<IActionButtonProps, IActionButtonStat
             return <ActionDelete/>;
         }
 
-        return <ContentAdd/>
+        return <AddIcon/>
     }
 
     private handleClick = () => {

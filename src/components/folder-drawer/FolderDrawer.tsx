@@ -1,17 +1,17 @@
 import * as _ from "lodash";
 import * as React from "react";
-import {ReactElement} from "react";
-import {connect} from "react-redux";
-import {InjectedRouter, withRouter} from "react-router";
+import { ReactElement } from "react";
+import { connect } from "react-redux";
+import { InjectedRouter, withRouter } from "react-router";
 
-import {List, ListItem, Subheader, FlatButton} from "material-ui";
-import FileFolder from "material-ui/svg-icons/file/folder";
-import FolderOpen from "material-ui/svg-icons/file/folder-open";
+import { List, ListSubheader, ListItem, ListItemIcon, ListItemText, Button } from "material-ui";
+import FileFolder from "material-ui-icons/Folder";
+import FolderOpen from "material-ui-icons/FolderOpen";
 
-import {IStore} from "../../model/store";
-import {selectFolder, showCreateFolderDialog, setSelectedNotes} from "../../model/actions/ui";
+import { IStore } from "../../model/store";
+import { selectFolder, showCreateFolderDialog, setSelectedNotes } from "../../model/actions/ui";
 
-import {IDispatchFunction} from "../../utils/ActionUtil";
+import { IDispatchFunction } from "../../utils/ActionUtil";
 import FolderUtil from "../../utils/FolderUtil";
 
 import "./FolderDrawer.less";
@@ -24,25 +24,33 @@ class FolderDrawer extends React.Component<IFolderDrawerProps, IFolderDrawerStat
 
         return (
             <div className="folder-drawer">
-                <Subheader>Folders</Subheader>
                 <div className="folder-list">
-                    <List>
-                        <ListItem key="all-folders" leftIcon={<FolderOpen />} primaryText={"All Notes"}
-                                  onClick={() => this.handleFolderClicked(FolderUtil.ALL_NOTES)}/>
-                        <ListItem key="no-folder" leftIcon={<FolderOpen />} primaryText={"Unfilled Notes"}
-                                  onClick={() => this.handleFolderClicked(FolderUtil.NO_FOLDER)}/>
+                    <List subheader={<ListSubheader>Folders</ListSubheader>}>
+                        <ListItem key="all-folders"
+                                  onClick={() => this.handleFolderClicked(FolderUtil.ALL_NOTES)}>
+                            <ListItemIcon><FolderOpen/></ListItemIcon>
+                            <ListItemText primary="All Notes"/>
+                        </ListItem>
+                        <ListItem key="no-folder"
+                                  onClick={() => this.handleFolderClicked(FolderUtil.NO_FOLDER)}>
+                            <ListItemIcon><FolderOpen/></ListItemIcon>
+                            <ListItemText primary="Unfilled Notes"/>
+                        </ListItem>
                         {this.renderFolders()}
                     </List>
                 </div>
-                <FlatButton style={buttonStyle} label="New Folder" onClick={this.handleCreateFolder}/>
+                <Button style={buttonStyle} onClick={this.handleCreateFolder}>New Folder</Button>
             </div>
         );
     }
 
     private renderFolders(): ReactElement<any>[] {
         return _.map(this.props.folders, (folder: string, index: number): ReactElement<any> =>
-            <ListItem key={index + folder} leftIcon={<FileFolder />} primaryText={folder}
-                      onClick={() => this.handleFolderClicked(folder)}/>
+            <ListItem key={index + folder}
+                      onClick={() => this.handleFolderClicked(folder)}>
+                <ListItemIcon><FileFolder/></ListItemIcon>
+                <ListItemText primary={folder}/>
+            </ListItem>
         );
     }
 

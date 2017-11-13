@@ -3,7 +3,8 @@ import * as React from "react";
 import {connect} from "react-redux";
 import {InjectedRouter, withRouter} from "react-router";
 import {Location} from "history";
-import {AppBar, Drawer} from "material-ui";
+import { AppBar, Toolbar, IconButton, Typography, Drawer } from "material-ui";
+import MenuIcon from "material-ui-icons/Menu";
 
 import store, {IStore} from "../../model/store";
 import {restoreState} from "../../model/actions/local";
@@ -21,6 +22,8 @@ import MoveNotesDialog from "../move-notes-dialog/MoveNotesDialog";
 import AboutDialog from "../about-dialog/AboutDialog";
 import FolderName from "../folder-name/FolderName";
 import WindowUtil from "../../utils/WindowUtil";
+
+import "./AppRoot.less";
 
 class AppRoot extends React.Component<IAppRootProps, IAppRootState> {
     constructor(props: IAppRootProps) {
@@ -45,18 +48,22 @@ class AppRoot extends React.Component<IAppRootProps, IAppRootState> {
     }
 
     public render(): React.ReactElement<any> {
-        let containerStyle: Object = {
-            overflow: "visible"
-        };
-
         return (
             <div className="app-root">
-                <AppBar title={<FolderName selectedFolder={this.props.selectedFolder}/>}
-                        iconElementRight={<AppMenu location={this.props.location}/>}
-                        onLeftIconButtonTouchTap={this.handleToggleDrawer}/>
-                <Drawer containerClassName="app-drawer" containerStyle={containerStyle} docked={false}
+                <AppBar>
+                    <Toolbar>
+                        <IconButton color="contrast" aria-label="Menu" onClick={this.handleToggleDrawer}>
+                            <MenuIcon/>
+                        </IconButton>
+                        <Typography type="title" color="inherit">
+                            <FolderName selectedFolder={this.props.selectedFolder}/>
+                        </Typography>
+                        <AppMenu location={this.props.location}/>
+                    </Toolbar>
+                </AppBar>
+                <Drawer className="app-drawer"
                         open={this.state.isDrawerVisible}
-                        onRequestChange={(isDrawerVisible) => this.setState({isDrawerVisible})}>
+                        onRequestClose={() => this.setState({isDrawerVisible: false})}>
                     <FolderDrawer hideDrawer={this.handleHideDrawer}/>
                 </Drawer>
 

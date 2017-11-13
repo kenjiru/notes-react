@@ -1,8 +1,7 @@
 import * as _ from "lodash";
 import * as React from "react";
 import {connect} from "react-redux";
-import {Dialog, FlatButton} from "material-ui";
-import NoteAdd from "material-ui/svg-icons/action/note-add";
+import { Dialog, DialogContent, DialogActions, Button } from "material-ui";
 
 import {IStore} from "../../model/store";
 
@@ -24,10 +23,6 @@ class AboutDialog extends React.Component<IAboutDialogProps, IAboutDialogState> 
     }
 
     public render(): React.ReactElement<any> {
-        let dialogActions: React.ReactElement<any>[] = [
-            <FlatButton label="Ok" primary={true} onClick={this.handleCloseDialog}/>,
-        ];
-
         let contentStyle: Object = {
             maxWidth: "400px",
             textAlign: "center"
@@ -36,14 +31,17 @@ class AboutDialog extends React.Component<IAboutDialogProps, IAboutDialogState> 
         let version: string = "0.1.0";
 
         return (
-            <Dialog className="about-dialog" contentStyle={contentStyle} title="About" modal={true}
-                    actions={dialogActions} open={this.state.isDialogShown} onRequestClose={this.handleCloseDialog}>
-                <div className="dialog-content">
+            <Dialog className="about-dialog" title="About"
+                    open={this.state.isDialogShown} onRequestClose={this.handleCloseDialog}>
+                <DialogContent className="dialog-content">
                     <p className="title">Notes</p>
                     <p><a href="http://github.com/kenjiru/notes">http://github.com/kenjiru/notes</a></p>
                     <p>Version {version}</p>
                     <p>Copyright 2016 Kenjiru</p>
-                </div>
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={this.handleCloseDialog}>Ok</Button>
+                </DialogActions>
             </Dialog>
         );
     }
