@@ -1,5 +1,6 @@
 import * as _ from "lodash";
 import * as React from "react";
+import { ReactElement } from "react";
 import { connect } from "react-redux";
 import { Location } from "history";
 import { IconButton, Menu, MenuItem } from "material-ui";
@@ -12,6 +13,10 @@ import { showMoveNotesDialog, showAboutDialog, confirmDeletion } from "../../mod
 import DropboxAuth from "../dropbox-auth/DropboxAuth";
 
 class AppMenu extends React.Component<IAppMenuProps, IAppMenuState> {
+    public state: IAppMenuState = {
+        menuAnchorEl: null
+    };
+
     public componentWillReceiveProps(nextProps: IAppMenuProps): void {
         if (this.props.user !== nextProps.user && _.isNil(nextProps.user) === false) {
             this.props.dispatch(startSync());
@@ -19,14 +24,25 @@ class AppMenu extends React.Component<IAppMenuProps, IAppMenuState> {
     }
 
     public render(): React.ReactElement<any> {
+        const isMenuOpen: boolean = _.isNil(this.state.menuAnchorEl) === false;
+
         return (
-            <Menu>
-                <DropboxAuth/>
-                {this.renderSynchronizeNotes()}
-                {this.renderDeleteNote()}
-                {this.renderMoveNotes()}
-                <MenuItem onClick={this.handleAbout}>About</MenuItem>
-            </Menu>
+            <div className="app-menu">
+                <IconButton aria-label="More" onClick={this.handleMenuClick}>
+                    <MoreVertIcon/>
+                </IconButton>
+                <Menu
+                    open={isMenuOpen}
+                    anchorEl={this.state.menuAnchorEl}
+                    onRequestClose={this.handleRequestClose}
+                >
+                    <DropboxAuth/>
+                    {this.renderSynchronizeNotes()}
+                    {this.renderDeleteNote()}
+                    {this.renderMoveNotes()}
+                    <MenuItem onClick={this.handleAbout}>About</MenuItem>
+                </Menu>
+            </div>
         );
     }
 
@@ -57,6 +73,18 @@ class AppMenu extends React.Component<IAppMenuProps, IAppMenuState> {
         if (this.isEditPage()) {
             return <MenuItem onClick={this.handleDeleteNote}>Delete note</MenuItem>
         }
+    }
+
+    private handleMenuClick = (ev: any): void => {
+        this.setState({
+            menuAnchorEl: ev.currentTarget
+        });
+    }
+
+    private handleRequestClose = (): void => {
+        this.setState({
+            menuAnchorEl: null
+        });
     }
 
     private handleMoveNotes = (): void => {
@@ -116,6 +144,7 @@ interface IAppMenuProps {
 }
 
 interface IAppMenuState {
+    menuAnchorEl?: HTMLElement;
 }
 
 export default connect((store: IStore, props: IAppMenuProps): IAppMenuProps => ({

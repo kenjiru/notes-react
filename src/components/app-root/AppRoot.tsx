@@ -51,7 +51,7 @@ class AppRoot extends React.Component<IAppRootProps, IAppRootState> {
         return (
             <div className="app-root">
                 <AppBar>
-                    <Toolbar>
+                    <Toolbar className="app-toolbar">
                         <IconButton color="contrast" aria-label="Menu" onClick={this.handleToggleDrawer}>
                             <MenuIcon/>
                         </IconButton>
