@@ -24,6 +24,8 @@ class DropboxAuth extends React.Component<IDropboxAuthProps, IDropboxAuthState> 
         } else {
             this.login();
         }
+
+        this.props.closeMenu();
     };
 
     private login(): void {
@@ -71,6 +73,7 @@ interface IAuthenticationParams {
 interface IDropboxAuthProps {
     dispatch?: Function;
     user?: IUser;
+    closeMenu?: () => void;
 
     // Props we need to pass to the MenuItem
     desktop?: string;
@@ -81,6 +84,6 @@ interface IDropboxAuthProps {
 interface IDropboxAuthState {
 }
 
-export default connect((store: IStore): IDropboxAuthProps => ({
+export default connect<any, any, IDropboxAuthProps>((store: IStore): IDropboxAuthProps => ({
     user: store.dropbox.user
 }))(DropboxAuth);

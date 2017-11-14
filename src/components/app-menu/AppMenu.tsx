@@ -36,7 +36,7 @@ class AppMenu extends React.Component<IAppMenuProps, IAppMenuState> {
                     anchorEl={this.state.menuAnchorEl}
                     onRequestClose={this.handleRequestClose}
                 >
-                    <DropboxAuth/>
+                    <DropboxAuth closeMenu={this.closeMenu}/>
                     {this.renderSynchronizeNotes()}
                     {this.renderDeleteNote()}
                     {this.renderMoveNotes()}
@@ -79,28 +79,30 @@ class AppMenu extends React.Component<IAppMenuProps, IAppMenuState> {
         this.setState({
             menuAnchorEl: ev.currentTarget
         });
-    }
+    };
 
     private handleRequestClose = (): void => {
-        this.setState({
-            menuAnchorEl: null
-        });
-    }
+        this.closeMenu();
+    };
 
     private handleMoveNotes = (): void => {
         this.props.dispatch(showMoveNotesDialog());
+        this.closeMenu();
     };
 
     private handleSynchronize = (): void => {
         this.props.dispatch(startSync());
+        this.closeMenu();
     };
 
     private handleDeleteNote = (): void => {
         this.deleteCurrentNote();
+        this.closeMenu();
     };
 
     private handleAbout = (): void => {
         this.props.dispatch(showAboutDialog());
+        this.closeMenu();
     };
 
     private deleteCurrentNote(): void {
@@ -132,6 +134,12 @@ class AppMenu extends React.Component<IAppMenuProps, IAppMenuState> {
 
     private isLoggedIn(): boolean {
         return _.isNil(this.props.user) === false;
+    }
+
+    private closeMenu = (): void => {
+        this.setState({
+            menuAnchorEl: null
+        });
     }
 }
 
