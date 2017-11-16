@@ -3,7 +3,7 @@ import * as React from "react";
 import { connect } from "react-redux";
 import { Location } from "history";
 import {
-    Dialog, DialogContent, DialogActions, Button, FormControl, Select, FormHelperText, MenuItem
+    Dialog, DialogContent, DialogActions, Button, FormControl, Select, FormHelperText, MenuItem, InputLabel
 } from "material-ui";
 
 import { IStore, INote } from "../../model/store";
@@ -12,6 +12,8 @@ import { moveNotesTo } from "../../model/actions/local";
 
 import { IDispatchFunction } from "../../utils/ActionUtil";
 import FolderUtil from "../../utils/FolderUtil";
+
+import "./MoveNotesDialog.less";
 
 class MoveNotesDialog extends React.Component<IMoveNotesDialogProps, IMoveNotesDialogState> {
     private static SELECT_DIFFERENT_FOLDER: string = "Please choose a different folder!";
@@ -48,12 +50,12 @@ class MoveNotesDialog extends React.Component<IMoveNotesDialogProps, IMoveNotesD
                     open={this.state.isDialogShown}
                     onRequestClose={this.handleCloseDialog}>
                 <DialogContent>
-                    <FormControl error={true}>
+                    <FormControl className="folder-name" error={this.hasError()}>
                         <Select value={this.state.folder} onChange={this.handleSelectChange}>
                             <MenuItem key="no-folder" value={FolderUtil.NO_FOLDER}>No folder</MenuItem>
                             {this.renderFolderOptions()}
                         </Select>
-                        <FormHelperText>Select option</FormHelperText>
+                        {this.renderError()}
                     </FormControl>
                 </DialogContent>
                 <DialogActions>
@@ -62,6 +64,14 @@ class MoveNotesDialog extends React.Component<IMoveNotesDialogProps, IMoveNotesD
                 </DialogActions>
             </Dialog>
         );
+    }
+
+    private renderError(): React.ReactElement<any> {
+        if (this.hasError() === false) {
+            return;
+        }
+
+        return <FormHelperText>{this.state.errorText}</FormHelperText>;
     }
 
     private renderFolderOptions(): React.ReactElement<any>[] {
@@ -170,6 +180,10 @@ class MoveNotesDialog extends React.Component<IMoveNotesDialogProps, IMoveNotesD
         let path: string = props.location.pathname.toString();
 
         return path.indexOf("edit-note") !== -1;
+    }
+
+    private hasError(): boolean {
+        return _.isEmpty(this.state.errorText) === false;
     }
 }
 
