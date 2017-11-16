@@ -8,7 +8,7 @@ class EditToolbar extends React.Component<IEditToolbarProps, IEditToolbarState> 
     public render(): React.ReactElement<any> {
         return (
             <div className="edit-toolbar">
-                <Toolbar className="toolbar">
+                <div className="toolbar">
                     <div className="toolbar-group">
                         <IconButton aria-label="Bold"
                                     onClick={() => this.props.onToggleMark("bold")}>
@@ -52,7 +52,7 @@ class EditToolbar extends React.Component<IEditToolbarProps, IEditToolbarState> 
                             <Icon>import_export</Icon>
                         </IconButton>
                     </div>
-                </Toolbar>
+                </div>
             </div>
         );
     }

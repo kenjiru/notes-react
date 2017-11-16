@@ -15,6 +15,8 @@ import RawSerializer from "./serialize/RawSerializer";
 import schema from "./schema";
 import plugins from "./plugins";
 
+import "./SlateEditor.less";
+
 const html = new Html({rules});
 
 class SlateEditor extends React.Component<ISlateEditorProps, ISlateEditorState> {
@@ -39,7 +41,7 @@ class SlateEditor extends React.Component<ISlateEditorProps, ISlateEditorState> 
             <div className="slate-editor">
                 <EditToolbar onToggleMark={this.handleToggleMark} onToggleBlock={this.handleToggleBlock}
                              onExportToHtml={this.handleExportToHtml}/>
-                <Editor className="slate-editor"
+                <Editor className="editor"
                         schema={schema} plugins={plugins}
                         state={this.state.editorState} onChange={this.handleChange}
                         onDocumentChange={this.handleDocumentChange}/>
