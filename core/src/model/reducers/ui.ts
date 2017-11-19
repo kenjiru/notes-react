@@ -1,6 +1,6 @@
 import * as _ from "lodash";
 
-import {INote, ILocal, IDropbox, IUi} from "../store";
+import { IUi } from "../store";
 import {
     SET_SELECTED_NOTES, SELECT_FOLDER, SHOW_SNACKBAR_MESSAGE, CONFIRMATION_DELETION, CONFIRM_DELETION,
     SHOW_CREATE_FOLDER_DIALOG, SHOW_DELETE_FOLDER_DIALOG, SHOW_MOVE_NOTES_DIALOG, SHOW_ABOUT_DIALOG

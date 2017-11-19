@@ -1,16 +1,15 @@
 import * as _ from "lodash";
 import * as React from "react";
+import { connect } from "react-redux";
 import {Editor, Plain, Html} from "slate";
 
 import NoteUtil from "../../utils/NoteUtil";
-import SlateUtil from "../../utils/SlateUtil";
-import {INote} from "../../model/store";
-
-import EditToolbar from "../edit-toolbar/EditToolbar";
+import { IDispatchFunction } from "../../utils/ActionUtil";
+import { INote, IStore } from "../../model/store";
+import { setEditorState } from "../../model/actions/editorState";
 
 import rules from "./serialize/html-rules";
 import TomboySerializer from "./serialize/TomboySerializer";
-import RawSerializer from "./serialize/RawSerializer";
 
 import schema from "./schema";
 import plugins from "./plugins";
@@ -19,31 +18,25 @@ import "./SlateEditor.less";
 
 const html = new Html({rules});
 
-class SlateEditor extends React.Component<ISlateEditorProps, ISlateEditorState> {
+class SlateEditor extends React.Component<ISlateEditorProps> {
     constructor(props: ISlateEditorProps) {
         super(props);
 
-        this.state = {
-            editorState: this.getEditorState(props.note)
-        };
+        this.setEditorNote(props.note);
     }
 
     public componentWillReceiveProps(nextProps: ISlateEditorProps): void {
         if (nextProps.note !== this.props.note) {
-            this.setState({
-                editorState: this.getEditorState(this.props.note)
-            });
+            this.setEditorNote(nextProps.note);
         }
     }
 
     public render(): React.ReactElement<any> {
         return (
             <div className="slate-editor">
-                <EditToolbar onToggleMark={this.handleToggleMark} onToggleBlock={this.handleToggleBlock}
-                             onExportToHtml={this.handleExportToHtml}/>
                 <Editor className="editor"
                         schema={schema} plugins={plugins}
-                        state={this.state.editorState} onChange={this.handleChange}
+                        state={this.props.editorState} onChange={this.handleChange}
                         onDocumentChange={this.handleDocumentChange}/>
             </div>
         );
@@ -56,31 +49,13 @@ class SlateEditor extends React.Component<ISlateEditorProps, ISlateEditorState> 
     }
 
     private handleChange = (editorState): void => {
-        this.setState({editorState});
+        this.props.dispatch(setEditorState(editorState));
     }
 
-    private handleToggleMark = (mark: string): void => {
-        const editorState = SlateUtil.toggleMark(this.state.editorState, mark);
+    private setEditorNote(note: INote): void {
+        const editorState: any = this.getEditorState(note);
 
-        this.setState({
-            editorState
-        });
-    }
-
-    private handleToggleBlock = (block: string): void => {
-        const editorState = SlateUtil.toggleBlock(this.state.editorState, block);
-
-        this.setState({
-            editorState
-        });
-    }
-
-    private handleExportToHtml = (): void => {
-        const tomboyFormat: string = TomboySerializer.serialize(this.state.editorState);
-        const rawFormat: any = RawSerializer.serialize(this.state.editorState);
-
-        console.log(rawFormat);
-        console.log(tomboyFormat);
+        this.props.dispatch(setEditorState(editorState));
     }
 
     private getEditorState(note: INote): any {
@@ -94,13 +69,13 @@ class SlateEditor extends React.Component<ISlateEditorProps, ISlateEditorState> 
     }
 }
 
-interface ISlateEditorState {
-    editorState?: any;
-}
-
 interface ISlateEditorProps {
+    editorState?: any;
     note?: INote;
     onDocumentChange?: (noteContent: string) => void;
+    dispatch?: IDispatchFunction;
 }
 
-export default SlateEditor;
+export default connect<any, any, ISlateEditorProps>((state: IStore): ISlateEditorProps => ({
+    editorState: state.editorState
+}))(SlateEditor);

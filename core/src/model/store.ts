@@ -6,6 +6,7 @@ export interface IStore {
     local: ILocal;
     dropbox: IDropbox;
     ui: IUi;
+    editorState?: any;
 }
 
 export interface IUi {

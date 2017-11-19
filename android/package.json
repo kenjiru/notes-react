@@ -67,14 +67,12 @@
 		"webpack-merge": "^4.1.0"
 	},
 	"scripts": {
-		"cordova-android": "cd cordova && phonegap run android",
-		"cordova-prepare": "cd cordova && webpack --config webpack.config.cordova.js && phonegap prepare",
-		"cordova-build": "cd cordova && webpack --config webpack.config.cordova.js && phonegap build",
-		"cordova-start": "cd cordova && HOST=0.0.0.0 webpack-dev-server --hot --config webpack.config.cordova.js",
-		"electron-pack": "electron-builder --dir",
-		"electron-build": "electron-builder",
-		"electron-main-dev": "cross-env HOT=1 NODE_ENV=development electron -r babel-register ./src/main.js",
-		"electron-renderer-dev": "cross-env NODE_ENV=development webpack-dev-server --config webpack.config.renderer.dev.js"
+		"cordova:android": "phonegap run android",
+		"cordova:prepare": "webpack --config webpack.config.cordova.js && phonegap prepare",
+		"cordova:build": "webpack --config webpack.config.cordova.js && phonegap build",
+		"cordova:start": "HOST=0.0.0.0 webpack-dev-server --hot --config webpack.config.cordova.js",
+		"start": "NODE_ENV=development webpack-dev-server --config webpack.config.js --hot --inline --history-api-fallback",
+		"build": "rm -rf dist/** && NODE_ENV=prod webpack --config webpack.config.js"
 	},
 	"author": "kenjiru kenjiru.ro@gmail.com",
 	"license": "MIT"

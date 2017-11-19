@@ -4,14 +4,16 @@ import * as React from "react";
 import {connect} from "react-redux";
 import {InjectedRouter, withRouter} from "react-router";
 
-import { IStore, INote } from "notes-react-core/src/model/store";
-import { updateNote } from "notes-react-core/src/model/actions/local";
-
 import { IDispatchFunction } from "notes-react-core/src/utils/ActionUtil";
 import IdUtil from "notes-react-core/src/utils/IdUtil";
 import NoteUtil from "notes-react-core/src/utils/NoteUtil";
 
+import { IStore, INote } from "notes-react-core/src/model/store";
+import { updateNote } from "notes-react-core/src/model/actions/local";
+import { toggleBlock, toggleMark } from "notes-react-core/src/model/actions/editorState";
+
 import SlateEditor from "notes-react-core/src/components/slate-editor/SlateEditor";
+import EditToolbar from "../edit-toolbar/EditToolbar";
 
 class EditNote extends React.Component<IEditNoteProps, IEditNoteState> {
     public componentWillReceiveProps(nextProps: IEditNoteProps): void {
@@ -27,9 +29,18 @@ class EditNote extends React.Component<IEditNoteProps, IEditNoteState> {
     public render(): React.ReactElement<any> {
         return (
             <div className="edit-note">
+                <EditToolbar onToggleMark={this.handleToggleMark} onToggleBlock={this.handleToggleBlock}/>
                 <SlateEditor note={this.props.note} onDocumentChange={this.handleNoteChanged}/>
             </div>
         );
+    }
+
+    private handleToggleMark = (mark: string): void => {
+        this.props.dispatch(toggleMark(mark));
+    }
+
+    private handleToggleBlock = (block: string): void => {
+        this.props.dispatch(toggleBlock(block));
     }
 
     private handleNoteChanged = (noteContent: string): void => {
