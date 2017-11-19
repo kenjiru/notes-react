@@ -1,9 +1,8 @@
 .c9/
 .idea/
-node_modules/
-typings/
-dist/
-cordova/platforms/
-cordova/plugins/
-cordova/www/
-/cordova/config.xml
+**/node_modules/
+**/dist/
+**/cordova/platforms/
+**/cordova/plugins/
+**/cordova/www/
+**/cordova/config.xml
