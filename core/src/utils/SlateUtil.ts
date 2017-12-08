@@ -6,9 +6,9 @@ class SlateUtil {
 
     public static toggleMark(editorState: any, type: string): void {
         return editorState
-            .transform()
+            .change()
             .toggleMark(type)
-            .apply();
+            .value;
     }
 
     public static toggleBlock(editorState: any, type: string): any {
@@ -20,25 +20,25 @@ class SlateUtil {
     }
 
     private static toggleSimpleBlock(editorState: any, type: string): void {
-        const transform = editorState.transform();
+        const change = editorState.change();
         const isActive: boolean = SlateUtil.hasBlock(editorState, type);
         const isList: boolean = SlateUtil.hasBlock(editorState, SlateUtil.LIST_ITEM);
 
         if (isList) {
-            transform
+            change
                 .setBlock(isActive ? SlateUtil.DEFAULT_NODE : type)
                 .unwrapBlock(SlateUtil.BULLETED_LIST)
                 .unwrapBlock(SlateUtil.NUMBERED_LIST);
         } else {
-            transform
+            change
                 .setBlock(isActive ? SlateUtil.DEFAULT_NODE : type);
         }
 
-        return transform.apply();
+        return change.value;
     }
 
     private static toggleList(editorState: any, type: string): void {
-        const transform = editorState.transform();
+        const change = editorState.change();
         const document = editorState.document;
 
         const isList: boolean = SlateUtil.hasBlock(editorState, SlateUtil.LIST_ITEM);
@@ -47,21 +47,21 @@ class SlateUtil {
         });
 
         if (isList && isType) {
-            transform
+            change
                 .setBlock(SlateUtil.DEFAULT_NODE)
                 .unwrapBlock(SlateUtil.BULLETED_LIST)
                 .unwrapBlock(SlateUtil.NUMBERED_LIST);
         } else if (isList) {
-            transform
+            change
                 .unwrapBlock(type == SlateUtil.BULLETED_LIST ? SlateUtil.NUMBERED_LIST : SlateUtil.BULLETED_LIST)
                 .wrapBlock(type);
         } else {
-            transform
+            change
                 .setBlock(SlateUtil.LIST_ITEM)
                 .wrapBlock(type);
         }
 
-        return transform.apply();
+        return change.value;
     }
 
     public static hasBlock(editorState: any, type: string): boolean {

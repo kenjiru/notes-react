@@ -4,17 +4,16 @@ function MarkHotkey(options) {
     const {type, key, isAltKey = false} = options;
 
     return {
-        onKeyDown(event, data, state) {
+        onKeyDown(event, change) {
             if (!event.metaKey || keycode(event.which) != key || event.altKey != isAltKey) {
                 return;
             }
 
             event.preventDefault();
 
-            return state
-                .transform()
-                .onToggleMark(type)
-                .apply();
+            change.toggleMark(type);
+
+            return true;
         }
     }
 }
